@@ -1,11 +1,10 @@
 import { DataSource } from "typeorm";
-import { Users } from "./entity/User";
+import { Media } from "./entity/Media";
 
-/**
- * GetUsers Query Function
- * @param ds TypeORM DataSource
- * @returns Promise<Users[]>
- */
-export async function getUsers(ds: DataSource): Promise<Users[]> {
-  return await ds.manager.find(Users);
+export async function getAllMedia(ds: DataSource): Promise<Media[]> {
+  return await ds.manager.find(Media);
+}
+
+export async function addMedia(ds: DataSource, media: Media): Promise<Media> {
+  return await ds.manager.save(media);
 }

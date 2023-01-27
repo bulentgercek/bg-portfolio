@@ -1,7 +1,8 @@
 import mysql from "mysql";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Users } from "./entity/User";
+import { Content } from "./entity/Content";
+import { Media } from "./entity/Media";
 
 export function dbUrlParser(envUrl: string) {
   // Parse the database url to get the database credentials
@@ -62,9 +63,9 @@ export function dsConnection(envUrl: string): DataSource {
     username: dbUrl.dbUsername,
     password: dbUrl.dbPassword,
     database: dbUrl.dbName,
+    entities: [Media, Content],
     synchronize: true,
     logging: false,
-    entities: [Users],
     migrations: [],
     subscribers: [],
   });
