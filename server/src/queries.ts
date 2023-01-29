@@ -1,10 +1,10 @@
 import { DataSource } from "typeorm";
-import { Media } from "./entity/Media";
+import { Asset } from "./entity/Asset";
 
-export async function getAllMedia(ds: DataSource): Promise<Media[]> {
-  return await ds.manager.find(Media);
+export async function getAssets(ds: DataSource) {
+  return await ds.manager.find(Asset);
 }
 
-export async function addMedia(ds: DataSource, media: Media): Promise<Media> {
-  return await ds.manager.save(media);
+export async function addAsset(ds: DataSource, asset: Asset) {
+  return await ds.manager.save(asset);
 }

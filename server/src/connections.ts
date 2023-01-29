@@ -1,10 +1,24 @@
-import mysql from "mysql";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { Content } from "./entity/Content";
-import { Media } from "./entity/Media";
+import { Asset } from "./entity/Asset";
+import env from "./validEnv";
+import { PortfolioItem } from "./entity/PortfolioItem";
+import { PortfolioCategory } from "./entity/PortfolioCategory";
+import { Portfolio } from "./entity/Portfolio";
 
-export function dbUrlParser(envUrl: string) {
+/**
+ * Data Source initilization for TypeORM
+ */
+export const ds: DataSource = dsConnection(env.DATABASE_URL);
+
+/**
+ * Enviroment variable DATABASE_URL parser
+ * to use it in TypeORM Source Connector
+ * @param envUrl Enviroment url
+ * @returns object
+ */
+function dbUrlParser(envUrl: string) {
   // Parse the database url to get the database credentials
   const [dbUsername, dbPassword, dbHost, dbPort, dbName] = envUrl
     .split(/mysql:|\/|:|@/)
@@ -20,40 +34,11 @@ export function dbUrlParser(envUrl: string) {
 }
 
 /**
- * Database Connector
- * @param envUrl Must be defined process.env.DATABASE_URL string
- * @returns mysql.Connection object
- */
-export function dbConnection(envUrl: string): mysql.Connection {
-  const dbUrl = dbUrlParser(envUrl);
-  // Set the database config and initialize database connection -> db
-  const db: mysql.Connection = mysql.createConnection({
-    host: dbUrl.dbHost,
-    user: dbUrl.dbUsername,
-    password: dbUrl.dbPassword,
-    database: dbUrl.dbName,
-    port: dbUrl.dbPort,
-  });
-
-  db.connect((error) => {
-    if (error) {
-      console.error(`Error connecting to the database : ${error.stack}`);
-      return;
-    }
-    console.log(
-      `Connected to the database ${db.config.database} on ${db.config.host}:${db.config.port} with ${db.config.user} user and thread id is ${db.threadId}.`
-    );
-  });
-
-  return db;
-}
-
-/**
  * TypeORM Data Source Connector
  * @param envUrl Must be defined process.env.DATABASE_URL string
  * @returns DataSource object
  */
-export function dsConnection(envUrl: string): DataSource {
+function dsConnection(envUrl: string): DataSource {
   const dbUrl = dbUrlParser(envUrl);
 
   const dataSource = new DataSource({
@@ -63,7 +48,7 @@ export function dsConnection(envUrl: string): DataSource {
     username: dbUrl.dbUsername,
     password: dbUrl.dbPassword,
     database: dbUrl.dbName,
-    entities: [Media, Content],
+    entities: [Asset, Content, PortfolioItem, PortfolioCategory, Portfolio],
     synchronize: true,
     logging: false,
     migrations: [],

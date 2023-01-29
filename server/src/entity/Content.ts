@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
-import { Media } from "./Media";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  ManyToOne,
+  JoinTable,
+  BaseEntity,
+} from "typeorm";
+import { Asset } from "./Asset";
+import { PortfolioItem } from "./PortfolioItem";
 
 @Entity({ name: "contents" })
 export class Content {
@@ -12,6 +21,10 @@ export class Content {
   @Column()
   columns: number;
 
-  @ManyToMany((type) => Media, (media) => media.content)
-  media: Media[];
+  @ManyToOne(() => PortfolioItem, (portfolioItem) => portfolioItem.content)
+  portfolioItem: PortfolioItem;
+
+  @ManyToMany(() => Asset, (asset) => asset.content)
+  @JoinTable()
+  asset: Asset[];
 }
