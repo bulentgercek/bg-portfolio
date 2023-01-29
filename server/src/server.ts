@@ -19,8 +19,11 @@ for (const router of Object.values(serverRouters)) {
 /**
  * Server API Routers
  */
+server.get("/api/", (req, res) => {
+  res.json("Dummy DONE! Fix if you need.");
+});
 // Add dummy assets
-server.post("/dummy", async (req, res) => {
+server.post("/api/dummy", async (req, res) => {
   await dummy.deleteContents();
   await dummy.deleteAssets();
   await dummy.deletePortfolioItems();

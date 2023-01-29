@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/bulentgercek/bg-portfolio.git"
+    "url": "git://github.com/bulentgercek/buleyabw_portfolio.git"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
