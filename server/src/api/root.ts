@@ -5,9 +5,10 @@ import { portfolioItemRouter } from "./routers/portfolioItems";
 import { portfolioRouter } from "./routers/portfolios";
 
 /**
- * Primary router of the server
+ * Primary router object of the server
  *
- * All routers added in /api/routers should be manually added here
+ * All routers added in /api/routers joined into an object here
+ * and will iterated in server.ts to use them as middelware
  */
 export const serverRouters = {
   assetRouter,

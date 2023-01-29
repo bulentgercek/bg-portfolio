@@ -2,10 +2,10 @@ import express from "express";
 import { PortfolioItem } from "../../entity/PortfolioItem";
 import { ds } from "../../connections";
 
-export const portfolioItemRouter = express.Router();
+export const router = express.Router();
 
 // Get all portfolio items
-portfolioItemRouter.get("/api/portfolio-items/", async (req, res) => {
+router.get("/api/portfolio-items/", async (req, res) => {
   await ds.manager
     .find(PortfolioItem, {
       relations: ["portfolio", "portfolioCategory", "content", "content.asset"],
@@ -14,7 +14,7 @@ portfolioItemRouter.get("/api/portfolio-items/", async (req, res) => {
 });
 
 // Get spesific portfolio item
-portfolioItemRouter.get("/api/portfolio-items/:id", async (req, res) => {
+router.get("/api/portfolio-items/:id", async (req, res) => {
   await ds.manager
     .findOne(PortfolioItem, {
       where: {
@@ -24,3 +24,5 @@ portfolioItemRouter.get("/api/portfolio-items/:id", async (req, res) => {
     })
     .then((data) => res.json(data));
 });
+
+export { router as portfolioItemRouter };

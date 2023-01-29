@@ -10,5 +10,6 @@
     "esModuleInterop": true,
     "sourceMap": false,
     "resolveJsonModule": true
-  }
+  },
+  "exclude": ["node_modules"]
 }

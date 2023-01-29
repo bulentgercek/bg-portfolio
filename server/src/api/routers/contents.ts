@@ -2,10 +2,10 @@ import express from "express";
 import { Content } from "../../entity/Content";
 import { ds } from "../../connections";
 
-export const contentRouter = express.Router();
+const router = express.Router();
 
 // Get all contents
-contentRouter.get("/api/contents/", async (req, res) => {
+router.get("/api/contents/", async (req, res) => {
   await ds.manager
     .find(Content, {
       relations: ["asset"],
@@ -14,7 +14,7 @@ contentRouter.get("/api/contents/", async (req, res) => {
 });
 
 // Get spesific content with id
-contentRouter.get("/api/contents/:id", async (req, res) => {
+router.get("/api/contents/:id", async (req, res) => {
   await ds.manager
     .find(Content, {
       where: {
@@ -24,3 +24,5 @@ contentRouter.get("/api/contents/:id", async (req, res) => {
     })
     .then((data) => res.json(data));
 });
+
+export { router as contentRouter };
