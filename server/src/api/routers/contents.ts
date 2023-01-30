@@ -1,12 +1,12 @@
 import express from "express";
 import { Content } from "../../entity/Content";
-import { ds } from "../../connections";
+import { dsm } from "../../connections";
 
 const router = express.Router();
 
 // Get all contents
 router.get("/api/contents/", async (req, res) => {
-  await ds.manager
+  await dsm
     .find(Content, {
       relations: ["asset"],
     })
@@ -15,7 +15,7 @@ router.get("/api/contents/", async (req, res) => {
 
 // Get spesific content with id
 router.get("/api/contents/:id", async (req, res) => {
-  await ds.manager
+  await dsm
     .find(Content, {
       where: {
         id: parseInt(req.params.id),

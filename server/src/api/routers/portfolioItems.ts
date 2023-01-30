@@ -1,12 +1,12 @@
 import express from "express";
 import { PortfolioItem } from "../../entity/PortfolioItem";
-import { ds } from "../../connections";
+import { dsm } from "../../connections";
 
 export const router = express.Router();
 
 // Get all portfolio items
 router.get("/api/portfolio-items/", async (req, res) => {
-  await ds.manager
+  await dsm
     .find(PortfolioItem, {
       relations: ["portfolio", "portfolioCategory", "content", "content.asset"],
     })
@@ -15,7 +15,7 @@ router.get("/api/portfolio-items/", async (req, res) => {
 
 // Get spesific portfolio item
 router.get("/api/portfolio-items/:id", async (req, res) => {
-  await ds.manager
+  await dsm
     .findOne(PortfolioItem, {
       where: {
         id: parseInt(req.params.id),

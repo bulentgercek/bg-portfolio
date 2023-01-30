@@ -1,12 +1,12 @@
 import express from "express";
 import { PortfolioCategory } from "../../entity/PortfolioCategory";
-import { ds } from "../../connections";
+import { dsm } from "../../connections";
 
 export const router = express.Router();
 
 // Get all portfolio categories
 router.get("/api/portfolio_categories/", async (req, res) => {
-  await ds.manager
+  await dsm
     .find(PortfolioCategory, {
       relations: ["portfolio", "portfolioItem"],
     })

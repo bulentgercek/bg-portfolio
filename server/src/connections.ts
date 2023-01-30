@@ -11,6 +11,7 @@ import { Portfolio } from "./entity/Portfolio";
  * Data Source initilization for TypeORM
  */
 export const ds: DataSource = dsConnection(env.DATABASE_URL);
+export const dsm = ds.manager;
 
 /**
  * Enviroment variable DATABASE_URL parser

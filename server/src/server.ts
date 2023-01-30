@@ -24,17 +24,15 @@ server.get("/api/", (req, res) => {
 });
 // Add dummy assets
 server.post("/api/dummy", async (req, res) => {
-  await dummy.deleteContents();
-  await dummy.deleteAssets();
-  await dummy.deletePortfolioItems();
-  await dummy.deletePortfolioCategories();
-  await dummy.deletePortfolio();
-
+  // Cleaning all entries in tables. This is not resetting Auto Increment on ID's
+  await dummy.cleanAllEntities();
+  // Add dummy entries
   await dummy.addDummyPortfolio();
+  await dummy.addDummyPortfolioCategories();
+  await dummy.addDummyPortfolioItems();
   await dummy.addDummyAssets();
   await dummy.addDummyContent();
-  await dummy.addDummyPortfolioItems();
-  await dummy.addDummyPortfolioCategories();
+  await dummy.updateDummyPortfolioItems();
   res.json("It's DONE!");
 });
 
