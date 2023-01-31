@@ -20,7 +20,7 @@ for (const router of Object.values(serverRouters)) {
  * Server API Routers
  */
 server.get("/api/", (req, res) => {
-  res.json("Dummy DONE! Fix if you need.");
+  res.json("Welcome to the BG Portfolio API Server");
 });
 // Add dummy assets
 server.post("/api/dummy", async (req, res) => {

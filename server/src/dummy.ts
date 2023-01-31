@@ -41,26 +41,6 @@ export async function cleanAllEntities() {
   }
 }
 
-export async function deleteAssets() {
-  return await ds.createQueryBuilder().delete().from(Asset).execute();
-}
-
-export async function deleteContents() {
-  return await ds.createQueryBuilder().delete().from(Content).execute();
-}
-
-export async function deletePortfolioItems() {
-  return await ds.createQueryBuilder().delete().from(PortfolioItem).execute();
-}
-
-export async function deletePortfolioCategories() {
-  return await ds.createQueryBuilder().delete().from(PortfolioCategory).execute();
-}
-
-export async function deletePortfolio() {
-  return await ds.createQueryBuilder().delete().from(Portfolio).execute();
-}
-
 export async function addDummyPortfolio() {
   const portfolio = dsm.create(Portfolio, dummyPortfolioData);
   await dsm.save(Portfolio, portfolio);
@@ -83,7 +63,7 @@ export async function addDummyPortfolioItems() {
   const data = {
     PortfolioItems: [
       {
-        title: "Garanti Bank | Basket",
+        name: "Garanti Bank | Basket",
         description: `Agency : Alametifarika
 Date : 2011
 Medium : Poster and Magazine Announcement
@@ -100,7 +80,7 @@ Summary : Garanti Bank 3D illustrations for posters and magazine advertisements`
         }),
       },
       {
-        title: "Anadolu Insurance | Fire Campaign Posters with 3D Images",
+        name: "Anadolu Insurance | Fire Campaign Posters with 3D Images",
         description: `Agency: TBWA
 Date: 2012
 Mecra: Poster
@@ -135,23 +115,32 @@ export async function addDummyAssets() {
 }
 
 export async function addDummyContent() {
-  const data = {
-    name: "Image Gallery 1",
-    columns: 1,
-    asset: await dsm.find(Asset),
-  };
-  const content = dsm.create(Content, data);
-  await dsm.find(Asset).catch((e) => console.log(e));
-  await dsm.save(Content, content);
+  const data = [
+    {
+      name: "Garanti | Image Gallery",
+      columns: 1,
+      asset: await dsm.find(Asset),
+    },
+    {
+      name: "Anadolu Insurance | Image Gallery",
+      columns: 2,
+      asset: await dsm.find(Asset),
+    },
+  ];
+  const saves = data.map(async (item) => {
+    const newItem = dsm.create(Content, item);
+    await dsm.save(Content, newItem).catch((e) => console.log(e));
+  });
+
+  await Promise.all(saves);
 }
 
 export async function updateDummyPortfolioItems() {
-  const data = {
-    content: await dsm.find(Content),
-  };
+  const data = await dsm.find(Content);
   const portfolioItems = await dsm.find(PortfolioItem);
-  const saves = portfolioItems.map(async (item) => {
-    item.content = data.content;
+  const saves = portfolioItems.map(async (item, index) => {
+    // note: if item.content is legit (not undefined or null) then we can use spread operator : [...item.content, data[index]]
+    item.content = [data[index]];
     await dsm.save(item);
   });
   await Promise.all(saves);
