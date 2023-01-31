@@ -84,13 +84,11 @@ export async function addDummyPortfolioItems() {
     PortfolioItems: [
       {
         title: "Garanti Bank | Basket",
-        description: `
-        Agency : Alametifarika
-        Date : 2011
-        Medium : Poster and Magazine Announcement
-        Technic : 3D Modeling
-        Summary : Garanti Bank 3D illustrations for posters and magazine advertisements
-      `,
+        description: `Agency : Alametifarika
+Date : 2011
+Medium : Poster and Magazine Announcement
+Technic : 3D Modeling
+Summary : Garanti Bank 3D illustrations for posters and magazine advertisements`,
         link: "",
         portfolioCategory: await dsm.find(PortfolioCategory, {
           where: {
@@ -103,13 +101,11 @@ export async function addDummyPortfolioItems() {
       },
       {
         title: "Anadolu Insurance | Fire Campaign Posters with 3D Images",
-        description: `
-        Agency: TBWA
-        Date: 2012
-        Mecra: Poster
-        Technique: 3D Modeling
-        Abstract: Poster illustrations prepared for Anadolu Insurance
-      `,
+        description: `Agency: TBWA
+Date: 2012
+Mecra: Poster
+Technique: 3D Modeling
+Abstract: Poster illustrations prepared for Anadolu Insurance`,
         link: "",
         portfolioCategory: await dsm.find(PortfolioCategory, {
           where: {

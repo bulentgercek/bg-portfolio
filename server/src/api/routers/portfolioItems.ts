@@ -8,9 +8,19 @@ export const router = express.Router();
 router.get("/api/portfolio-items/", async (req, res) => {
   await dsm
     .find(PortfolioItem, {
-      relations: ["portfolio", "portfolioCategory", "content", "content.asset"],
+      relations: ["portfolioCategory", "content", "content.asset"],
     })
-    .then((data) => res.json(data));
+    .then((data) => {
+      const filteredData = data.map((portfolioItem) => ({
+        ...portfolioItem,
+        portfolioCategory: portfolioItem.portfolioCategory.map((portfolioCategory) => ({
+          id: portfolioCategory.id,
+          name: portfolioCategory.name,
+        })),
+      }));
+      res.json(filteredData);
+    })
+    .catch((e) => console.log(e));
 });
 
 // Get spesific portfolio item
@@ -20,9 +30,19 @@ router.get("/api/portfolio-items/:id", async (req, res) => {
       where: {
         id: parseInt(req.params.id),
       },
-      relations: ["portfolio", "portfolioCategory", "content", "content.asset"],
+      relations: ["portfolioCategory", "content", "content.asset"],
     })
-    .then((data) => res.json(data));
+    .then((data) => {
+      const filteredData = {
+        ...data,
+        portfolioCategory: data.portfolioCategory.map((portfolioCategory) => ({
+          id: portfolioCategory.id,
+          name: portfolioCategory.name,
+        })),
+      };
+      res.json(filteredData);
+    })
+    .catch((e) => console.log(e));
 });
 
 export { router as portfolioItemRouter };

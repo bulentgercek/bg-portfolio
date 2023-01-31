@@ -10,7 +10,13 @@ router.get("/api/contents/", async (req, res) => {
     .find(Content, {
       relations: ["asset"],
     })
-    .then((data) => res.json(data));
+    .then((data) => {
+      const filteredData = data.map((content) => ({
+        ...content,
+      }));
+      res.json(data);
+    })
+    .catch((e) => console.log(e));
 });
 
 // Get spesific content with id
