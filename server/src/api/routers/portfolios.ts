@@ -5,14 +5,30 @@ import { dsm } from "../../connections";
 
 export const router = express.Router();
 
-// Get all portfolios
 router.get("/api/portfolios/", async (req, res) => {
   await dsm
     .find(Portfolio, {
-      relations: ["portfolioCategory", "portfolioItem"],
+      relations: {
+        portfolioCategory: true,
+        portfolioItem: {
+          content: true,
+        },
+      },
+    })
+    .then((data) => res.json(data))
+    .catch((e) => console.log(e));
+});
+
+// Get all portfolios - with filtering and adding extra Content - total manuplation!
+router.get("/api/portfolios-wf/", async (req, res) => {
+  await dsm
+    .find(Portfolio, {
+      relations: { portfolioCategory: true, portfolioItem: true },
     })
     .then(async (data) => {
-      const contents = await dsm.find(Content, { relations: ["portfolioItem"] });
+      const contents = await dsm.find(Content, {
+        relations: { portfolioItem: true },
+      });
       const newData = data.map((portfolio) => ({
         ...portfolio,
         contents: contents.map((contents) => ({
@@ -24,15 +40,6 @@ router.get("/api/portfolios/", async (req, res) => {
       }));
       res.json(newData);
     });
-});
-
-router.get("/api/portfolios-test/", async (req, res) => {
-  const portfolios = await dsm
-    .createQueryBuilder(Portfolio, "portfolio")
-    .leftJoinAndSelect("portfolio.contents", "content") // LEARN THIS!
-    .getMany();
-
-  res.json(portfolios);
 });
 
 export { router as portfolioRouter };

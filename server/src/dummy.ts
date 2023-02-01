@@ -29,14 +29,7 @@ const dummyPortfolioData = {
 // Delete Dummy Datas
 export async function cleanAllEntities() {
   const entities = [Content, Asset, PortfolioCategory, PortfolioItem, Portfolio];
-  const tableNames = [
-    "assets",
-    "contents",
-    "portfolio_items",
-    "portfolio_categories",
-    "portfolios",
-  ];
-  for (const [index, entity] of entities.entries()) {
+  for (const entity of entities) {
     await ds.createQueryBuilder().delete().from(entity).execute();
   }
 }

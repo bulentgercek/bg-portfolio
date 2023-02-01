@@ -8,7 +8,7 @@ export const router = express.Router();
 router.get("/api/portfolio-categories/", async (req, res) => {
   await dsm
     .find(PortfolioCategory, {
-      relations: ["portfolio", "portfolioItem"],
+      relations: { portfolio: true, portfolioItem: true },
     })
     .then((data) => res.json(data));
 });
