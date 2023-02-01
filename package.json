@@ -1,0 +1,19 @@
+{
+  "name": "bg-portfolio",
+  "version": "1.0.0",
+  "description": "This is my personal website development repository. I designed it to fit Namecheap's shared hosting. For this reason, an installation has been created that will be built on Node.js version 14.20.1 and will remain within the scope of shared hosting's libraries.",
+  "scripts": {
+    "dev": "cd server && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bulentgercek/bg-portfolio.git"
+  },
+  "keywords": [],
+  "author": "Bulent Gercek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bulentgercek/bg-portfolio/issues"
+  },
+  "homepage": "https://github.com/bulentgercek/bg-portfolio#readme"
+}
