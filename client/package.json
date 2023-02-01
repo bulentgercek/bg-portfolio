@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@bg-portfolio/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,8 @@
     "@trpc/react-query": "^10.9.1",
     "@trpc/server": "^10.9.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@bg-portfolio/server": "1.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

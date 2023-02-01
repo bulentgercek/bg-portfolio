@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@bg-portfolio/server",
   "version": "1.0.0",
   "description": "Backend/Server for BG Portfolio",
   "main": "index.js",
