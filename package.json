@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "This is my personal website development repository. I designed it to fit Namecheap's shared hosting. For this reason, an installation has been created that will be built on Node.js version 14.20.1 and will remain within the scope of shared hosting's libraries.",
   "scripts": {
-    "dev": "cd server && npm run dev"
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\""
   },
   "repository": {
     "type": "git",

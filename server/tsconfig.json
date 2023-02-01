@@ -6,7 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "outDir": "./build",
+    "outDir": "./dist",
     "esModuleInterop": true,
     "sourceMap": false,
     "resolveJsonModule": true
