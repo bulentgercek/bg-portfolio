@@ -9,7 +9,7 @@ import { serverRouters } from "./api/root";
  */
 const server = express();
 server.use(helmet());
-server.use(cors());
+server.use(cors({ origin: "http://localhost:5173" }));
 server.use(express.json());
 // Initialize all routers in /api/root to Express as middleware
 for (const router of Object.values(serverRouters)) {
@@ -20,7 +20,7 @@ for (const router of Object.values(serverRouters)) {
  * Server API Routers
  */
 server.get("/api/", (req, res) => {
-  res.json("Welcome to the BG Portfolio API Server");
+  res.json("Welcome to the BG Portfolio API Server!");
 });
 // Add dummy assets
 server.post("/api/dummy", async (req, res) => {
