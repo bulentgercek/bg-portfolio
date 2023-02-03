@@ -1,7 +1,7 @@
 import express from "express";
-import { Content } from "../../entity/Content";
+import { Content } from "../../entities/Content";
 import { ds, dsm } from "../../connections";
-import { Asset } from "../../entity/Asset";
+import { Asset } from "../../entities/Asset";
 
 const router = express.Router();
 

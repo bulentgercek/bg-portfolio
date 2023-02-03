@@ -1,5 +1,5 @@
 import express from "express";
-import { PortfolioCategory } from "../../entity/PortfolioCategory";
+import { PortfolioCategory } from "../../entities/PortfolioCategory";
 import { dsm } from "../../connections";
 
 export const router = express.Router();

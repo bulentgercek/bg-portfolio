@@ -1,5 +1,5 @@
 import express from "express";
-import { PortfolioItem } from "../../entity/PortfolioItem";
+import { PortfolioItem } from "../../entities/PortfolioItem";
 import { dsm } from "../../connections";
 
 export const router = express.Router();
