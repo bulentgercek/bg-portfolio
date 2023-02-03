@@ -1,6 +1,6 @@
 import express from "express";
-import { Portfolio } from "../../entity/Portfolio";
-import { Content } from "../../entity/Content";
+import { Portfolio } from "../../entities/Portfolio";
+import { Content } from "../../entities/Content";
 import { dsm } from "../../connections";
 
 export const router = express.Router();

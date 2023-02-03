@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Content } from "./entity/Content";
-import { Asset } from "./entity/Asset";
+import { Content } from "./entities/Content";
+import { Asset } from "./entities/Asset";
 import env from "./validEnv";
-import { PortfolioItem } from "./entity/PortfolioItem";
-import { PortfolioCategory } from "./entity/PortfolioCategory";
-import { Portfolio } from "./entity/Portfolio";
+import { PortfolioItem } from "./entities/PortfolioItem";
+import { PortfolioCategory } from "./entities/PortfolioCategory";
+import { Portfolio } from "./entities/Portfolio";
 
 /**
  * Data Source initilization for TypeORM

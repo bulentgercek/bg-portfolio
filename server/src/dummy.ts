@@ -1,9 +1,9 @@
 import { ds, dsm } from "./connections";
-import { Asset, AssetType } from "./entity/Asset";
-import { Content } from "./entity/Content";
-import { Portfolio } from "./entity/Portfolio";
-import { PortfolioCategory } from "./entity/PortfolioCategory";
-import { PortfolioItem } from "./entity/PortfolioItem";
+import { Asset, AssetType } from "./entities/Asset";
+import { Content } from "./entities/Content";
+import { Portfolio } from "./entities/Portfolio";
+import { PortfolioCategory } from "./entities/PortfolioCategory";
+import { PortfolioItem } from "./entities/PortfolioItem";
 
 const dummyAssetsData = {
   Assets: [
@@ -28,7 +28,13 @@ const dummyPortfolioData = {
 
 // Delete Dummy Datas
 export async function cleanAllEntities() {
-  const entities = [Content, Asset, PortfolioCategory, PortfolioItem, Portfolio];
+  const entities = [
+    Content,
+    Asset,
+    PortfolioCategory,
+    PortfolioItem,
+    Portfolio,
+  ];
   for (const entity of entities) {
     await ds.createQueryBuilder().delete().from(entity).execute();
   }
