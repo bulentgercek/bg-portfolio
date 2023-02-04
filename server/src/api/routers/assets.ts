@@ -1,8 +1,8 @@
-import express from "express";
-import { Asset } from "../../entities/Asset";
+import { Router } from "express";
 import { dsm } from "../../connections";
+import { Asset } from "../../entities/Asset";
 
-const router = express.Router();
+const router = Router();
 
 // Get all assets
 router.get("/api/assets/", async (req, res) => {

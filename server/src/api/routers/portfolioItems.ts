@@ -1,8 +1,8 @@
-import express from "express";
-import { PortfolioItem } from "../../entities/PortfolioItem";
+import { Router } from "express";
 import { dsm } from "../../connections";
+import { PortfolioItem } from "../../entities/PortfolioItem";
 
-export const router = express.Router();
+const router = Router();
 
 // Get all portfolio items
 router.get("/api/portfolio-items/", async (req, res) => {

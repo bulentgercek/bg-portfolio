@@ -9,7 +9,9 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "sourceMap": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strict": true,
+    "strictPropertyInitialization": false
   },
   "exclude": ["node_modules"]
 }
