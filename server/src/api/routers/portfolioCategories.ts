@@ -1,8 +1,8 @@
-import express from "express";
-import { PortfolioCategory } from "../../entities/PortfolioCategory";
+import { Router } from "express";
 import { dsm } from "../../connections";
+import { PortfolioCategory } from "../../entities/PortfolioCategory";
 
-export const router = express.Router();
+const router = Router();
 
 // Get all portfolio categories
 router.get("/api/portfolio-categories/", async (req, res) => {

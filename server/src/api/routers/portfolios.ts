@@ -1,9 +1,9 @@
-import express from "express";
+import { Router } from "express";
+import { dsm } from "../../connections";
 import { Portfolio } from "../../entities/Portfolio";
 import { Content } from "../../entities/Content";
-import { dsm } from "../../connections";
 
-export const router = express.Router();
+const router = Router();
 
 router.get("/api/portfolios/", async (req, res) => {
   await dsm

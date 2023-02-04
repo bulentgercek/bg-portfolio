@@ -21,7 +21,10 @@ export class PortfolioCategory {
   @Column("simple-array")
   itemsOrder: number[];
 
-  @ManyToMany(() => PortfolioItem, (portfolioItem) => portfolioItem.portfolioCategory)
+  @ManyToMany(
+    () => PortfolioItem,
+    (portfolioItem) => portfolioItem.portfolioCategory,
+  )
   @JoinTable()
   portfolioItem: PortfolioItem[];
 

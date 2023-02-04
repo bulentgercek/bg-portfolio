@@ -22,5 +22,7 @@
     "url": "https://github.com/bulentgercek/bg-portfolio/issues"
   },
   "homepage": "https://github.com/bulentgercek/bg-portfolio#readme",
-  "dependencies": {}
+  "dependencies": {
+    "@hapi/boom": "^10.0.0"
+  }
 }

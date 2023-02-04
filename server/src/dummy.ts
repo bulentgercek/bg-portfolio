@@ -46,7 +46,7 @@ export async function addDummyPortfolio() {
 }
 
 export async function addDummyPortfolioCategories() {
-  const data = {
+  const data: Record<string, unknown> = {
     name: "Printed Media",
     itemsOrder: [1, 2],
     portfolio: await dsm.findOneBy(Portfolio, {
@@ -99,7 +99,10 @@ Abstract: Poster illustrations prepared for Anadolu Insurance`,
   };
 
   const saves = data.PortfolioItems.map(async (item) => {
-    const newPortfolioItem = dsm.create(PortfolioItem, item);
+    const newPortfolioItem: Record<string, unknown> = dsm.create(
+      PortfolioItem,
+      item,
+    );
     await dsm.save(PortfolioItem, newPortfolioItem);
   });
   await Promise.all(saves);
