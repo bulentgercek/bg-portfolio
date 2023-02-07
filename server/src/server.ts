@@ -4,6 +4,7 @@ import helmet from "helmet";
 import env from "./validEnv";
 import * as dummy from "./dummy";
 import { serverRouters } from "./api/root";
+
 /**
  *  Server initialization and configuration
  */
