@@ -2,13 +2,13 @@ import { Router } from "express";
 import { z } from "zod";
 import { dsm } from "../../connections";
 import { Content } from "../../entities/Content";
-import validate from "../validations/validate";
+import ApiResults from "../validations/apiResults";
 
 const router = Router();
 
 // Get all contents - with only query
 router.get("/api/contents/", async (req, res) => {
-  await dsm
+  const queryResults = await dsm
     .find(Content, {
       select: {
         asset: {
@@ -19,28 +19,32 @@ router.get("/api/contents/", async (req, res) => {
         asset: true,
       },
     })
-    .then((data: Content[]) => res.json(data));
+    .catch((e) => res.json(e));
+
+  res.json(queryResults);
 });
 
 // Get spesific content with id
 router.get("/api/contents/:id", async (req, res) => {
-  const results = await validate(
-    z.object({
-      id: z.preprocess(Number, z.number().max(3)),
-    }),
-    req.params,
-  );
+  const apiResults = new ApiResults();
 
-  if (!results.success) return res.json(results);
+  await apiResults
+    .validate(
+      z.object({
+        id: z.preprocess(Number, z.number()),
+      }),
+      req.params,
+    )
+    .then(async (result) => {
+      await result.find(Content, {
+        where: {
+          id: result.results.validateResults.id, //parseInt(req.params.id),
+        },
+        relations: ["asset"],
+      });
+    });
 
-  await dsm
-    .find(Content, {
-      where: {
-        id: results.data.id,
-      },
-      relations: ["asset"],
-    })
-    .then((data) => res.json(data));
+  res.json(apiResults.results);
 });
 
 export { router as contentRouter };
