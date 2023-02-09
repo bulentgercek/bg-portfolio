@@ -1,54 +1,50 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
 import { z } from "zod";
-import { dsm } from "../../connections";
+import { ApiController as ac } from "../validations/apiController";
 import { Content } from "../../entities/Content";
-import ApiResults from "../validations/apiResults";
 
 const router = Router();
 
 // Get all contents - with only query
 router.get("/api/contents/", async (req, res) => {
-  const queryResults = await dsm
-    .find(Content, {
-      select: {
-        asset: {
-          name: true,
-        },
+  const dbResults = await ac.find(Content, {
+    relations: {
+      asset: true,
+    },
+  });
+
+  res.json(dbResults);
+});
+
+// Get spesific content with id
+router.get("/api/contents/:id", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: z.object({ id: z.preprocess(Number, z.number()) }),
+    reqData: req.params,
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const dbResults = await ac.findOne(
+    Content,
+    {
+      where: {
+        id: validateResults.result.id,
       },
       relations: {
         asset: true,
       },
-    })
-    .catch((e) => res.json(e));
+    },
+    validateResults,
+  );
 
-  res.json(queryResults);
-});
-
-// Get spesific content with id
-router.get("/api/contents/:id", async (req: Request, res: Response) => {
-  const apiResults = new ApiResults();
-
-  await apiResults
-    .validate(
-      z.object({
-        id: z.preprocess(Number, z.number()),
-      }),
-      req.params,
-    )
-    .then(async (result) => {
-      await apiResults
-        .find(result, Content, {
-          where: {
-            id: result.validateResults?.id,
-          },
-          relations: ["asset"],
-        })
-        .then((result) => res.json(result));
-    });
+  res.json(dbResults);
 });
 
 export { router as contentRouter };
 
+/**
+ * Archive Codes
+ */
 // // Get all contents - With filtering after the query - total manuplation!
 // router.get("/api/contents-wf/", async (req, res) => {
 //   await dsm
