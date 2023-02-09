@@ -12,6 +12,6 @@ export async function validate<T extends z.ZodTypeAny>(
 
   return Promise.resolve({
     validateSuccess: validated.success,
-    validateResults: validated.data,
+    validateResults: validated.success ? validated.data : validated.error,
   });
 }
