@@ -1,16 +1,19 @@
 import { Router } from "express";
-import { dsm } from "../../connections";
+import { ApiController as ac } from "../validations/apiController";
 import { PortfolioCategory } from "../../entities/PortfolioCategory";
 
 const router = Router();
 
 // Get all portfolio categories
 router.get("/api/portfolio-categories/", async (req, res) => {
-  await dsm
-    .find(PortfolioCategory, {
-      relations: { portfolio: true, portfolioItem: true },
-    })
-    .then((data) => res.json(data));
+  const dbResults = await ac.find(PortfolioCategory, {
+    relations: {
+      portfolio: true,
+      portfolioItem: true,
+    },
+  });
+
+  res.json(dbResults);
 });
 
 export { router as portfolioCategoryRouter };

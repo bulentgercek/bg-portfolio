@@ -1,29 +1,41 @@
 import { Router } from "express";
-import { dsm } from "../../connections";
+import { z } from "zod";
+import { ApiController as ac } from "../validations/apiController";
 import { PortfolioItem } from "../../entities/PortfolioItem";
 
 const router = Router();
 
 // Get all portfolio items
 router.get("/api/portfolio-items/", async (req, res) => {
-  await dsm
-    .find(PortfolioItem, {
-      select: {
-        portfolioCategory: {
-          id: true,
-          name: true,
-        },
+  const dbResults = await ac.find(PortfolioItem, {
+    select: {
+      portfolioCategory: {
+        id: true,
+        name: true,
       },
-      relations: { portfolioCategory: true, content: { asset: true } },
-    })
-    .then((data) => res.json(data))
-    .catch((e) => console.log(e));
+    },
+    relations: {
+      portfolioCategory: true,
+      content: {
+        asset: true,
+      },
+    },
+  });
+
+  res.json(dbResults);
 });
 
 // Get spesific portfolio item - with filtering
 router.get("/api/portfolio-items/:id", async (req, res) => {
-  await dsm
-    .findOne(PortfolioItem, {
+  const ctxObj = ac.initContext({
+    zInput: z.object({ id: z.preprocess(Number, z.number()) }),
+    reqData: req.params,
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const dbResults = await ac.findOne(
+    PortfolioItem,
+    {
       select: {
         portfolioCategory: {
           id: true,
@@ -31,12 +43,14 @@ router.get("/api/portfolio-items/:id", async (req, res) => {
         },
       },
       where: {
-        id: parseInt(req.params.id),
+        id: validateResults.result.id,
       },
       relations: { portfolioCategory: true, content: { asset: true } },
-    })
-    .then((data) => res.json(data))
-    .catch((e) => console.log(e));
+    },
+    validateResults,
+  );
+
+  res.json(dbResults);
 });
 
 export { router as portfolioItemRouter };

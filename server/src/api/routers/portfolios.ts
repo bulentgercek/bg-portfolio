@@ -1,45 +1,48 @@
 import { Router } from "express";
-import { dsm } from "../../connections";
+import { z } from "zod";
+import { ApiController as ac } from "../validations/apiController";
 import { Portfolio } from "../../entities/Portfolio";
-import { Content } from "../../entities/Content";
 
 const router = Router();
 
 router.get("/api/portfolios/", async (req, res) => {
-  await dsm
-    .find(Portfolio, {
+  const dbResults = await ac.find(Portfolio, {
+    relations: {
+      portfolioCategory: true,
+      portfolioItem: {
+        content: true,
+      },
+    },
+  });
+
+  res.json(dbResults);
+});
+
+// Get spesific portfolio with id
+router.get("/api/portfolios/:id", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: z.object({ id: z.preprocess(Number, z.number()) }),
+    reqData: req.params,
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const dbResults = await ac.findOne(
+    Portfolio,
+    {
+      where: {
+        id: validateResults.result.id,
+      },
       relations: {
         portfolioCategory: true,
         portfolioItem: {
           content: true,
         },
       },
-    })
-    .then((data) => res.json(data))
-    .catch((e) => console.log(e));
-});
+    },
+    validateResults,
+  );
 
-// Get all portfolios - with filtering and adding extra Content - total manuplation!
-router.get("/api/portfolios-wf/", async (req, res) => {
-  await dsm
-    .find(Portfolio, {
-      relations: { portfolioCategory: true, portfolioItem: true },
-    })
-    .then(async (data) => {
-      const contents = await dsm.find(Content, {
-        relations: { portfolioItem: true },
-      });
-      const newData = data.map((portfolio) => ({
-        ...portfolio,
-        contents: contents.map((contents) => ({
-          id: contents.id,
-          name: contents.name,
-          columns: contents.columns,
-          portfolioItemId: contents.portfolioItem.id,
-        })),
-      }));
-      res.json(newData);
-    });
+  res.json(dbResults);
 });
 
 export { router as portfolioRouter };
