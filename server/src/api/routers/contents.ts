@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Request, Response, Router } from "express";
 import { z } from "zod";
 import { dsm } from "../../connections";
 import { Content } from "../../entities/Content";
@@ -25,7 +25,7 @@ router.get("/api/contents/", async (req, res) => {
 });
 
 // Get spesific content with id
-router.get("/api/contents/:id", async (req, res) => {
+router.get("/api/contents/:id", async (req: Request, res: Response) => {
   const apiResults = new ApiResults();
 
   await apiResults
@@ -36,15 +36,15 @@ router.get("/api/contents/:id", async (req, res) => {
       req.params,
     )
     .then(async (result) => {
-      await result.find(Content, {
-        where: {
-          id: result.results.validateResults.id, //parseInt(req.params.id),
-        },
-        relations: ["asset"],
-      });
+      await apiResults
+        .find(result, Content, {
+          where: {
+            id: result.validateResults?.id,
+          },
+          relations: ["asset"],
+        })
+        .then((result) => res.json(result));
     });
-
-  res.json(apiResults.results);
 });
 
 export { router as contentRouter };

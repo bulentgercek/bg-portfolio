@@ -1,63 +1,61 @@
 import { EntityTarget, FindManyOptions, ObjectLiteral } from "typeorm";
-import { z, ZodSchema } from "zod";
+import { z } from "zod";
 import { dsm } from "../../connections";
 
-type Results = {
-  validateSuccess: Boolean;
-  validateResults?: any;
-  querySuccess?: Boolean;
-  queryResults?: Array<ObjectLiteral>;
-};
-
 export default class ApiResults {
-  results: Results;
-
-  constructor() {
-    this.results = {
-      validateSuccess: true,
-      validateResults: {},
-      querySuccess: false,
-      queryResults: [],
+  async validate<TZodType extends z.ZodTypeAny, TReq>(
+    zodSchema: TZodType,
+    request: TReq,
+  ) {
+    type TZodSchema = z.infer<typeof zodSchema>;
+    const validated: TZodSchema = await zodSchema.safeParseAsync(request);
+    type Output = {
+      validateSuccess: boolean;
+      validateResults?: z.TypeOf<TZodType>;
     };
+    const output: Output = {
+      validateSuccess: validated.success,
+      validateResults: validated.data,
+    };
+    return Promise.resolve(output);
   }
 
-  async validate<zodObject extends z.AnyZodObject, requestData>(
-    zodSchema: zodObject,
-    request: requestData,
-  ): Promise<this> {
-    type IZodSchema = z.infer<ZodSchema>;
-
-    await zodSchema
-      .parseAsync(request)
-      .then((result: {}) => {
-        const iZodSchema: IZodSchema = result as IZodSchema;
-        this.results.validateResults = iZodSchema;
-        // console.log(this.results.validateResults.id);
-      })
-      .catch(() => {
-        this.results.validateSuccess = false;
-      });
-    return Promise.resolve(this);
-  }
-
-  async find<Entity extends ObjectLiteral>(
+  async find<TZodType extends z.ZodTypeAny, Entity extends ObjectLiteral>(
+    validateOutput: {
+      validateSuccess: boolean;
+      validateResults?: z.TypeOf<TZodType>;
+    },
     entityClass: EntityTarget<Entity>,
     options?: FindManyOptions<Entity>,
-  ): Promise<this> {
-    if (!this.results.validateSuccess) {
-      return Promise.resolve(this);
+  ) {
+    type Output = {
+      querySuccess: boolean;
+      queryResults?: Entity[];
+    };
+    if (!validateOutput.validateSuccess) {
+      return Promise.resolve({
+        validateSuccess: false,
+        querySuccess: false,
+      });
     }
 
-    const data = await dsm
+    const findOutput: Output = await dsm
       .find(entityClass, options)
-      .then((result) => {
-        this.results.querySuccess = true;
-        this.results.queryResults = result;
-      })
-      .catch(() => {
-        this.results.querySuccess = false;
-      });
+      .then((result) => ({
+        querySuccess: true,
+        queryResults: result,
+      }))
+      .catch(() => ({
+        querySuccess: false,
+      }));
 
-    return Promise.resolve(this);
+    type FinalOutput = typeof validateOutput & Output;
+    const finalOutput: FinalOutput = {
+      validateSuccess: validateOutput.validateSuccess,
+      validateResults: validateOutput.validateResults,
+      querySuccess: findOutput.querySuccess,
+      queryResults: findOutput.queryResults,
+    };
+    return Promise.resolve(finalOutput);
   }
 }
