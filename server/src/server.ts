@@ -17,7 +17,7 @@ server.use(express.json());
 /**
  * Server API Routers
  */
-server.get("/api/", (req, res, next: NextFunction) => {
+server.get("/api/", (req, res) => {
   res.json("Welcome to the BG Portfolio API Server!");
 });
 
