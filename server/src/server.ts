@@ -4,7 +4,7 @@ import helmet from "helmet";
 import env from "./validEnv";
 import * as dummy from "./dummy";
 import { serverRouters } from "./api/root";
-import { errorHandler } from "./api/validations/errorHandler";
+import { errorHandler } from "./api/errorHandler";
 
 /**
  *  Server initialization and configuration

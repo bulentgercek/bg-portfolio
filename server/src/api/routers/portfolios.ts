@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { ApiController as ac } from "../validations/apiController";
+import { ApiController as ac } from "../apiController";
 import { Portfolio } from "../../entities/Portfolio";
 
 const router = Router();

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { ApiController as ac } from "../validations/apiController";
+import { ApiController as ac } from "../apiController";
 import { PortfolioCategory } from "../../entities/PortfolioCategory";
 
 const router = Router();

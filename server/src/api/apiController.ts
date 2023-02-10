@@ -5,7 +5,7 @@ import {
   ObjectLiteral,
 } from "typeorm";
 import { z } from "zod";
-import { dsm } from "../../connections";
+import { dsm } from "../connections";
 
 export namespace ApiController {
   /**
