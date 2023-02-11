@@ -6,7 +6,7 @@ import { Portfolio } from "../../entities/Portfolio";
 const router = Router();
 
 router.get("/api/portfolios/", async (req, res) => {
-  const dbResults = await ac.find(Portfolio, {
+  const dbResults = await ac.findAll(Portfolio, {
     relations: {
       portfolioCategory: true,
       portfolioItem: {
@@ -26,21 +26,17 @@ router.get("/api/portfolios/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResults = await ac.findOne(
-    Portfolio,
-    {
-      where: {
-        id: validateResults.result.id,
-      },
-      relations: {
-        portfolioCategory: true,
-        portfolioItem: {
-          content: true,
-        },
+  const dbResults = await ac.findOne(Portfolio, validateResults, {
+    where: {
+      id: validateResults.result.id,
+    },
+    relations: {
+      portfolioCategory: true,
+      portfolioItem: {
+        content: true,
       },
     },
-    validateResults,
-  );
+  });
 
   res.json(dbResults);
 });

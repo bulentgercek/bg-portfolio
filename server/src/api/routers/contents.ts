@@ -7,7 +7,7 @@ const router = Router();
 
 // Get all contents - with only query
 router.get("/api/contents/", async (req, res) => {
-  const dbResults = await ac.find(Content, {
+  const dbResults = await ac.findAll(Content, {
     relations: {
       asset: true,
     },
@@ -24,18 +24,14 @@ router.get("/api/contents/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResults = await ac.findOne(
-    Content,
-    {
-      where: {
-        id: validateResults.result.id,
-      },
-      relations: {
-        asset: true,
-      },
+  const dbResults = await ac.findOne(Content, validateResults, {
+    where: {
+      id: validateResults.result.id,
     },
-    validateResults,
-  );
+    relations: {
+      asset: true,
+    },
+  });
 
   res.json(dbResults);
 });
