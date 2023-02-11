@@ -6,7 +6,7 @@ import { Content } from "../../entities/Content";
 const router = Router();
 
 // Get all contents - with only query
-router.get("/api/contents/", async (req, res) => {
+router.get("/api/contents", async (req, res) => {
   const dbResults = await ac.findAll(Content, {
     relations: {
       asset: true,

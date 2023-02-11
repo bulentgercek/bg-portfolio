@@ -6,12 +6,12 @@ import { Asset, AssetType } from "../../entities/Asset";
 const router = Router();
 
 // Get all assets
-router.get("/api/assets/", async (req, res) => {
+router.get("/api/assets", async (req, res) => {
   const dbResult = await ac.findAll(Asset);
   res.json(dbResult);
 });
 
-// Get all assets
+// Get spesific asset with id
 router.get("/api/assets/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: z.object({ id: z.preprocess(Number, z.number()) }),
@@ -29,7 +29,7 @@ router.get("/api/assets/:id", async (req, res) => {
 });
 
 // Post an asset
-router.post("/api/assets/", async (req, res) => {
+router.post("/api/assets", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: z.object({
       name: z.string(),
@@ -58,8 +58,6 @@ router.delete("/api/assets/:id", async (req, res) => {
   res.json(dbResult);
 });
 
-export { router as assetRouter };
-
 // Update the asset
 router.put("/api/assets/:id", async (req, res) => {
   const ctxObj = ac.initContext({
@@ -76,3 +74,5 @@ router.put("/api/assets/:id", async (req, res) => {
   const dbResult = await ac.update(Asset, validateResults);
   res.json(dbResult);
 });
+
+export { router as assetRouter };
