@@ -1,9 +1,9 @@
-import { ds, dsm } from "./connections";
-import { Asset, AssetType } from "./entities/Asset";
-import { Content } from "./entities/Content";
-import { Portfolio } from "./entities/Portfolio";
-import { PortfolioCategory } from "./entities/PortfolioCategory";
-import { PortfolioItem } from "./entities/PortfolioItem";
+import { ds, dsm } from "../connections";
+import { Asset, AssetType } from "../entities/Asset";
+import { Content } from "../entities/Content";
+import { Portfolio } from "../entities/Portfolio";
+import { PortfolioCategory } from "../entities/PortfolioCategory";
+import { PortfolioItem } from "../entities/PortfolioItem";
 
 const dummyAssetsData = {
   Assets: [
