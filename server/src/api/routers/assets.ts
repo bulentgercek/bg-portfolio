@@ -7,7 +7,8 @@ const router = Router();
 
 // Get all assets
 router.get("/", async (req, res) => {
-  const dbResult = await ac.findAll(Asset);
+  const validateResults = await ac.inputValidate();
+  const dbResult = await ac.findAll(Asset, validateResults);
   res.json(dbResult);
 });
 
@@ -19,11 +20,7 @@ router.get("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResults = await ac.findOne(Asset, validateResults, {
-    where: {
-      id: validateResults.result.params?.id,
-    },
-  });
+  const dbResults = await ac.findOne(Asset, validateResults);
 
   res.json(dbResults);
 });
@@ -46,22 +43,6 @@ router.post("/", async (req, res) => {
   res.json(dbResult);
 });
 
-// Remove and asset
-router.delete("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        id: z.preprocess(Number, z.number()),
-      }),
-    },
-    reqData: { params: req.params },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.remove(Asset, validateResults);
-  res.json(dbResult);
-});
-
 // Update the asset
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
@@ -78,6 +59,22 @@ router.put("/:id", async (req, res) => {
 
   const validateResults = await ac.inputValidate(ctxObj);
   const dbResult = await ac.update(Asset, validateResults);
+  res.json(dbResult);
+});
+
+// Remove and asset
+router.delete("/:id", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: {
+      params: z.object({
+        id: z.preprocess(Number, z.number()),
+      }),
+    },
+    reqData: { params: req.params },
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const dbResult = await ac.remove(Asset, validateResults);
   res.json(dbResult);
 });
 

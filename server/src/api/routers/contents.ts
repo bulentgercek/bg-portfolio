@@ -7,7 +7,8 @@ const router = Router();
 
 // Get all contents - with only query
 router.get("/", async (req, res) => {
-  const dbResults = await ac.findAll(Content, {
+  const validateResults = await ac.inputValidate();
+  const dbResults = await ac.findAll(Content, validateResults, {
     select: {
       portfolioItem: {
         id: true,
@@ -31,15 +32,35 @@ router.get("/:id", async (req, res) => {
 
   const validateResults = await ac.inputValidate(ctxObj);
   const dbResults = await ac.findOne(Content, validateResults, {
-    where: {
-      id: validateResults.result.params?.id,
-    },
     relations: {
       asset: true,
     },
   });
 
   res.json(dbResults);
+});
+
+router.put("/:id", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: {
+      params: z.object({
+        id: z.preprocess(Number, z.number()),
+      }),
+      body: z.object({
+        name: z.string().optional(),
+        columns: z.number().optional(),
+      }),
+    },
+    reqData: {
+      params: req.params,
+      body: req.body,
+    },
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const dbResult = await ac.update(Content, validateResults);
+
+  res.json(dbResult);
 });
 
 // Delete spesific Content with id

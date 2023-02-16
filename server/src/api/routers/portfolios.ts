@@ -7,7 +7,8 @@ const router = Router();
 
 // Get all Portfolios
 router.get("/", async (req, res) => {
-  const dbResults = await ac.findAll(Portfolio, {
+  const validateResults = await ac.inputValidate();
+  const dbResults = await ac.findAll(Portfolio, validateResults, {
     relations: {
       portfolioCategory: true,
       portfolioItem: {

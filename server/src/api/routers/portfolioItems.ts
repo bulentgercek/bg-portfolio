@@ -11,7 +11,9 @@ const router = Router();
 
 // Get all portfolio items
 router.get("/", async (req, res) => {
-  const dbResults = await ac.findAll(PortfolioItem, {
+  // We dont have any validation, so initializing true
+  const validateResults = await ac.inputValidate();
+  const dbResults = await ac.findAll(PortfolioItem, validateResults, {
     select: {
       portfolioCategory: {
         id: true,
@@ -53,9 +55,6 @@ router.get("/:id", async (req, res) => {
         name: true,
       },
     },
-    where: {
-      id: validateResults.result.params?.id,
-    },
     relations: { portfolioCategory: true, content: { asset: true } },
   });
 
@@ -70,7 +69,7 @@ router.get("/:id/contents", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.findAll(Content, {
+  const dbResult = await ac.findAll(Content, validateResults, {
     where: {
       portfolioItem: {
         id: validateResults.result.params?.id,
@@ -197,7 +196,7 @@ router.post("/:id/contents", async (req, res) => {
     ...portfolioItem.content,
     dbResult_content as Content,
   ];
-  const dbResult_portfolioItem = await ac.update(
+  const dbResult_portfolioItem = await ac.updateRelation(
     PortfolioItem,
     validateResults,
     portfolioItem,

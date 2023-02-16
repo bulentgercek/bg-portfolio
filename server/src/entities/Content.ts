@@ -17,7 +17,7 @@ export class Content {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ default: 1 })
   columns: number;
 
   @ManyToOne(() => PortfolioItem, (portfolioItem) => portfolioItem.content)

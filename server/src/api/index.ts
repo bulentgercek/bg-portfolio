@@ -1,5 +1,5 @@
 import express from "express";
-import { dummyRouter } from "./routers/dummy";
+// import { dummyRouter } from "./routers/dummy";
 import { assetRouter } from "./routers/assets";
 import { contentRouter } from "./routers/contents";
 import { portfolioCategoryRouter } from "./routers/portfolioCategories";
@@ -19,7 +19,7 @@ const router = express.Router();
  * and will iterated in here to use them as middelware
  */
 export const subRouters = {
-  "/dummy": dummyRouter,
+  // "/dummy": dummyRouter,
   "/assets": assetRouter,
   "/contents": contentRouter,
   "/portfolio-items": portfolioItemRouter,
