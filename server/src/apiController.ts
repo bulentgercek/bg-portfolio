@@ -7,7 +7,6 @@ import {
   RemoveOptions,
   DeepPartial,
 } from "typeorm";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { z } from "zod";
 import { dsm } from "./connections";
 
@@ -23,7 +22,7 @@ export namespace ApiController {
   /**
    * Output object for inputValidate function
    */
-  type ValidateResults<
+  export type ValidateResults<
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
   > = {
@@ -46,13 +45,13 @@ export namespace ApiController {
   /**
    * Async Validation function for Zod Input
    * @param ctxObj Context Object
-   * @returns Promise
+   * @returns Promise<ValidateResults<TParams, TBody>>
    */
   export async function inputValidate<
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
   >(ctxObj?: CtxObj<TParams, TBody>) {
-    // Create succes and result properties
+    // Create success and result properties
     const validatedFinal: ValidateResults<TParams, TBody> = {
       success: {},
       result: {},
@@ -108,8 +107,9 @@ export namespace ApiController {
   /**
    * Async Caller for TypeORM Manager find function
    * @param entityClass TypeORM Entity
-   * @param options TypeORM Options (relations etc.)
-   * @returns Promise
+   * @param validateResults Output of inputValidate() function
+   * @param options TypeORM Options (FindManyOptions)
+   * @returns Promise<ValidateResults<TParams, TBody> | Entity[]
    */
   export async function findAll<
     Entity extends ObjectLiteral,
@@ -126,7 +126,7 @@ export namespace ApiController {
     )
       return validateResults;
 
-    const dbResult = await dsm.find(entityClass, options).catch((e) => e);
+    const dbResult = await dsm.find(entityClass, options);
 
     return dbResult;
   }
@@ -134,9 +134,9 @@ export namespace ApiController {
   /**
    * Async Caller for TypeORM Manager findOne function
    * @param entityClass TypeORM Entity
-   * @param options TypeORM Options (relations etc.)
    * @param validateResults Output of inputValidate() function
-   * @returns Promise
+   * @param options TypeORM Options (FindOneOptions)
+   * @returns Promise<Entity | ValidateResults<TParams, TBody> | null>
    */
   export async function findOne<
     Entity extends ObjectLiteral,
@@ -153,15 +153,17 @@ export namespace ApiController {
     )
       return validateResults;
 
-    // Add id from validated results to the find options
-    const finalOptions = Object.assign({}, options, {
-      where: {
-        id: validateResults.result.params?.id,
-      },
-    });
+    // Add id from validated results to the find options if there is no where
+    if (!options?.where) {
+      options = Object.assign({}, options, {
+        where: {
+          id: validateResults.result.params?.id,
+        },
+      });
+    }
 
-    const dbResult = await dsm
-      .findOne(entityClass, finalOptions)
+    const dbResult: Promise<Entity | null> = await dsm
+      .findOne(entityClass, options)
       .catch((e) => e);
     return dbResult;
   }
@@ -171,7 +173,8 @@ export namespace ApiController {
    * And Use them together to Add to Database
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
-   * @returns Promise
+   * @param options? TypeORM Options (SaveOptions)
+   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
   export async function add<
     Entity,
@@ -188,12 +191,8 @@ export namespace ApiController {
     )
       return validateResults;
 
-    // const newItem = dsm.create(entityClass, validateResults.result.body);
-    const dbResult = dsm.save(
-      entityClass,
-      validateResults.result.body as Entity,
-      options,
-    );
+    const newItem = dsm.create(entityClass, validateResults.result.body);
+    const dbResult = dsm.save(entityClass, newItem, options);
     return dbResult;
   }
 
@@ -201,8 +200,8 @@ export namespace ApiController {
    * Async Caller for TypeORM Manager Remove function
    * @param entity TypeORM Entity
    * @param validateResults Output of inputValidate() function
-   * @param options? TypeORM Options (relations etc.)
-   * @returns Promise<Entity | Entity[] | ValidateResults<T>>
+   * @param options? TypeORM Options (RemoveOptions)
+   * @returns Promise<Entity | ValidateResults<TParams, TBody> | undefined>
    */
   export async function remove<
     Entity,
@@ -229,11 +228,39 @@ export namespace ApiController {
   }
 
   /**
+   * Async Caller for TypeORM Manager Remove function for Remove Entity Relations
+   * @param entityClass TypeORM Entity
+   * @param validateResults Output of inputValidate() function
+   * @param targetEntity: TypeORM Entity with Updated Relations,
+   * @param options? TypeORM Options (SaveOptions)
+   * @returns Promise<ValidateResults<TParams, TBody> | DeepPartial<Entity>>
+   */
+  export async function removeRelation<
+    Entity,
+    TParams extends z.ZodTypeAny,
+    TBody extends z.ZodTypeAny,
+  >(
+    entityClass: EntityTarget<Entity>,
+    validateResults: ValidateResults<TParams, TBody>,
+    targetEntity: DeepPartial<Entity>,
+    options?: SaveOptions,
+  ) {
+    if (
+      validateResults.success.params === false ||
+      validateResults.success.body === false
+    )
+      return validateResults;
+
+    const dbResult = dsm.remove(entityClass, targetEntity, options);
+    return dbResult;
+  }
+
+  /**
    * Async Caller for TypeORM Manager Save function for Update Values
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
-   * @param options? TypeORM Options (relations etc.)
-   * @returns Promise
+   * @param options? TypeORM Options (SaveOptions)
+   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
   export async function update<
     Entity,
@@ -262,12 +289,12 @@ export namespace ApiController {
   }
 
   /**
-   * Async Caller for TypeORM Manager Save function for Update Values
+   * Async Caller for TypeORM Manager Save function to Update Relations
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
    * @param targetEntity: TypeORM Entity with Updated Relations,
-   * @param options? TypeORM Options (relations etc.)
-   * @returns Promise
+   * @param options? TypeORM Options (SaveOptions)
+   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
   export async function updateRelation<
     Entity,

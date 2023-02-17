@@ -19,7 +19,7 @@ export const dsm = ds.manager;
  * @param envUrl Enviroment url
  * @returns object
  */
-function dbUrlParser(envUrl: string) {
+export function dbUrlParser(envUrl: string) {
   // Parse the database url to get the database credentials
   const [dbUsername, dbPassword, dbHost, dbPort, dbName] = envUrl
     .split(/mysql:|\/|:|@/)
@@ -39,7 +39,7 @@ function dbUrlParser(envUrl: string) {
  * @param envUrl Must be defined process.env.DATABASE_URL string
  * @returns DataSource object
  */
-function dsConnection(envUrl: string): DataSource {
+export function dsConnection(envUrl: string): DataSource {
   const dbUrl = dbUrlParser(envUrl);
 
   const dataSource = new DataSource({

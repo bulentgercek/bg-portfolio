@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   Entity,
   JoinTable,
@@ -18,7 +17,7 @@ export class PortfolioCategory {
   @Column()
   name: string;
 
-  @Column("simple-array")
+  @Column("simple-array", { nullable: true })
   itemsOrder: number[];
 
   @ManyToMany(

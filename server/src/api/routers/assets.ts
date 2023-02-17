@@ -8,8 +8,15 @@ const router = Router();
 // Get all assets
 router.get("/", async (req, res) => {
   const validateResults = await ac.inputValidate();
-  const dbResult = await ac.findAll(Asset, validateResults);
-  res.json(dbResult);
+  const dbAssets = await ac
+    .findAll(Asset, validateResults, {
+      relations: {
+        content: true,
+      },
+    })
+    .catch((err) => console.log(err));
+
+  res.json(dbAssets);
 });
 
 // Get spesific asset with id
@@ -20,12 +27,14 @@ router.get("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResults = await ac.findOne(Asset, validateResults);
+  const dbAsset = await ac
+    .findOne(Asset, validateResults)
+    .catch((err) => console.log(err));
 
-  res.json(dbResults);
+  res.json(dbAsset);
 });
 
-// Post an asset
+// Add an asset
 router.post("/", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -39,11 +48,14 @@ router.post("/", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.add(Asset, validateResults);
-  res.json(dbResult);
+  const addedAsset = await ac
+    .add(Asset, validateResults)
+    .catch((err) => console.log(err));
+
+  res.json(addedAsset);
 });
 
-// Update the asset
+// Update the asset with id
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -58,11 +70,14 @@ router.put("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.update(Asset, validateResults);
-  res.json(dbResult);
+  const updatedAsset = await ac
+    .update(Asset, validateResults)
+    .catch((err) => console.log(err));
+
+  res.json(updatedAsset);
 });
 
-// Remove and asset
+// Remove an asset with id
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -74,8 +89,11 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.remove(Asset, validateResults);
-  res.json(dbResult);
+  const removedAsset = await ac
+    .remove(Asset, validateResults)
+    .catch((err) => console.log(err));
+
+  res.json(removedAsset);
 });
 
 export { router as assetRouter };

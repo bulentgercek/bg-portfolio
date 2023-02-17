@@ -1,18 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  // If the error happens even we have status 200;
-  // so, that means we have an internal server problem
-  // Otherwise it shows the current error
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode);
+export function noRouteFound(req: Request, res: Response) {
+  res.status(404);
   res.json({
-    message: err.message,
-    stack: process.env.NODE_ENV !== "production" ? err.stack : "",
+    message: `No route not found at ${req.originalUrl}.`,
   });
 }

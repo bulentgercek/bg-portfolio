@@ -3,37 +3,35 @@ import { z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { PortfolioItem } from "../../entities/PortfolioItem";
 import { Content } from "../../entities/Content";
-import { Asset } from "../../entities/Asset";
-import { dsm } from "../../connections";
-import { Portfolio } from "../../entities/Portfolio";
 
 const router = Router();
 
 // Get all portfolio items
 router.get("/", async (req, res) => {
-  // We dont have any validation, so initializing true
   const validateResults = await ac.inputValidate();
-  const dbResults = await ac.findAll(PortfolioItem, validateResults, {
-    select: {
-      portfolioCategory: {
-        id: true,
-        name: true,
+  const dbPortfolioItems = await ac
+    .findAll(PortfolioItem, validateResults, {
+      select: {
+        portfolioCategory: {
+          id: true,
+          name: true,
+        },
+        portfolio: {
+          id: true,
+          name: true,
+        },
       },
-      portfolio: {
-        id: true,
-        name: true,
+      relations: {
+        portfolioCategory: true,
+        content: {
+          asset: true,
+        },
+        portfolio: true,
       },
-    },
-    relations: {
-      portfolioCategory: true,
-      content: {
-        asset: true,
-      },
-      portfolio: true,
-    },
-  });
+    })
+    .catch((err) => console.log(err));
 
-  res.json(dbResults);
+  res.json(dbPortfolioItems);
 });
 
 // Get spesific portfolio item
@@ -48,17 +46,19 @@ router.get("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResults = await ac.findOne(PortfolioItem, validateResults, {
-    select: {
-      portfolioCategory: {
-        id: true,
-        name: true,
+  const dbPortfolioItem = await ac
+    .findOne(PortfolioItem, validateResults, {
+      select: {
+        portfolioCategory: {
+          id: true,
+          name: true,
+        },
       },
-    },
-    relations: { portfolioCategory: true, content: { asset: true } },
-  });
+      relations: { portfolioCategory: true, content: { asset: true } },
+    })
+    .catch((err) => console.log(err));
 
-  res.json(dbResults);
+  res.json(dbPortfolioItem);
 });
 
 // Get the contents of the spesific Portfolio Item
@@ -69,18 +69,20 @@ router.get("/:id/contents", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.findAll(Content, validateResults, {
-    where: {
-      portfolioItem: {
-        id: validateResults.result.params?.id,
+  const dbContents = await ac
+    .findAll(Content, validateResults, {
+      where: {
+        portfolioItem: {
+          id: validateResults.result.params?.id,
+        },
       },
-    },
-    relations: {
-      asset: true,
-    },
-  });
+      relations: {
+        asset: true,
+      },
+    })
+    .catch((err) => console.log(err));
 
-  res.json(dbResult);
+  res.json(dbContents);
 });
 
 // Get the spesific content of the spesific Portfolio Item
@@ -96,69 +98,23 @@ router.get("/:id/contents/:cid", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.findOne(Content, validateResults, {
-    where: {
-      id: validateResults.result.params?.cid,
-      portfolioItem: {
-        id: validateResults.result.params?.id,
+  const dbContent = await ac
+    .findOne(Content, validateResults, {
+      where: {
+        id: validateResults.result.params?.cid,
+        portfolioItem: {
+          id: validateResults.result.params?.id,
+        },
       },
-    },
-    relations: {
-      asset: true,
-    },
-  });
+      relations: {
+        asset: true,
+      },
+    })
+    .catch((err) => console.log(err));
 
-  res.json(dbResult);
+  res.json(dbContent);
 });
 
-// Add a Portfolio Item
-router.post("/:portfolioId", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        portfolioId: z.preprocess(Number, z.number()),
-      }),
-      body: z.object({
-        name: z.string(),
-        description: z.string(),
-        link: z.string().url(),
-      }),
-    },
-    reqData: { params: req.params, body: req.body },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-  // Call the Portfolio with portfolioId from req.params
-  const portfolio = await ac.findOne(Portfolio, validateResults, {
-    where: {
-      id: validateResults.result.params?.portfolioId,
-    },
-    relations: {
-      portfolioItem: true,
-    },
-  });
-  // Check the Portfolio if not return validateResults
-  if (!(portfolio instanceof Portfolio)) res.json(portfolio);
-
-  // Add Portfolio Item
-  const dbResult_portfolioItem = await ac.add(PortfolioItem, validateResults);
-
-  // Update Portfolio by adding the new Portfolio Item
-  portfolio.portfolioItem = [
-    ...portfolio.portfolioItem,
-    dbResult_portfolioItem as PortfolioItem,
-  ];
-
-  const dbResult_portfolio = await ac.update(
-    Portfolio,
-    validateResults,
-    portfolio,
-  );
-
-  res.json(dbResult_portfolio);
-});
-
-// NTM : Contents can only added from the Portfolio Item *ManyToOne
 // Add Content to a spesific Portfolio Item
 router.post("/:id/contents", async (req, res) => {
   const ctxObj = ac.initContext({
@@ -175,34 +131,31 @@ router.post("/:id/contents", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const portfolioItem = await ac.findOne(PortfolioItem, validateResults, {
-    where: {
-      id: validateResults.result.params?.id,
-    },
-    relations: {
-      content: true,
-    },
-  });
+  const dbPortfolioItem = await ac
+    .findOne(PortfolioItem, validateResults, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      relations: {
+        content: true,
+      },
+    })
+    .catch((err) => console.log(err));
 
-  if (portfolioItem === null)
+  if (!(dbPortfolioItem instanceof PortfolioItem))
     return res.json(
       `No portfolio item found with id ${validateResults.result.params?.id}.`,
     );
 
-  const dbResult_content = await ac.add(Content, validateResults);
-  if (!(dbResult_content instanceof Content)) res.json(dbResult_content);
+  const addedContent = await ac.add(Content, validateResults);
+  if (!(addedContent instanceof Content)) return res.json(addedContent);
 
-  portfolioItem.content = [
-    ...portfolioItem.content,
-    dbResult_content as Content,
-  ];
-  const dbResult_portfolioItem = await ac.updateRelation(
-    PortfolioItem,
-    validateResults,
-    portfolioItem,
-  );
+  dbPortfolioItem.content = [...dbPortfolioItem.content, addedContent];
+  const updatedPortfolioItem = await ac
+    .updateRelation(PortfolioItem, validateResults, dbPortfolioItem)
+    .catch((err) => console.log(err));
 
-  res.json(dbResult_portfolioItem);
+  res.json(updatedPortfolioItem);
 });
 
 // Update a Portfolio Item
@@ -225,14 +178,13 @@ router.put("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbResult = await ac.update(PortfolioItem, validateResults);
-  res.json(dbResult);
+  const updatedPortfolioItem = await ac
+    .update(PortfolioItem, validateResults)
+    .catch((err) => console.log(err));
+
+  res.json(updatedPortfolioItem);
 });
 
-// NTM : Contents can only updated from the Portfolio Item *ManyToOne
-router.put("/:id/contents/:cid");
-
-// NTM : This also needs to delete the Contents that have
 // Delete Portfolio Item
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
@@ -247,15 +199,27 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const portfolioItem = await ac.findOne(PortfolioItem, validateResults, {
-    where: {
-      id: validateResults.result.params?.id,
-    },
-  });
+  const dbPortfolioItem = await ac
+    .findOne(PortfolioItem, validateResults, {
+      relations: {
+        content: true,
+      },
+    })
+    .catch((err) => console.log(err));
 
-  // const removeContents = await ac.remove(Content, val)
-  // const dbResult = await ac.remove(PortfolioItem, validateResults);
-  res.json(portfolioItem);
+  if (!(dbPortfolioItem instanceof PortfolioItem))
+    return res.json(dbPortfolioItem);
+
+  for (const content of dbPortfolioItem.content) {
+    const validateResults = await ac.inputValidate();
+    await ac.removeRelation(Content, validateResults, content);
+  }
+
+  const removedPortfolioItem = await ac
+    .remove(PortfolioItem, validateResults)
+    .catch((err) => console.log(err));
+
+  res.json(removedPortfolioItem);
 });
 
 export { router as portfolioItemRouter };

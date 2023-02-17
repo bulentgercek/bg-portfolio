@@ -1,4 +1,10 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { PortfolioCategory } from "./PortfolioCategory";
 import { PortfolioItem } from "./PortfolioItem";
 
@@ -10,15 +16,18 @@ export class Portfolio {
   @Column()
   name: string;
 
-  @Column("simple-array")
+  @Column("simple-array", { nullable: true })
   categoriesOrder: number[];
 
-  @Column("simple-array")
+  @Column("simple-array", { nullable: true })
   itemsOrder: number[];
 
   @OneToMany(() => PortfolioItem, (portfolioItem) => portfolioItem.portfolio)
   portfolioItem: PortfolioItem[];
 
-  @OneToMany(() => PortfolioCategory, (portfolioCategory) => portfolioCategory.portfolio)
+  @OneToMany(
+    () => PortfolioCategory,
+    (portfolioCategory) => portfolioCategory.portfolio,
+  )
   portfolioCategory: PortfolioCategory[];
 }
