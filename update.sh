@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change directory to the local repository folder
-cd /path/to/repository
+cd /home/bulentgercek/bg-portfolio
 
 # Update the local repository with changes from the remote repository
 git pull
