@@ -1189,8 +1189,8 @@
     },
     {
       "type": "text",
-      "version": 724,
-      "versionNonce": 437076221,
+      "version": 734,
+      "versionNonce": 308234589,
       "isDeleted": false,
       "id": "zsxNwvphaTbOanmkuWW57",
       "fillStyle": "hachure",
@@ -1199,12 +1199,12 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -3105.854197673621,
+      "x": -3385.354197673621,
       "y": 777.3891126626904,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 420,
-      "height": 125,
+      "width": 979,
+      "height": 150,
       "seed": 1569961587,
       "groupIds": [],
       "roundness": null,
@@ -1218,22 +1218,22 @@
           "type": "arrow"
         }
       ],
-      "updated": 1676761046953,
+      "updated": 1676770748446,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 1,
-      "text": "Setting Firewall\napp list: sudo ufw app list\nstatus list: sudo ufw status\nallow a port: sudo ufw allow 3000/tcp\nallow an app: sudo ufw allow 'Nginx HTTP'",
-      "baseline": 118,
+      "text": "Setting Firewall wit UFW\nhttps://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04\napp list: sudo ufw app list\nstatus list: sudo ufw status\nallow a port: sudo ufw allow 3000/tcp\nallow an app: sudo ufw allow 'Nginx HTTP'",
+      "baseline": 143,
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Setting Firewall\napp list: sudo ufw app list\nstatus list: sudo ufw status\nallow a port: sudo ufw allow 3000/tcp\nallow an app: sudo ufw allow 'Nginx HTTP'"
+      "originalText": "Setting Firewall wit UFW\nhttps://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-20-04\napp list: sudo ufw app list\nstatus list: sudo ufw status\nallow a port: sudo ufw allow 3000/tcp\nallow an app: sudo ufw allow 'Nginx HTTP'"
     },
     {
       "type": "text",
-      "version": 559,
-      "versionNonce": 1816192733,
+      "version": 701,
+      "versionNonce": 2018748413,
       "isDeleted": false,
       "id": "VhhHPFo0C_jkJt4oltkPM",
       "fillStyle": "hachure",
@@ -1242,12 +1242,12 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -3278.2281703144745,
-      "y": 294.35353161282274,
+      "x": -3268.7497788363794,
+      "y": 258.16330960555075,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 775,
-      "height": 225,
+      "height": 275,
       "seed": 52577811,
       "groupIds": [],
       "roundness": null,
@@ -1261,17 +1261,17 @@
           "type": "arrow"
         }
       ],
-      "updated": 1676770488818,
+      "updated": 1676774899947,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 1,
-      "text": "!First Remove Archaic Node.js and NPM\napt-get purge --auto-remove nodejs npm\nInstall Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n",
-      "baseline": 218,
+      "text": "!First Remove Archaic Node.js and NPM\napt-get purge --auto-remove nodejs npm\nInstall Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n!IMPORTANT USE THIS COMMANDS TO FASTER NPM INSTALLS\nnpm config set registry https://registry.npmjs.org/\nrm -rf ~/.npm/",
+      "baseline": 268,
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "!First Remove Archaic Node.js and NPM\napt-get purge --auto-remove nodejs npm\nInstall Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n"
+      "originalText": "!First Remove Archaic Node.js and NPM\napt-get purge --auto-remove nodejs npm\nInstall Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n!IMPORTANT USE THIS COMMANDS TO FASTER NPM INSTALLS\nnpm config set registry https://registry.npmjs.org/\nrm -rf ~/.npm/"
     },
     {
       "type": "text",
@@ -1815,8 +1815,8 @@
     },
     {
       "type": "arrow",
-      "version": 1446,
-      "versionNonce": 614073149,
+      "version": 1730,
+      "versionNonce": 1593286749,
       "isDeleted": false,
       "id": "mBbz55ej6ZN11wp_nh8Cy",
       "fillStyle": "hachure",
@@ -1825,19 +1825,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -2875.180099655262,
-      "y": 149.5282591258965,
+      "x": -2874.0825036802203,
+      "y": 149.52825912589654,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 0.37301419184768747,
-      "height": 132.66666666666652,
+      "width": 3.0620389691998753,
+      "height": 96.47644465939445,
       "seed": 1017060093,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1676770488818,
+      "updated": 1676774899948,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -1859,15 +1859,15 @@
           0
         ],
         [
-          -0.37301419184768747,
-          132.66666666666652
+          3.0620389691998753,
+          96.47644465939445
         ]
       ]
     },
     {
       "type": "arrow",
-      "version": 1252,
-      "versionNonce": 1079022493,
+      "version": 1536,
+      "versionNonce": 1396542653,
       "isDeleted": false,
       "id": "Snlyv0x6lW4SvJ4iOwTOu",
       "fillStyle": "hachure",
@@ -1876,19 +1876,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -2886.6255046455362,
-      "y": 530.1949257925635,
+      "x": -2881.2519822483273,
+      "y": 544.0047037852914,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 6.17044316940337,
-      "height": 60.000000000000455,
+      "width": 2.514548273629771,
+      "height": 46.190222007272496,
       "seed": 722922589,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1676770488819,
+      "updated": 1676774899948,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -1910,15 +1910,15 @@
           0
         ],
         [
-          6.17044316940337,
-          60.000000000000455
+          2.514548273629771,
+          46.190222007272496
         ]
       ]
     },
     {
       "type": "arrow",
-      "version": 1013,
-      "versionNonce": 1227336477,
+      "version": 1033,
+      "versionNonce": 1841829309,
       "isDeleted": false,
       "id": "A_zVXI776bkD79SYzfNiT",
       "fillStyle": "hachure",
@@ -1927,11 +1927,11 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -2879.4132851779714,
+      "x": -2879.406361381113,
       "y": 664.1949257925635,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 1.6613980498918863,
+      "width": 15.534993771812879,
       "height": 98.66666666666652,
       "seed": 2071722045,
       "groupIds": [],
@@ -1939,7 +1939,7 @@
         "type": 2
       },
       "boundElements": [],
-      "updated": 1676747242291,
+      "updated": 1676770748447,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -1961,15 +1961,15 @@
           0
         ],
         [
-          1.6613980498918863,
+          15.534993771812879,
           98.66666666666652
         ]
       ]
     },
     {
       "type": "arrow",
-      "version": 954,
-      "versionNonce": 1246097117,
+      "version": 974,
+      "versionNonce": 253253149,
       "isDeleted": false,
       "id": "_RclbRnJVSa-N_6MqtVVt",
       "fillStyle": "hachure",
@@ -1978,19 +1978,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -2877.1713982932147,
-      "y": 914.8615924592306,
+      "x": -2868.3141946278374,
+      "y": 939.8615924592307,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 0.802667918473162,
-      "height": 71.99999999999989,
+      "width": 2.047041423371411,
+      "height": 46.99999999999977,
       "seed": 573556563,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1676748117728,
+      "updated": 1676770748447,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -2012,8 +2012,8 @@
           0
         ],
         [
-          0.802667918473162,
-          71.99999999999989
+          -2.047041423371411,
+          46.99999999999977
         ]
       ]
     },
