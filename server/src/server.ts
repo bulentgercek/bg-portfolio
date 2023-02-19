@@ -16,7 +16,7 @@ server.use(express.json());
 
 server.get("/", (req, res) => {
   res.json({
-    message: "Welcome to the BG Portfolio Server",
+    message: "Welcome to the BG Portfolio Server | Test",
   });
 });
 
