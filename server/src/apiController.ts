@@ -105,6 +105,19 @@ export namespace ApiController {
   }
 
   /**
+   * Caller for TypeORM Manager create functions
+   * @param entityClass TypeORM Entity
+   * @param plainObject Plain Object to be an Entity
+   * @returns Entity
+   */
+  export function create<Entity>(
+    entityClass: EntityTarget<Entity>,
+    plainObject?: DeepPartial<Entity>,
+  ): Entity {
+    return dsm.create(entityClass, plainObject);
+  }
+
+  /**
    * Async Caller for TypeORM Manager find function
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
@@ -228,34 +241,6 @@ export namespace ApiController {
   }
 
   /**
-   * Async Caller for TypeORM Manager Remove function for Remove Entity Relations
-   * @param entityClass TypeORM Entity
-   * @param validateResults Output of inputValidate() function
-   * @param targetEntity: TypeORM Entity with Updated Relations,
-   * @param options? TypeORM Options (SaveOptions)
-   * @returns Promise<ValidateResults<TParams, TBody> | DeepPartial<Entity>>
-   */
-  export async function removeRelation<
-    Entity,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-  >(
-    entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
-    targetEntity: DeepPartial<Entity>,
-    options?: SaveOptions,
-  ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
-
-    const dbResult = dsm.remove(entityClass, targetEntity, options);
-    return dbResult;
-  }
-
-  /**
    * Async Caller for TypeORM Manager Save function for Update Values
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
@@ -296,7 +281,7 @@ export namespace ApiController {
    * @param options? TypeORM Options (SaveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
-  export async function updateRelation<
+  export async function updateWithTarget<
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,

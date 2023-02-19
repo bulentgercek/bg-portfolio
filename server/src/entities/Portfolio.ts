@@ -22,12 +22,12 @@ export class Portfolio {
   @Column("simple-array", { nullable: true })
   itemsOrder: number[];
 
-  @OneToMany(() => PortfolioItem, (portfolioItem) => portfolioItem.portfolio)
-  portfolioItem: PortfolioItem[];
-
   @OneToMany(
     () => PortfolioCategory,
     (portfolioCategory) => portfolioCategory.portfolio,
   )
   portfolioCategory: PortfolioCategory[];
+
+  @OneToMany(() => PortfolioItem, (portfolioItem) => portfolioItem.portfolio)
+  portfolioItem: PortfolioItem[];
 }

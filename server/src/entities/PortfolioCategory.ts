@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -24,9 +23,11 @@ export class PortfolioCategory {
     () => PortfolioItem,
     (portfolioItem) => portfolioItem.portfolioCategory,
   )
-  @JoinTable()
   portfolioItem: PortfolioItem[];
 
-  @ManyToOne(() => Portfolio, (portfolio) => portfolio.portfolioCategory)
+  @ManyToOne(() => Portfolio, (portfolio) => portfolio.portfolioCategory, {
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   portfolio: Portfolio;
 }

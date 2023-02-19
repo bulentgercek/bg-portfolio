@@ -147,12 +147,13 @@ router.post("/:id/contents", async (req, res) => {
       `No portfolio item found with id ${validateResults.result.params?.id}.`,
     );
 
-  const addedContent = await ac.add(Content, validateResults);
-  if (!(addedContent instanceof Content)) return res.json(addedContent);
+  const createdContent = await ac.add(Content, validateResults);
 
-  dbPortfolioItem.content = [...dbPortfolioItem.content, addedContent];
+  if (!(createdContent instanceof Content)) return res.json(createdContent);
+
+  dbPortfolioItem.content = [...dbPortfolioItem.content, createdContent];
   const updatedPortfolioItem = await ac
-    .updateRelation(PortfolioItem, validateResults, dbPortfolioItem)
+    .updateWithTarget(PortfolioItem, validateResults, dbPortfolioItem)
     .catch((err) => console.log(err));
 
   res.json(updatedPortfolioItem);
@@ -199,22 +200,6 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbPortfolioItem = await ac
-    .findOne(PortfolioItem, validateResults, {
-      relations: {
-        content: true,
-      },
-    })
-    .catch((err) => console.log(err));
-
-  if (!(dbPortfolioItem instanceof PortfolioItem))
-    return res.json(dbPortfolioItem);
-
-  for (const content of dbPortfolioItem.content) {
-    const validateResults = await ac.inputValidate();
-    await ac.removeRelation(Content, validateResults, content);
-  }
-
   const removedPortfolioItem = await ac
     .remove(PortfolioItem, validateResults)
     .catch((err) => console.log(err));

@@ -14,8 +14,7 @@ router.post("/", async (req, res) => {
   await dummy.addDummyPortfolioItems();
   await dummy.addDummyAssets();
   await dummy.addDummyContent();
-  await dummy.updateDummyPortfolioItems();
-  res.json("It's DONE!");
+  res.json("Dummy data added. Check the database. :D");
 });
 
 export { router as dummyRouter };

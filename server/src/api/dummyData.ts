@@ -28,13 +28,7 @@ const dummyPortfolioData = {
 
 // Delete Dummy Datas
 export async function cleanAllEntities() {
-  const entities = [
-    Content,
-    Asset,
-    PortfolioCategory,
-    PortfolioItem,
-    Portfolio,
-  ];
+  const entities = [Portfolio, Asset];
   for (const entity of entities) {
     await ds.createQueryBuilder().delete().from(entity).execute();
   }
@@ -117,33 +111,36 @@ export async function addDummyAssets() {
 }
 
 export async function addDummyContent() {
-  const data = [
-    {
+  // Add First Content
+  const portfolioItemGaranti = await dsm.findOne(PortfolioItem, {
+    where: {
+      name: "Garanti Bank | Basket",
+    },
+  });
+
+  if (portfolioItemGaranti instanceof PortfolioItem) {
+    const content = dsm.create(Content, {
       name: "Garanti | Image Gallery",
       columns: 1,
       asset: await dsm.find(Asset),
+      portfolioItem: portfolioItemGaranti,
+    });
+    await dsm.save(Content, content);
+  }
+  // Add Second Content
+  const portfolioItemAnadolu = await dsm.findOne(PortfolioItem, {
+    where: {
+      name: "Anadolu Insurance | Fire Campaign Posters with 3D Images",
     },
-    {
-      name: "Anadolu Insurance | Image Gallery",
-      columns: 2,
+  });
+
+  if (portfolioItemAnadolu instanceof PortfolioItem) {
+    const content = dsm.create(Content, {
+      name: "Anadolu | Image Gallery",
+      columns: 1,
       asset: await dsm.find(Asset),
-    },
-  ];
-  const saves = data.map(async (item) => {
-    const newItem = dsm.create(Content, item);
-    await dsm.save(Content, newItem).catch((e) => console.log(e));
-  });
-
-  await Promise.all(saves);
-}
-
-export async function updateDummyPortfolioItems() {
-  const data = await dsm.find(Content);
-  const portfolioItems = await dsm.find(PortfolioItem);
-  const saves = portfolioItems.map(async (item, index) => {
-    // note: if item.content is legit (not undefined or null) then we can use spread operator : [...item.content, data[index]]
-    item.content = [data[index]];
-    await dsm.save(item);
-  });
-  await Promise.all(saves);
+      portfolioItem: portfolioItemAnadolu,
+    });
+    await dsm.save(Content, content);
+  }
 }

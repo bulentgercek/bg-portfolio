@@ -49,7 +49,28 @@ router.get("/:id", async (req, res) => {
   res.json(dbPortfolio);
 });
 
-// Add a portfolio category to the spesific portfolio with id
+// Add a Portfolio
+router.post("/", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: {
+      body: z.object({
+        name: z.string(),
+        categoriesOrder: z.string().nullable(),
+        itemsOrder: z.string().nullable(),
+      }),
+    },
+    reqData: { body: req.body },
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const addedPortfolio = await ac
+    .add(Portfolio, validateResults)
+    .catch((err) => console.log(err));
+
+  res.json(addedPortfolio);
+});
+
+// Add a Portfolio Category to the spesific Portfolio with id
 router.post("/:id/portfolio-categories", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -90,13 +111,13 @@ router.post("/:id/portfolio-categories", async (req, res) => {
   ];
 
   const updatedPortfolio = await ac
-    .updateRelation(Portfolio, validateResults, dbPortfolio)
+    .updateWithTarget(Portfolio, validateResults, dbPortfolio)
     .catch((err) => console.log(err));
 
   res.json(updatedPortfolio);
 });
 
-// Add a Portfolio Item to the spesific portfolio with id
+// Add a Portfolio Item to the spesific Portfolio with id
 router.post("/:id/portfolio-items", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -113,7 +134,6 @@ router.post("/:id/portfolio-items", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  // Call the Portfolio with portfolioId from req.params
   const dbPortfolio = await ac
     .findOne(Portfolio, validateResults, {
       relations: {
@@ -124,9 +144,10 @@ router.post("/:id/portfolio-items", async (req, res) => {
 
   if (!(dbPortfolio instanceof Portfolio)) return res.json(dbPortfolio);
 
-  const addedPortfolioItem = await ac
-    .add(PortfolioItem, validateResults)
-    .catch((err) => console.log(err));
+  const addedPortfolioItem = ac.create(
+    PortfolioItem,
+    validateResults.result.body,
+  );
 
   if (!(addedPortfolioItem instanceof PortfolioItem))
     return res.json(addedPortfolioItem);
@@ -137,10 +158,27 @@ router.post("/:id/portfolio-items", async (req, res) => {
   ];
 
   const updatedPortfolio = await ac
-    .updateRelation(Portfolio, validateResults, dbPortfolio)
+    .updateWithTarget(Portfolio, validateResults, dbPortfolio)
     .catch((err) => console.log(err));
 
   res.json(updatedPortfolio);
+});
+
+// Delete Portfolio with id (and all its PCategories and PItems and their Contents)
+router.delete("/:id", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: {
+      params: z.object({
+        id: z.preprocess(Number, z.number()),
+      }),
+    },
+    reqData: { params: req.params },
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+  const deletedPortfolio = await ac.remove(Portfolio, validateResults);
+
+  res.json(deletedPortfolio);
 });
 
 export { router as portfolioRouter };

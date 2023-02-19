@@ -20,7 +20,10 @@ export class Content {
   @Column({ default: 1 })
   columns: number;
 
-  @ManyToOne(() => PortfolioItem, (portfolioItem) => portfolioItem.content)
+  @ManyToOne(() => PortfolioItem, (portfolioItem) => portfolioItem.content, {
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   portfolioItem: PortfolioItem;
 
   @ManyToMany(() => Asset, (asset) => asset.content)

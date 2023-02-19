@@ -109,7 +109,7 @@ router.put("/:id/assets/:aid", async (req, res) => {
   dbContent.asset = [...dbContent.asset, dbAsset];
 
   const updatedContent = await ac
-    .updateRelation(Content, validateResults, dbContent)
+    .updateWithTarget(Content, validateResults, dbContent)
     .catch((err) => console.log(err));
 
   res.json(updatedContent);
@@ -153,7 +153,7 @@ router.delete("/:id/assets/:aid", async (req, res) => {
   dbContent.asset = dbContent.asset.filter((asset) => asset.id !== dbAsset.id);
 
   const updatedContent = await ac
-    .updateRelation(Content, validateResults, dbContent)
+    .updateWithTarget(Content, validateResults, dbContent)
     .catch((err) => console.log(err));
 
   res.json(updatedContent);

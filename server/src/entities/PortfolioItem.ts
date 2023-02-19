@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -28,12 +29,19 @@ export class PortfolioItem {
   @UpdateDateColumn()
   updatedDate: Date;
 
-  @ManyToMany(() => PortfolioCategory, (portfolioCategory) => portfolioCategory.portfolioItem)
+  @ManyToMany(
+    () => PortfolioCategory,
+    (portfolioCategory) => portfolioCategory.portfolioItem,
+  )
+  @JoinTable()
   portfolioCategory: PortfolioCategory[];
 
   @OneToMany(() => Content, (content) => content.portfolioItem)
   content: Content[];
 
-  @ManyToOne(() => Portfolio, (portfolio) => portfolio.portfolioItem)
+  @ManyToOne(() => Portfolio, (portfolio) => portfolio.portfolioItem, {
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   portfolio: Portfolio;
 }
