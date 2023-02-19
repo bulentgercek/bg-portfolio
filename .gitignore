@@ -5,7 +5,7 @@ node_modules
 .env
 
 # builds
-#dist/
+dist/
 
 # temp
 tmp/
