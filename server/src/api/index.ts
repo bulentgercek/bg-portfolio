@@ -32,7 +32,7 @@ for (const subRouter of Object.entries(subRouters)) {
 // Api Server Root
 router.get("/", (req, res) => {
   res.json({
-    message: "Welcome to the BG Portfolio API Server! Output : ",
+    message: "Welcome to the BG Portfolio API Server!",
   });
 });
 
