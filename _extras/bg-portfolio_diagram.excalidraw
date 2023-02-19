@@ -1189,8 +1189,8 @@
     },
     {
       "type": "text",
-      "version": 723,
-      "versionNonce": 1100702557,
+      "version": 724,
+      "versionNonce": 437076221,
       "isDeleted": false,
       "id": "zsxNwvphaTbOanmkuWW57",
       "fillStyle": "hachure",
@@ -1216,13 +1216,9 @@
         {
           "id": "_RclbRnJVSa-N_6MqtVVt",
           "type": "arrow"
-        },
-        {
-          "id": "p2tLmnFntxBkrZqOGSGK8",
-          "type": "arrow"
         }
       ],
-      "updated": 1676747266974,
+      "updated": 1676761046953,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -1236,8 +1232,8 @@
     },
     {
       "type": "text",
-      "version": 519,
-      "versionNonce": 570550813,
+      "version": 559,
+      "versionNonce": 1816192733,
       "isDeleted": false,
       "id": "VhhHPFo0C_jkJt4oltkPM",
       "fillStyle": "hachure",
@@ -1251,7 +1247,7 @@
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 775,
-      "height": 175,
+      "height": 225,
       "seed": 52577811,
       "groupIds": [],
       "roundness": null,
@@ -1265,17 +1261,17 @@
           "type": "arrow"
         }
       ],
-      "updated": 1676736824260,
+      "updated": 1676770488818,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 1,
-      "text": "Install Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n",
-      "baseline": 168,
+      "text": "!First Remove Archaic Node.js and NPM\napt-get purge --auto-remove nodejs npm\nInstall Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n",
+      "baseline": 218,
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Install Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n"
+      "originalText": "!First Remove Archaic Node.js and NPM\napt-get purge --auto-remove nodejs npm\nInstall Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts\n"
     },
     {
       "type": "text",
@@ -1819,8 +1815,8 @@
     },
     {
       "type": "arrow",
-      "version": 1366,
-      "versionNonce": 2133950067,
+      "version": 1446,
+      "versionNonce": 614073149,
       "isDeleted": false,
       "id": "mBbz55ej6ZN11wp_nh8Cy",
       "fillStyle": "hachure",
@@ -1829,11 +1825,11 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -2875.187949622426,
+      "x": -2875.180099655262,
       "y": 149.5282591258965,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 0.4096772944294571,
+      "width": 0.37301419184768747,
       "height": 132.66666666666652,
       "seed": 1017060093,
       "groupIds": [],
@@ -1841,7 +1837,7 @@
         "type": 2
       },
       "boundElements": [],
-      "updated": 1676736824261,
+      "updated": 1676770488818,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -1863,15 +1859,15 @@
           0
         ],
         [
-          -0.4096772944294571,
+          -0.37301419184768747,
           132.66666666666652
         ]
       ]
     },
     {
       "type": "arrow",
-      "version": 1172,
-      "versionNonce": 1703024189,
+      "version": 1252,
+      "versionNonce": 1079022493,
       "isDeleted": false,
       "id": "Snlyv0x6lW4SvJ4iOwTOu",
       "fillStyle": "hachure",
@@ -1880,19 +1876,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -2890.1883054483096,
-      "y": 480.1949257925635,
+      "x": -2886.6255046455362,
+      "y": 530.1949257925635,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 10.118448071858438,
-      "height": 110.00000000000045,
+      "width": 6.17044316940337,
+      "height": 60.000000000000455,
       "seed": 722922589,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1676736824261,
+      "updated": 1676770488819,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -1914,8 +1910,8 @@
           0
         ],
         [
-          10.118448071858438,
-          110.00000000000045
+          6.17044316940337,
+          60.000000000000455
         ]
       ]
     },
@@ -2219,98 +2215,8 @@
     },
     {
       "type": "text",
-      "version": 118,
-      "versionNonce": 859816915,
-      "isDeleted": false,
-      "id": "-QUrE3RufLdSovaJKEOlt",
-      "fillStyle": "hachure",
-      "strokeWidth": 1,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "angle": 0,
-      "x": -3380.8064676590207,
-      "y": 852.1400916293982,
-      "strokeColor": "#000000",
-      "backgroundColor": "transparent",
-      "width": 172,
-      "height": 50,
-      "seed": 956516317,
-      "groupIds": [],
-      "roundness": null,
-      "boundElements": [
-        {
-          "id": "p2tLmnFntxBkrZqOGSGK8",
-          "type": "arrow"
-        }
-      ],
-      "updated": 1676747273466,
-      "link": null,
-      "locked": false,
-      "fontSize": 20,
-      "fontFamily": 1,
-      "text": "Advanced Firewall\nFirewalld",
-      "baseline": 43,
-      "textAlign": "center",
-      "verticalAlign": "top",
-      "containerId": null,
-      "originalText": "Advanced Firewall\nFirewalld"
-    },
-    {
-      "type": "arrow",
-      "version": 215,
-      "versionNonce": 1423823219,
-      "isDeleted": false,
-      "id": "p2tLmnFntxBkrZqOGSGK8",
-      "fillStyle": "hachure",
-      "strokeWidth": 1,
-      "strokeStyle": "solid",
-      "roughness": 1,
-      "opacity": 100,
-      "angle": 0,
-      "x": -3121.941944785794,
-      "y": 838.3774284385438,
-      "strokeColor": "#000000",
-      "backgroundColor": "transparent",
-      "width": 76.97836259414908,
-      "height": 25.27095985797405,
-      "seed": 339285853,
-      "groupIds": [],
-      "roundness": {
-        "type": 2
-      },
-      "boundElements": [],
-      "updated": 1676747273466,
-      "link": null,
-      "locked": false,
-      "startBinding": {
-        "elementId": "zsxNwvphaTbOanmkuWW57",
-        "focus": 0.5750642824363521,
-        "gap": 16.08774711217302
-      },
-      "endBinding": {
-        "elementId": "-QUrE3RufLdSovaJKEOlt",
-        "focus": 0.3378835098425466,
-        "gap": 9.886160279077558
-      },
-      "lastCommittedPoint": null,
-      "startArrowhead": null,
-      "endArrowhead": "arrow",
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          -76.97836259414908,
-          25.27095985797405
-        ]
-      ]
-    },
-    {
-      "type": "text",
-      "version": 106,
-      "versionNonce": 185949149,
+      "version": 301,
+      "versionNonce": 379022397,
       "isDeleted": false,
       "id": "qsKw27GVClqel407Vq7mX",
       "fillStyle": "hachure",
@@ -2319,8 +2225,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -3797.2594339162792,
-      "y": 1156.9677771413471,
+      "x": -3560.5726073394176,
+      "y": 2419.2975188846117,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 558,
@@ -2329,7 +2235,7 @@
       "groupIds": [],
       "roundness": null,
       "boundElements": [],
-      "updated": 1676747723106,
+      "updated": 1676761038913,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2343,8 +2249,8 @@
     },
     {
       "type": "text",
-      "version": 83,
-      "versionNonce": 1476132275,
+      "version": 84,
+      "versionNonce": 912017299,
       "isDeleted": false,
       "id": "sX5_T1_0IkyXOd2TdUyb7",
       "fillStyle": "hachure",
@@ -2366,9 +2272,13 @@
         {
           "id": "R-etVVcJugEucJzUP5Wuo",
           "type": "arrow"
+        },
+        {
+          "id": "FBpn9PSAtC5QFeG2ZFZMs",
+          "type": "arrow"
         }
       ],
-      "updated": 1676749819552,
+      "updated": 1676760833374,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2433,8 +2343,8 @@
     },
     {
       "type": "text",
-      "version": 31,
-      "versionNonce": 1406576371,
+      "version": 32,
+      "versionNonce": 288611635,
       "isDeleted": false,
       "id": "Wy_0IQGOe1_uc0QtD0KVr",
       "fillStyle": "hachure",
@@ -2452,8 +2362,13 @@
       "seed": 1173209949,
       "groupIds": [],
       "roundness": null,
-      "boundElements": [],
-      "updated": 1676751560358,
+      "boundElements": [
+        {
+          "id": "FBpn9PSAtC5QFeG2ZFZMs",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1676760833375,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -2464,6 +2379,57 @@
       "verticalAlign": "top",
       "containerId": null,
       "originalText": "Firewalld Install\nsudo apt install firewalld"
+    },
+    {
+      "type": "arrow",
+      "version": 44,
+      "versionNonce": 572256029,
+      "isDeleted": false,
+      "id": "FBpn9PSAtC5QFeG2ZFZMs",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": -2814.557876486977,
+      "y": 2296.194487373124,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "width": 5.806609350720464,
+      "height": 106.45450476320502,
+      "seed": 1772278493,
+      "groupIds": [],
+      "roundness": {
+        "type": 2
+      },
+      "boundElements": [],
+      "updated": 1676760833375,
+      "link": null,
+      "locked": false,
+      "startBinding": {
+        "elementId": "sX5_T1_0IkyXOd2TdUyb7",
+        "focus": -0.03903044306450594,
+        "gap": 12.461699314396355
+      },
+      "endBinding": {
+        "elementId": "Wy_0IQGOe1_uc0QtD0KVr",
+        "focus": 0.029634307171249867,
+        "gap": 12.258397518188758
+      },
+      "lastCommittedPoint": null,
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -5.806609350720464,
+          106.45450476320502
+        ]
+      ]
     }
   ],
   "appState": {
