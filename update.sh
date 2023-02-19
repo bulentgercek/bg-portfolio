@@ -7,9 +7,7 @@ cd /home/bulentgercek/bg-portfolio
 git pull
 
 # Build the server
-cd server
 npm run build
-cd ..
 
 # Restart the server using pm2
 pm2 restart index
