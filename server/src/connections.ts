@@ -33,7 +33,6 @@ export function dbUrlParser(envUrl: string) {
     .split(new RegExp(dsName + ":|\\/|:|@"))
     .filter((n) => n);
 
-  console.log(dbUsername, dbPassword, dbHost, dbPort, dbName);
   return {
     dbUsername,
     dbPassword,
@@ -50,7 +49,6 @@ export function dbUrlParser(envUrl: string) {
  */
 export function dsConnection(envUrl: string): DataSource {
   const dbUrl = dbUrlParser(envUrl);
-  console.log(dbUrl);
   const dataSource = new DataSource({
     type: dsType,
     host: dbUrl.dbHost,
