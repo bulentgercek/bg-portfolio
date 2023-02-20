@@ -2,9 +2,8 @@
 echo "Starting the client update process..."
 
 # Build Client
-cd client && \
-npm run build && \
-echo "Client is built."
+cd client
+npm run build && echo "Client is built."
 
 # Copy the client files to the Nginx directory
 sudo rm -rf client/* && \

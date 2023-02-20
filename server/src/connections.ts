@@ -22,7 +22,7 @@ export const dsm = ds.manager;
 export function dbUrlParser(envUrl: string) {
   // Parse the database url to get the database credentials
   const [dbUsername, dbPassword, dbHost, dbPort, dbName] = envUrl
-    .split(/mysql:|\/|:|@/)
+    .split(/postgres:|\/|:|@/)
     .filter((n) => n);
 
   return {
@@ -43,7 +43,7 @@ export function dsConnection(envUrl: string): DataSource {
   const dbUrl = dbUrlParser(envUrl);
 
   const dataSource = new DataSource({
-    type: "mysql",
+    type: "postgres",
     host: dbUrl.dbHost,
     port: dbUrl.dbPort,
     username: dbUrl.dbUsername,
