@@ -6,7 +6,7 @@ git pull && \
 echo "Local repository is updated."
 
 # Build Server
-cd ../server && \
+cd server && \
 npm run build && \
 echo "Server is built."
 
