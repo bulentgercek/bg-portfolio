@@ -13,7 +13,7 @@ echo "Server is built."
 # Check if the PM2 process is running
 if pm2 show index > /dev/null; then
   # If the process is already running, restart it
-  pm2 restart index && \
+  pm2 restart index --update-env && \
   echo "Server is restarted."
 else
   # If the process is not running, start it
