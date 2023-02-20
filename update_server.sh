@@ -5,16 +5,10 @@ echo "Starting the update process..."
 git pull && \
 echo "Local repository is updated."
 
-# Build Client
-cd client && \
-npm run build && \
-echo "Client is built."
-
 # Build Server
 cd ../server && \
 npm run build && \
 echo "Server is built."
-
 
 # Check if the PM2 process is running
 if pm2 show index > /dev/null; then
@@ -27,12 +21,3 @@ else
   pm2 save && \
   echo "Server is started."
 fi
-
-# Copy the client files to the Nginx directory
-sudo rm -rf client/* && \
-sudo cp -r /home/bulentgercek/bg-portfolio/client/dist client/ && \
-echo "Client files are copied to the Nginx directory."
-
-# Restart Nginx
-sudo systemctl restart nginx && \
-echo "Nginx is restarted."
