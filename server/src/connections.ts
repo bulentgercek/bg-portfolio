@@ -8,6 +8,14 @@ import { PortfolioCategory } from "./entities/PortfolioCategory";
 import { Portfolio } from "./entities/Portfolio";
 
 /**
+ * Data Source Type and Name for TypeORM
+ * Just change this area if you want to change the database type
+ * (e.g. mysql, postgres, sqlite, etc.)
+ */
+const dsType = "postgres";
+const dsName = "postgresql";
+
+/**
  * Data Source initilization for TypeORM
  */
 export const ds: DataSource = dsConnection(env.DATABASE_URL);
@@ -22,9 +30,10 @@ export const dsm = ds.manager;
 export function dbUrlParser(envUrl: string) {
   // Parse the database url to get the database credentials
   const [dbUsername, dbPassword, dbHost, dbPort, dbName] = envUrl
-    .split(/postgres:|\/|:|@/)
+    .split(new RegExp(dsName + ":|\\/|:|@"))
     .filter((n) => n);
 
+  console.log(dbUsername, dbPassword, dbHost, dbPort, dbName);
   return {
     dbUsername,
     dbPassword,
@@ -41,9 +50,9 @@ export function dbUrlParser(envUrl: string) {
  */
 export function dsConnection(envUrl: string): DataSource {
   const dbUrl = dbUrlParser(envUrl);
-
+  console.log(dbUrl);
   const dataSource = new DataSource({
-    type: "postgres",
+    type: dsType,
     host: dbUrl.dbHost,
     port: dbUrl.dbPort,
     username: dbUrl.dbUsername,
