@@ -3,6 +3,10 @@
 echo "Starting the installation process..."
 
 # Build Server and Client
-npm run install
+cd client && \
+npm install && \
+echo "Client npm installation is completed."
 
-echo "Npm installation is complete. Please run bash update.sh to build and update the project."
+cd ../server && \
+npm install && \
+echo "Server npm installation is completed."

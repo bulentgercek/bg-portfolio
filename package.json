@@ -12,10 +12,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
-    "build": "concurrently \"npm run build:server\" \"npm run build:client\"",
-    "install:server": "cd server && npm install",
-    "install:client": "cd client && npm install",
-    "install": "concurrently \"npm run install:server\" \"npm run install:client\""
+    "build": "concurrently \"npm run build:server\" \"npm run build:client\""
   },
   "repository": {
     "type": "git",
