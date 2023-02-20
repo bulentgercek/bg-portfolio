@@ -5,9 +5,16 @@ echo "Starting the update process..."
 git pull && \
 echo "Local repository is updated."
 
-# Build Server and Client
+# Build Client
+cd client && \
 npm run build && \
-echo "Server and Client are built."
+echo "Client is built."
+
+# Build Server
+cd ../server && \
+npm run build && \
+echo "Server is built."
+
 
 # Check if the PM2 process is running
 if pm2 show index > /dev/null; then
