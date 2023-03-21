@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
   const dbAssets = await ac
     .findAll(Asset, validateResults, {
       relations: {
-        content: true,
+        contents: true,
       },
     })
     .catch((err) => console.log(err));
@@ -39,9 +39,10 @@ router.post("/", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
       body: z.object({
-        name: z.string(),
-        type: z.nativeEnum(AssetType),
-        url: z.string().url(),
+        name: z.string().optional(),
+        type: z.nativeEnum(AssetType).optional(),
+        url: z.string().url().optional(),
+        text: z.string().optional(),
       }),
     },
     reqData: { body: req.body },
@@ -49,7 +50,7 @@ router.post("/", async (req, res) => {
 
   const validateResults = await ac.inputValidate(ctxObj);
   const addedAsset = await ac
-    .add(Asset, validateResults)
+    .addWithCreate(Asset, validateResults)
     .catch((err) => console.log(err));
 
   res.json(addedAsset);
@@ -64,6 +65,7 @@ router.put("/:id", async (req, res) => {
         name: z.string().optional(),
         type: z.nativeEnum(AssetType).optional(),
         url: z.string().url().optional(),
+        text: z.string().optional(),
       }),
     },
     reqData: { params: req.params, body: req.body },

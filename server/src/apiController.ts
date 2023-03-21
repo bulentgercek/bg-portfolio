@@ -101,6 +101,10 @@ export namespace ApiController {
         : validated.error;
     }
 
+    // check if the 'validatedFinal' object is undefined
+    if (validatedFinal === undefined)
+      console.log("We have some undefined problem in validatedFinal");
+
     return Promise.resolve(validatedFinal);
   }
 
@@ -182,6 +186,34 @@ export namespace ApiController {
   }
 
   /**
+   * Async Caller for TypeORM Manager Save functions
+   * And Use them together to Add to Database
+   * @param entityClass TypeORM Entity
+   * @param validateResults Output of inputValidate() function
+   * @param options? TypeORM Options (SaveOptions)
+   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
+   */
+  export async function addCreated<
+    Entity,
+    TParams extends z.ZodTypeAny,
+    TBody extends z.ZodTypeAny,
+  >(
+    entityClass: EntityTarget<Entity>,
+    validateResults: ValidateResults<TParams, TBody>,
+    entity: Entity,
+    options?: SaveOptions,
+  ) {
+    if (
+      validateResults.success.params === false ||
+      validateResults.success.body === false
+    )
+      return validateResults;
+
+    const dbResult = dsm.save(entityClass, entity, options);
+    return dbResult;
+  }
+
+  /**
    * Async Caller for TypeORM Manager Create and Save functions
    * And Use them together to Add to Database
    * @param entityClass TypeORM Entity
@@ -189,7 +221,7 @@ export namespace ApiController {
    * @param options? TypeORM Options (SaveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
-  export async function add<
+  export async function addWithCreate<
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,

@@ -1,3 +1,5 @@
+import { TypeOf } from "zod";
+
 /**
  * Moves items in given array (as reference)
  * @param arr Array that you want to change the order
@@ -8,4 +10,23 @@
 export function changeArrayOrder<T>(arr: T[], from: number, to: number): T[] {
   arr.splice(to, 0, arr.splice(from, 1)[0]);
   return arr;
+}
+
+/**
+ * Filter given spread of strings from the given object as keys
+ * @param object Object whose keys are to be filtered
+ * @param arrayKeys Spread of strings
+ * @returns Filtered Object
+ */
+export function filterObject(object: Object, ...arrayKeys: String[]) {
+  if (!object) return {};
+  const asArray = Object.entries(object);
+  const filtered = asArray.filter(([key, value]) => {
+    const resultArray: Boolean[] = [];
+    for (const arrayKey in arrayKeys) {
+      resultArray.push(key !== arrayKeys[arrayKey] ? true : false);
+    }
+    return resultArray.every((element) => element);
+  });
+  return Object.fromEntries(filtered);
 }

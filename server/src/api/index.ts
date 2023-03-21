@@ -1,10 +1,10 @@
 import express, { NextFunction } from "express";
-import { dummyRouter } from "./routers/dummy";
+// import { dummyRouter } from "./routers/dummy";
 import { assetRouter } from "./routers/assets";
 import { contentRouter } from "./routers/contents";
-import { portfolioCategoryRouter } from "./routers/portfolioCategories";
-import { portfolioItemRouter } from "./routers/portfolioItems";
-import { portfolioRouter } from "./routers/portfolios";
+import { categoryRouter } from "./routers/categories";
+import { itemRouter } from "./routers/items";
+// import { portfolioRouter } from "./routers/user";
 
 // Router for all sub router
 const router = express.Router();
@@ -16,12 +16,12 @@ const router = express.Router();
  * and will iterated to use them as middelware
  */
 export const subRouters = {
-  "/dummy": dummyRouter,
   "/assets": assetRouter,
+  // "/dummy": dummyRouter,
   "/contents": contentRouter,
-  "/portfolio-items": portfolioItemRouter,
-  "/portfolio-categories": portfolioCategoryRouter,
-  "/portfolios": portfolioRouter,
+  "/categories": categoryRouter,
+  "/items": itemRouter,
+  // "/portfolios": portfolioRouter,
 };
 
 // Initialize all routers and join them within a router

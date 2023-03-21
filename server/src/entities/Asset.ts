@@ -4,6 +4,7 @@ import { Content } from "./Content";
 export enum AssetType {
   Image = "image",
   Video = "video",
+  Text = "text",
 }
 
 @Entity({ name: "assets" })
@@ -11,15 +12,22 @@ export class Asset {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: "Untitled Asset" })
   name: string;
 
-  @Column({ type: "enum", enum: AssetType, default: AssetType.Image })
+  @Column({
+    type: "enum",
+    enum: AssetType,
+    default: AssetType.Image,
+  })
   type: AssetType;
 
-  @Column()
+  @Column({ type: "text", nullable: true })
+  text: string;
+
+  @Column({ nullable: true })
   url: string;
 
-  @ManyToMany(() => Content, (content) => content.asset)
-  content: Content[];
+  @ManyToMany(() => Content, (content) => content.assets, { nullable: true })
+  contents: Content[];
 }

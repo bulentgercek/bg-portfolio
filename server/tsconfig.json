@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
+    "target": "ES2022",
     "module": "commonjs",
-    "lib": ["es2018", "esnext.asynciterable"],
+    "lib": ["es2022", "esnext.asynciterable"],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "outDir": "./dist",
     "esModuleInterop": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "resolveJsonModule": true,
     "strict": true,
     "strictPropertyInitialization": false

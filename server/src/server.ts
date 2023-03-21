@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 
 import api from "./api";
-import { noRouteFound } from "./errorHandler";
+import { errorHandler, noRouteFound } from "./errorHandler";
 
 /**
  *  Server initialization and configuration
@@ -23,7 +23,8 @@ server.get("/", (req, res) => {
 // Api Router
 server.use("/api", api);
 
-// Next router for error handling
+// Next middlewares for error handling and no route found
+server.use(errorHandler);
 server.use(noRouteFound);
 
 export default server;

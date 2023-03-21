@@ -3,9 +3,10 @@ import { DataSource } from "typeorm";
 import { Content } from "./entities/Content";
 import { Asset } from "./entities/Asset";
 import env from "./validEnv";
-import { PortfolioItem } from "./entities/PortfolioItem";
-import { PortfolioCategory } from "./entities/PortfolioCategory";
-import { Portfolio } from "./entities/Portfolio";
+import { Item } from "./entities/Item";
+import { Category } from "./entities/Category";
+import { User } from "./entities/User";
+import { Option } from "./entities/Option";
 
 /**
  * Data Source Type and Name for TypeORM
@@ -56,7 +57,7 @@ export function dsConnection(envUrl: string): DataSource {
     username: dbUrl.dbUsername,
     password: dbUrl.dbPassword,
     database: dbUrl.dbName,
-    entities: [Asset, Content, PortfolioItem, PortfolioCategory, Portfolio],
+    entities: [Asset, Content, Item, Category, User, Option],
     synchronize: true,
     logging: false,
     migrations: [],

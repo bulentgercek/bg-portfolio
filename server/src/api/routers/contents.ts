@@ -12,13 +12,13 @@ router.get("/", async (req, res) => {
   const dbContents = await ac
     .findAll(Content, validateResults, {
       select: {
-        portfolioItem: {
+        item: {
           id: true,
         },
       },
       relations: {
-        portfolioItem: true,
-        asset: true,
+        item: true,
+        assets: true,
       },
     })
     .catch((err) => console.log(err));
@@ -37,7 +37,7 @@ router.get("/:id", async (req, res) => {
   const dbContent = await ac
     .findOne(Content, validateResults, {
       relations: {
-        asset: true,
+        assets: true,
       },
     })
     .catch((err) => console.log(err));
@@ -89,7 +89,7 @@ router.put("/:id/assets/:aid", async (req, res) => {
   const dbContent = await ac
     .findOne(Content, validateResults, {
       relations: {
-        asset: true,
+        assets: true,
       },
     })
     .catch((err) => console.log(err));
@@ -106,7 +106,7 @@ router.put("/:id/assets/:aid", async (req, res) => {
 
   if (!(dbAsset instanceof Asset)) return res.json(dbAsset);
 
-  dbContent.asset = [...dbContent.asset, dbAsset];
+  dbContent.assets = [...dbContent.assets, dbAsset];
 
   const updatedContent = await ac
     .updateWithTarget(Content, validateResults, dbContent)
@@ -133,7 +133,7 @@ router.delete("/:id/assets/:aid", async (req, res) => {
   const dbContent = await ac
     .findOne(Content, validateResults, {
       relations: {
-        asset: true,
+        assets: true,
       },
     })
     .catch((err) => console.log(err));
@@ -150,7 +150,9 @@ router.delete("/:id/assets/:aid", async (req, res) => {
 
   if (!(dbAsset instanceof Asset)) return res.json(dbAsset);
 
-  dbContent.asset = dbContent.asset.filter((asset) => asset.id !== dbAsset.id);
+  dbContent.assets = dbContent.assets.filter(
+    (asset) => asset.id !== dbAsset.id,
+  );
 
   const updatedContent = await ac
     .updateWithTarget(Content, validateResults, dbContent)
@@ -178,35 +180,35 @@ router.delete("/:id", async (req, res) => {
 
 export { router as contentRouter };
 
-// /**
-//  * Archive Codes
-//  */
-// // // Get all contents - With filtering after the query - total manuplation!
-// // router.get("/api/contents-wf/", async (req, res) => {
-// //   await dsm
-// //     .find(Content, {
-// //       relations: {
-// //         asset: true,
-// //       },
-// //     })
-// //     .then((data) => {
-// //       const filteredData = data.map((contents) => ({
-// //         ...contents,
-// //         asset: contents.asset.map((asset) => ({
-// //           name: asset.name,
-// //         })),
-// //       }));
-// //       res.json(filteredData);
-// //     });
-// // });
+// // /**
+// //  * Archive Codes
+// //  */
+// // // // Get all contents - With filtering after the query - total manuplation!
+// // // router.get("/api/contents-wf/", async (req, res) => {
+// // //   await dsm
+// // //     .find(Content, {
+// // //       relations: {
+// // //         asset: true,
+// // //       },
+// // //     })
+// // //     .then((data) => {
+// // //       const filteredData = data.map((contents) => ({
+// // //         ...contents,
+// // //         asset: contents.asset.map((asset) => ({
+// // //           name: asset.name,
+// // //         })),
+// // //       }));
+// // //       res.json(filteredData);
+// // //     });
+// // // });
 
-// // // Get all contents - with the querybuilder
-// // router.get("/api/contents-wqb/", async (req, res) => {
-// //   await dsm
-// //     .createQueryBuilder(Content, "contents")
-// //     .leftJoinAndSelect("contents.asset", "asset")
-// //     .select(["contents.id", "contents.columns", "asset.name"])
-// //     .getMany()
-// //     .then((data) => res.json(data))
-// //     .catch((e) => console.log(e));
-// // });
+// // // // Get all contents - with the querybuilder
+// // // router.get("/api/contents-wqb/", async (req, res) => {
+// // //   await dsm
+// // //     .createQueryBuilder(Content, "contents")
+// // //     .leftJoinAndSelect("contents.asset", "asset")
+// // //     .select(["contents.id", "contents.columns", "asset.name"])
+// // //     .getMany()
+// // //     .then((data) => res.json(data))
+// // //     .catch((e) => console.log(e));
+// // // });
