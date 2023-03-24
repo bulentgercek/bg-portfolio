@@ -24,6 +24,9 @@ export class Item {
   @Column({ nullable: true })
   link: string;
 
+  @Column({ default: false })
+  featured: boolean;
+
   @ManyToMany(() => Category, (category) => category.items, { nullable: true })
   @JoinTable()
   categories: Category[];

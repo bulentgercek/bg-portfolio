@@ -110,6 +110,13 @@
 //     addedPortfolioCategory,
 //   ];
 
+// // Creting a Set to be prevent duplication of assets because of using spread operator
+// const uniquePortfolioCategory = [
+//   ...new Set(dbPortfolio.portfolioCategory),
+//   addedPortfolioCategory,
+// ];
+// dbPortfolio.portfolioCategory = uniquePortfolioCategory;
+
 //   const updatedPortfolio = await ac
 //     .updateWithTarget(Portfolio, validateResults, dbPortfolio)
 //     .catch((err) => console.log(err));
@@ -156,6 +163,13 @@
 //     ...dbPortfolio.portfolioItem,
 //     addedPortfolioItem,
 //   ];
+
+// // Creting a Set to be prevent duplication of assets because of using spread operator
+// const uniquePortfolioItem = [
+//   ...new Set(dbPortfolio.portfolioItem),
+//   addedPortfolioItem,
+// ];
+// dbPortfolio.portfolioItem = uniquePortfolioItem;
 
 //   const updatedPortfolio = await ac
 //     .updateWithTarget(Portfolio, validateResults, dbPortfolio)

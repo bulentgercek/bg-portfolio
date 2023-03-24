@@ -1,14 +1,11 @@
 import { Router } from "express";
+import { In } from "typeorm";
 import { z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { Category } from "../../entities/Category";
+import { filterObject } from "../../utils";
 
 const router = Router();
-
-// Get Category Sitemap
-router.get("/sitemap", async (req, res) => {
-  // Root Categories : Categories with no parentCategories
-});
 
 // Get all Categories
 router.get("/", async (req, res) => {
@@ -17,6 +14,7 @@ router.get("/", async (req, res) => {
     .findAll(Category, validateResults, {
       relations: {
         parentCategories: true,
+        childCategories: true,
         items: {
           contents: true,
         },
@@ -57,52 +55,50 @@ router.post("/", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
       body: z.object({
-        name: z.string(),
+        name: z.string().optional(),
         description: z.string().nullable().optional(),
-        childCategoriesOrder: z.string().nullable().optional(),
-        itemsOrder: z.string().nullable().optional(),
+        parentCategories: z.array(z.number()).optional(),
       }),
     },
     reqData: { body: req.body },
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
+
+  // Guard clause
+  if (!validateResults.success.body || !validateResults.result.body) return;
+
+  // Filter out the relational inputs before create
+  const filteredBody = filterObject(
+    validateResults.result.body,
+    "parentCategories",
+  );
+
+  // Create new Category
+  const createdCategory = ac.create(Category, filteredBody);
+
+  // Add ParentCategories
+  if (validateResults.result.body.parentCategories) {
+    const dbParentCategories = await ac.findAll(Category, validateResults, {
+      where: {
+        id: In(validateResults.result.body.parentCategories),
+      },
+    });
+
+    // is validated?
+    if (Array.isArray(dbParentCategories)) {
+      createdCategory.parentCategories = dbParentCategories;
+    }
+  }
+
   const addedCategory = await ac
-    .addWithCreate(Category, validateResults)
+    .addCreated(Category, validateResults, createdCategory)
     .catch((err) => console.log(err));
 
   res.json(addedCategory);
 });
 
-// // Get spesific portfolio category with id
-// router.get("/:id", async (req, res) => {
-//   const ctxObj = ac.initContext({
-//     zInput: {
-//       params: z.object({
-//         id: z.preprocess(Number, z.number()),
-//       }),
-//     },
-//     reqData: {
-//       params: req.params,
-//     },
-//   });
-
-//   const validateResults = await ac.inputValidate(ctxObj);
-//   const dbPortfolioCategory = await ac.findOne(
-//     PortfolioCategory,
-//     validateResults,
-//     {
-//       relations: {
-//         portfolio: true,
-//         portfolioItem: true,
-//       },
-//     },
-//   );
-
-//   res.json(dbPortfolioCategory);
-// });
-
-// Delete spesific portfolio category with id
+// Delete spesific category with id
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {

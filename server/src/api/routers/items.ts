@@ -6,6 +6,7 @@ import { Content, ContentType } from "../../entities/Content";
 import { Category } from "../../entities/Category";
 import { In } from "typeorm";
 import { filterObject } from "../../utils";
+import { Asset } from "../../entities/Asset";
 
 const router = Router();
 
@@ -124,6 +125,7 @@ router.post("/", async (req, res) => {
         name: z.string().optional(),
         description: z.string().optional(),
         link: z.string().url().optional(),
+        featured: z.boolean().optional(),
         categories: z.array(z.number()).optional(),
       }),
     },
@@ -170,6 +172,7 @@ router.post("/:id/contents", async (req, res) => {
         name: z.string().optional(),
         type: z.nativeEnum(ContentType).optional(),
         columns: z.number().optional(),
+        assets: z.array(z.number()).optional(),
       }),
     },
     reqData: { params: req.params, body: req.body },
@@ -192,14 +195,35 @@ router.post("/:id/contents", async (req, res) => {
       `No Item found with id ${validateResults.result.params?.id}.`,
     );
 
-  const createdContent = ac.create(Content, validateResults.result.body);
+  // Guard clause
+  if (!validateResults.success.body || !validateResults.result.body) return;
 
-  if (!(createdContent instanceof Content)) return res.json(createdContent);
+  // Filter out the relational inputs before create
+  const filteredBody = filterObject(validateResults.result.body, "assets");
 
+  const createdContent = ac.create(Content, filteredBody);
+
+  // Add Item to Created Content
   createdContent.item = dbItem;
 
+  // Add Assets to Created Content
+  if (validateResults.result.body.assets) {
+    const dbAssets = await ac
+      .findAll(Asset, validateResults, {
+        where: {
+          id: In(validateResults.result.body.assets),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    // is validated?
+    if (Array.isArray(dbAssets)) {
+      createdContent.assets = dbAssets;
+    }
+  }
+
   const savedContent = await ac
-    .updateWithTarget(Content, validateResults, createdContent)
+    .addCreated(Content, validateResults, createdContent)
     .catch((err) => console.log(err));
 
   res.json(savedContent);
@@ -216,6 +240,8 @@ router.put("/:id", async (req, res) => {
         name: z.string().optional(),
         description: z.string().optional(),
         link: z.string().optional(),
+        featured: z.boolean().optional(),
+        categories: z.array(z.number()).optional(),
       }),
     },
     reqData: {
@@ -225,11 +251,57 @@ router.put("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const updatedItem = await ac
-    .update(Item, validateResults)
+  const dbItem = await ac
+    .findOne(Item, validateResults, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      relations: {
+        contents: true,
+      },
+    })
     .catch((err) => console.log(err));
 
-  res.json(updatedItem);
+  // Guard clause 1
+  if (!(dbItem instanceof Item))
+    return res.json(
+      `No Item found with id ${validateResults.result.params?.id}.`,
+    );
+
+  // Guard clause 2
+  if (!validateResults.success.body || !validateResults.result.body) return;
+
+  // Filter out the relational inputs before create
+  const filteredBody: Partial<Item> = filterObject(
+    validateResults.result.body,
+    "categories",
+  );
+
+  // Update values of dbItem with filteredBody
+  const updatedItem = {
+    ...dbItem,
+    ...filteredBody,
+  };
+
+  // Add Categories
+  if (validateResults.result.body.categories) {
+    const dbCategories = await ac.findAll(Category, validateResults, {
+      where: {
+        id: In(validateResults.result.body.categories),
+      },
+    });
+
+    // is validated?
+    if (Array.isArray(dbCategories)) {
+      updatedItem.categories = dbCategories;
+    }
+  }
+
+  const finalUpdatedItem = await ac
+    .updateWithTarget(Item, validateResults, updatedItem)
+    .catch((err) => console.log(err));
+
+  res.json(finalUpdatedItem);
 });
 
 // Delete Item

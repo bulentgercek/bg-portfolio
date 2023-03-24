@@ -21,11 +21,16 @@ export class Category {
   @ManyToMany(() => Item, (item) => item.categories, { nullable: true })
   items: Item[];
 
-  @ManyToMany(() => Category, (category) => category.parentCategories, {
+  @ManyToMany(() => Category, (category) => category.childCategories, {
     nullable: true,
   })
   @JoinTable()
   parentCategories: Category[];
+
+  @ManyToMany(() => Category, (category) => category.parentCategories, {
+    nullable: true,
+  })
+  childCategories: Category[];
 
   @Column("simple-array", { nullable: true })
   childCategoriesOrder: number[];
