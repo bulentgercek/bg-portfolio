@@ -1,10 +1,9 @@
 import express, { NextFunction } from "express";
-// import { dummyRouter } from "./routers/dummy";
 import { assetRouter } from "./routers/assets";
 import { contentRouter } from "./routers/contents";
 import { categoryRouter } from "./routers/categories";
 import { itemRouter } from "./routers/items";
-// import { portfolioRouter } from "./routers/user";
+import { optionRouter } from "./routers/option";
 
 // Router for all sub router
 const router = express.Router();
@@ -17,11 +16,10 @@ const router = express.Router();
  */
 export const subRouters = {
   "/assets": assetRouter,
-  // "/dummy": dummyRouter,
   "/contents": contentRouter,
   "/categories": categoryRouter,
   "/items": itemRouter,
-  // "/portfolios": portfolioRouter,
+  "/options": optionRouter,
 };
 
 // Initialize all routers and join them within a router

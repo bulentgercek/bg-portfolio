@@ -5,7 +5,6 @@ import { Asset } from "./entities/Asset";
 import env from "./validEnv";
 import { Item } from "./entities/Item";
 import { Category } from "./entities/Category";
-import { User } from "./entities/User";
 import { Option } from "./entities/Option";
 
 /**
@@ -57,7 +56,7 @@ export function dsConnection(envUrl: string): DataSource {
     username: dbUrl.dbUsername,
     password: dbUrl.dbPassword,
     database: dbUrl.dbName,
-    entities: [Asset, Content, Item, Category, User, Option],
+    entities: [Asset, Content, Item, Category, Option],
     synchronize: true,
     logging: false,
     migrations: [],

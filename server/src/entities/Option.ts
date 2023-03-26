@@ -9,7 +9,7 @@ export enum OptionCategory {
   System = "system",
   Category = "category",
   Item = "item",
-  User = "user",
+  Content = "content",
 }
 
 export enum OptionType {
