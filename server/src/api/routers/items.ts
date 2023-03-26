@@ -251,6 +251,8 @@ router.put("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
+
+  // Get Item
   const dbItem = await ac
     .findOne(Item, validateResults, {
       where: {
@@ -262,23 +264,23 @@ router.put("/:id", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  // Guard clause 1
+  // Guard clause for Item
   if (!(dbItem instanceof Item))
     return res.json(
       `No Item found with id ${validateResults.result.params?.id}.`,
     );
 
-  // Guard clause 2
+  // Guard clause for filtering Body
   if (!validateResults.success.body || !validateResults.result.body) return;
 
-  // Filter out the relational inputs before create
+  // Filter out the relational inputs before create updatedItem
   const filteredBody: Partial<Item> = filterObject(
     validateResults.result.body,
     "categories",
   );
 
   // Update values of dbItem with filteredBody
-  const updatedItem = {
+  const updatedItem: Item = {
     ...dbItem,
     ...filteredBody,
   };
@@ -292,9 +294,7 @@ router.put("/:id", async (req, res) => {
     });
 
     // is validated?
-    if (Array.isArray(dbCategories)) {
-      updatedItem.categories = dbCategories;
-    }
+    if (Array.isArray(dbCategories)) updatedItem.categories = dbCategories;
   }
 
   const finalUpdatedItem = await ac

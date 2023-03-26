@@ -1,8 +1,11 @@
 import { Router } from "express";
+import { In } from "typeorm";
 import { z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { Asset } from "../../entities/Asset";
-import { Content } from "../../entities/Content";
+import { Content, ContentType } from "../../entities/Content";
+import { Item } from "../../entities/Item";
+import { filterObject } from "../../utils";
 
 const router = Router();
 
@@ -36,7 +39,14 @@ router.get("/:id", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
   const dbContent = await ac
     .findOne(Content, validateResults, {
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
       relations: {
+        item: true,
         assets: true,
       },
     })
@@ -54,7 +64,10 @@ router.put("/:id", async (req, res) => {
       }),
       body: z.object({
         name: z.string().optional(),
+        type: z.nativeEnum(ContentType).optional(),
         columns: z.number().optional(),
+        item: z.number().optional(),
+        assets: z.array(z.number()).optional(),
       }),
     },
     reqData: {
@@ -64,14 +77,67 @@ router.put("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const updatedContent = await ac
-    .update(Content, validateResults)
+
+  // Get Content
+  const dbContent = await ac
+    .findOne(Content, validateResults, {
+      relations: { item: true, assets: true },
+    })
     .catch((err) => console.log(err));
 
-  res.json(updatedContent);
+  if (!(dbContent instanceof Content))
+    return res.json(
+      `No Content found with id ${validateResults.result.params?.id}.`,
+    );
+
+  // Guard Clause for filtering Body
+  if (!validateResults.success.body || !validateResults.result.body) return;
+
+  // Filter out the relational inputs before updating dbContent
+  const filteredBody: Partial<Content> = filterObject(
+    validateResults.result.body,
+    "item",
+    "assets",
+  );
+
+  // Update values of dbContent with filteredBody by creating new Content
+  const updatedContent: Content = { ...dbContent, ...filteredBody };
+
+  // Get Item
+  if (validateResults.result.body.item) {
+    const dbItem = await ac
+      .findOne(Item, validateResults, {
+        where: {
+          id: validateResults.result.body?.item,
+        },
+      })
+      .catch((err) => console.log(err));
+
+    if (dbItem instanceof Item) updatedContent.item = dbItem;
+  }
+
+  // Get Assets
+  if (validateResults.result.body.assets) {
+    const dbAssets = await ac
+      .findAll(Asset, validateResults, {
+        where: {
+          id: In(validateResults.result.body.assets),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    // is validated?
+    if (Array.isArray(dbAssets)) updatedContent.assets = dbAssets;
+  }
+
+  const finalUpdatedContent = await ac
+    .updateWithTarget(Content, validateResults, updatedContent)
+    .catch((err) => console.log(err));
+
+  res.json(finalUpdatedContent);
 });
 
-// Assign an asset to content with ids
+// Assign an Asset to Content with ids
 router.put("/:id/assets/:aid", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -86,6 +152,8 @@ router.put("/:id/assets/:aid", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
+
+  // Get Content
   const dbContent = await ac
     .findOne(Content, validateResults, {
       relations: {
@@ -96,6 +164,17 @@ router.put("/:id/assets/:aid", async (req, res) => {
 
   if (!(dbContent instanceof Content)) return res.json(dbContent);
 
+  // Is Asset exist?
+  const isAssetExist = dbContent.assets.findIndex(
+    (asset) => asset.id === validateResults.result.params?.aid,
+  );
+  // Then throw error message
+  if (isAssetExist !== -1)
+    return res.status(400).json({
+      message: `Content ${validateResults.result.params?.id} already has Asset with id ${validateResults.result.params?.aid}.`,
+    });
+
+  // Get Asset
   const dbAsset = await ac
     .findOne(Asset, validateResults, {
       where: {

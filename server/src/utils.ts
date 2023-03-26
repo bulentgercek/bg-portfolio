@@ -31,28 +31,3 @@ export function filterObject(object: Object, ...arrayKeys: String[]) {
   });
   return Object.fromEntries(filtered);
 }
-
-/**
- *
- */
-interface Container<Containee> {
-  containees: Containee[];
-}
-
-export function addOrUpdateContainees<Containee extends { id: any }>(
-  container: DeepPartial<Container<Containee>>,
-  containee: Containee,
-): void {
-  if (!container.containees) {
-    container.containees = [containee];
-  } else {
-    const existingIndex = container.containees.findIndex(
-      (c) => c.id === containee.id,
-    );
-    if (existingIndex !== -1) {
-      container.containees[existingIndex] = containee;
-    } else {
-      container.containees.push(containee);
-    }
-  }
-}

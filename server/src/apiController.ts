@@ -170,7 +170,7 @@ export namespace ApiController {
     )
       return validateResults;
 
-    // Add id from validated results to the find options if there is no where
+    // Add id from validated results to the find options if there is nowhere
     if (!options?.where) {
       options = Object.assign({}, options, {
         where: {

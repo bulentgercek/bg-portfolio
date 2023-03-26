@@ -98,6 +98,72 @@ router.post("/", async (req, res) => {
   res.json(addedCategory);
 });
 
+// Update a Category
+router.put("/:id", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: {
+      params: z.object({
+        id: z.preprocess(Number, z.number()),
+      }),
+      body: z.object({
+        name: z.string().optional(),
+        description: z.string().optional(),
+        items: z.array(z.number()).optional(),
+        parentCategories: z.array(z.number()).optional(),
+      }),
+    },
+    reqData: { params: req.params, body: req.body },
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+
+  const dbCategory = await ac
+    .findOne(Category, validateResults, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      relations: {
+        parentCategories: true,
+      },
+    })
+    .catch((err) => console.log(err));
+
+  if (!(dbCategory instanceof Category))
+    return res.json(
+      `No Category found with id ${validateResults.result.params?.id}.`,
+    );
+
+  // Guard clause before filtering Body
+  if (!validateResults.success.body || !validateResults.result.body) return;
+
+  // Filter out the relational inputs before create
+  const filteredBody: Partial<Category> = filterObject(
+    validateResults.result.body,
+    "parentCategories",
+  );
+
+  const updatedCategory: Category = { ...dbCategory, ...filteredBody };
+
+  if (validateResults.result.body.parentCategories) {
+    const dbCategories = await ac
+      .findAll(Category, validateResults, {
+        where: {
+          id: In(validateResults.result.body.parentCategories),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    if (Array.isArray(dbCategories))
+      updatedCategory.parentCategories = dbCategories;
+  }
+
+  const finalUpdatedCategory = await ac
+    .updateWithTarget(Category, validateResults, updatedCategory)
+    .catch((err) => console.log(err));
+
+  res.json(finalUpdatedCategory);
+});
+
 // Delete spesific category with id
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
