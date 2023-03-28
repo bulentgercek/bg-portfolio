@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
   res.json(dbAssets);
 });
 
-// Get spesific asset with id
+// Get the spesific asset with id
 router.get("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
@@ -103,7 +103,7 @@ router.post("/", async (req, res) => {
   res.json(savedAsset);
 });
 
-// Update the asset with id
+// Update the spesific Asset with id
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -113,20 +113,67 @@ router.put("/:id", async (req, res) => {
         type: z.nativeEnum(AssetType).optional(),
         url: z.string().url().optional(),
         text: z.string().optional(),
+        contents: z.array(z.number()).optional(),
       }),
     },
     reqData: { params: req.params, body: req.body },
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const updatedAsset = await ac
-    .update(Asset, validateResults)
+
+  // Get Asset
+  const dbAsset = await ac
+    .findOne(Asset, validateResults, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      relations: {
+        contents: true,
+      },
+    })
     .catch((err) => console.log(err));
 
-  res.json(updatedAsset);
+  // Guard clause for Asset
+  if (!(dbAsset instanceof Asset))
+    return res.json(
+      `No Asset found with id ${validateResults.result.params?.id}.`,
+    );
+
+  // Guard clause for filtering Body
+  if (!validateResults.success.body || !validateResults.result.body) return;
+
+  // Filter out the relational inputs before create updatedAsset
+  const filteredBody: Partial<Asset> = filterObject(
+    validateResults.result.body,
+    "contents",
+  );
+
+  // Update values of dbAsset with filteredBody
+  const updatedAsset: Asset = {
+    ...dbAsset,
+    ...filteredBody,
+  };
+
+  // Add Contents
+  if (validateResults.result.body.contents) {
+    const dbContents = await ac.findAll(Content, validateResults, {
+      where: {
+        id: In(validateResults.result.body.contents),
+      },
+    });
+
+    // is validated?
+    if (Array.isArray(dbContents)) updatedAsset.contents = dbContents;
+  }
+
+  const finalUpdatedAsset = await ac
+    .updateWithTarget(Asset, validateResults, updatedAsset)
+    .catch((err) => console.log(err));
+
+  res.json(finalUpdatedAsset);
 });
 
-// Remove an asset with id
+// Remove the spesific Asset with id
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {

@@ -9,7 +9,7 @@ import { filterObject } from "../../utils";
 
 const router = Router();
 
-// Get all contents
+// Get all Contents
 router.get("/", async (req, res) => {
   const validateResults = await ac.inputValidate();
   const dbContents = await ac
@@ -17,6 +17,7 @@ router.get("/", async (req, res) => {
       select: {
         item: {
           id: true,
+          name: true,
         },
       },
       relations: {
@@ -29,7 +30,7 @@ router.get("/", async (req, res) => {
   res.json(dbContents);
 });
 
-// Get spesific content with id
+// Get the spesific Content with id
 router.get("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
@@ -55,7 +56,7 @@ router.get("/:id", async (req, res) => {
   res.json(dbContent);
 });
 
-// Update spesific content with id
+// Update the spesific Content with id
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -81,6 +82,12 @@ router.put("/:id", async (req, res) => {
   // Get Content
   const dbContent = await ac
     .findOne(Content, validateResults, {
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
       relations: { item: true, assets: true },
     })
     .catch((err) => console.log(err));
@@ -156,7 +163,14 @@ router.put("/:id/assets/:aid", async (req, res) => {
   // Get Content
   const dbContent = await ac
     .findOne(Content, validateResults, {
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
       relations: {
+        item: true,
         assets: true,
       },
     })
@@ -194,7 +208,9 @@ router.put("/:id/assets/:aid", async (req, res) => {
   res.json(updatedContent);
 });
 
-// Remove an asset from content with ids (Without deleting the asset from the db)
+// Remove a spesific asset from the spesific Content with ids
+// This endpoint will remove the spesific Asset with id from Content without
+// deleting it from the database.
 router.delete("/:id/assets/:aid", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -211,7 +227,14 @@ router.delete("/:id/assets/:aid", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
   const dbContent = await ac
     .findOne(Content, validateResults, {
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
       relations: {
+        item: true,
         assets: true,
       },
     })
@@ -240,7 +263,7 @@ router.delete("/:id/assets/:aid", async (req, res) => {
   res.json(updatedContent);
 });
 
-// Delete spesific Content with id
+// Remove the spesific Content with id
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
