@@ -4,17 +4,7 @@
 
 1. [Overview](#1)
 2. [Infrastructure](#2)
-   1. [Backend / Server](#2.1)
-   2. [Frontend / Client](#2.2)
 3. [Api Documentation](#3)
-   1. [Assets](#3.1)
-      1. [`GET` Get all Assets](#3.1.1)
-      2. [`GET` Get the spesific Asset with id](#3.1.2)
-      3. [`POST` Add an Asset](#3.1.3)
-      4. [`PUT` Update the spesific Asset with id](#3.1.4)
-      5. [`DELETE` Remove the spesific Asset with id](#3.1.5)
-   2. [Contents](#3.2)
-      1. [`DELETE` Remove the spesific Content with id](#3.2.6)
 
 ## 1. Overview<a name="1"></a>
 
@@ -23,8 +13,6 @@ website was not basically to have a portfolio site. The aim was to develop my
 programming culture by trying many techniques while learning and to create a
 full study by bringing together the methods that you find closest to my vision.
 In this sense, it is a very educational and developmental study.
-
-[⬆Top](#0)
 
 ## 2. Infrastructure<a name="2"></a>
 
@@ -40,8 +28,6 @@ building blocks of the system.
 - PM2 Node.js Process Management
 - Postgres as Database Service
 
-[⬆Top](#0)
-
 ### 2.1. Backend / Server<a name="2.1"></a>
 
 The modules of the project were chosen in connection with the requirements of
@@ -55,8 +41,6 @@ notable node nodules list is as follows.
 - Postgres
 - TypeORM
 - Zod
-
-[⬆Top](#0)
 
 ### 2.2. Frontend / Client<a name="2.2"></a>
 
@@ -77,6 +61,9 @@ This Api documentation was written both for my own use and for the basic need of
 a backend with REST API infrastructure. As you can guess, it provides access
 through a specific port.
 
+1.  [Assets](#3.1)
+2.  [Contents](#3.2)
+
 [⬆Top](#0)
 
 ### 3.1. Assets<a name="3.1"></a>
@@ -95,7 +82,13 @@ AssetType {
 }
 ```
 
-[⬆Top](#0)
+**Assets Index**
+
+1. [`GET` Get all Assets](#3.1.1)
+2. [`GET` Get the spesific Asset with id](#3.1.2)
+3. [`POST` Add an Asset](#3.1.3)
+4. [`PUT` Update the spesific Asset with id](#3.1.4)
+5. [`DELETE` Remove the spesific Asset with id](#3.1.5)
 
 #### 3.1.1. `GET` Get all Assets<a name="3.1.1"></a>
 
@@ -114,7 +107,7 @@ _**Response Body** `Array`_
 | url      | String    |              |
 | contents | Content[] | { id, name } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.1.2. `GET` Get the spesific Asset with id<a name="3.1.2"></a>
 
@@ -139,7 +132,7 @@ _**Response Body** `Object`_
 | url      | String    |              |
 | contents | Content[] | { id, name } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.1.3. `POST` Add an Asset<a name="3.1.3"></a>
 
@@ -168,7 +161,7 @@ _**Response Body** `Object`_
 | url      | String    |              |
 | contents | Content[] | { id, name } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.1.4. `PUT` Update the spesific Asset with id<a name="3.1.4"></a>
 
@@ -203,7 +196,7 @@ _**Response Body** `Object`_
 | url      | String    |                             |
 | contents | Content[] | { id, name, type, columns } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.1.5. `DELETE` Remove the spesific Asset with id<a name="3.1.5"></a>
 
@@ -217,7 +210,7 @@ _**Request Params** `Object`_
 | ----- | ------ | ----------- |
 | id    | Number | Required    |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 ### 3.2. Contents<a name="3.2"></a>
 
@@ -234,7 +227,11 @@ ContentType {
 }
 ```
 
-[⬆Top](#0)
+**Contents Index**
+
+1.  [`DELETE` Remove the spesific Content with id](#3.2.6)
+
+[⬆Api Documentation](#3)
 
 #### 3.2.1. `GET` Get all Contents<a name="3.2.1"></a>
 
@@ -253,7 +250,7 @@ _**Response Body** `Array`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.2.2. `GET` Get the spesific Content with id<a name="3.2.2"></a>
 
@@ -278,7 +275,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.2.3. `PUT` Update the spesific Content with id<a name="3.2.3"></a>
 
@@ -313,7 +310,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.2.4. `PUT` Assign an Asset to Content with ids<a name="3.2.4"></a>
 
@@ -339,7 +336,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.2.5. `DELETE` Remove a spesific asset from the spesific Content with ids<a name="3.2.5"></a>
 
@@ -368,7 +365,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 #### 3.2.6. `DELETE` Remove the spesific Content with id<a id='3.2.6'></a>
 
@@ -382,7 +379,7 @@ _**Request Params** `Object`_
 | ----- | ------ | ----------- |
 | id    | Number | Required    |
 
-[⬆Top](#0)
+[⬆Api Documentation](#3)
 
 ## Web Url
 
