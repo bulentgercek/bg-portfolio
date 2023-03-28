@@ -14,6 +14,8 @@ programming culture by trying many techniques while learning and to create a
 full study by bringing together the methods that you find closest to my vision.
 In this sense, it is a very educational and developmental study.
 
+[⬆Top](#0)
+
 ## 2. Infrastructure<a name="2"></a>
 
 The entire infrastructure of this site runs on a Cloud VPS Server built on
@@ -82,7 +84,7 @@ AssetType {
 }
 ```
 
-**Assets Index**
+**Assets Endpoints**
 
 1. [`GET` Get all Assets](#3.1.1)
 2. [`GET` Get the spesific Asset with id](#3.1.2)
@@ -227,9 +229,14 @@ ContentType {
 }
 ```
 
-**Contents Index**
+**Contents Endpoints**
 
-1.  [`DELETE` Remove the spesific Content with id](#3.2.6)
+1. [`GET` Get all Contents](#3.2.1)
+2. [`GET` Get the spesific Content with id](#3.2.2)
+3. [`PUT` Update the spesific Content with id](#3.2.3)
+4. [`PUT` Assign an Asset to Content with ids](#3.2.4)
+5. [`DELETE` Remove a spesific asset from the spesific Content with ids](#3.2.5)
+6. [`DELETE` Remove the spesific Content with id](#3.2.6)
 
 [⬆Api Documentation](#3)
 
