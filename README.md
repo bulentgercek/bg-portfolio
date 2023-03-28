@@ -1,10 +1,22 @@
-# BG Portfolio Full Stack Web Site
+# BG Portfolio Full Stack Web Site<a name="0"></a>
 
 ## Index
 
-5.3.2 [`DELETE` Remove the spesific Content with id](#3.2.5)
+1. [Overview](#1)
+2. [Infrastructure](#2)
+   1. [Backend / Server](#2.1)
+   2. [Frontend / Client](#2.2)
+3. [Api Documentation](#3)
+   1. [Assets](#3.1)
+      1. [`GET` Get all Assets](#3.1.1)
+      2. [`GET` Get the spesific Asset with id](#3.1.2)
+      3. [`POST` Add an Asset](#3.1.3)
+      4. [`PUT` Update the spesific Asset with id](#3.1.4)
+      5. [`DELETE` Remove the spesific Asset with id](#3.1.5)
+   2. [Contents](#3.2)
+      1. [`DELETE` Remove the spesific Content with id](#3.2.6)
 
-## 1. Overview
+## 1. Overview<a name="1"></a>
 
 This is my personal website Node.js development repository. The purpose of this
 website was not basically to have a portfolio site. The aim was to develop my
@@ -12,7 +24,7 @@ programming culture by trying many techniques while learning and to create a
 full study by bringing together the methods that you find closest to my vision.
 In this sense, it is a very educational and developmental study.
 
-## 2. Infrastructure
+## 2. Infrastructure<a name="2"></a>
 
 The entire infrastructure of this site runs on a Cloud VPS Server built on
 Hetzner and an Ubuntu Linux server installed on it. The entire setup has been
@@ -26,7 +38,7 @@ building blocks of the system.
 - PM2 Node.js Process Management
 - Postgres as Database Service
 
-### 2.1. Backend / Server
+### 2.1. Backend / Server<a name="2.1"></a>
 
 The modules of the project were chosen in connection with the requirements of
 Node 14.20, as the work on Shared Web Hosting was started first. Although it was
@@ -40,7 +52,7 @@ notable node nodules list is as follows.
 - TypeORM
 - Zod
 
-### 2.1. Frontend / Client
+### 2.2. Frontend / Client<a name="2.2"></a>
 
 As the backend, Client side has been developed without using a ready-made
 template. The notable node nodules list is as follows.
@@ -51,13 +63,13 @@ template. The notable node nodules list is as follows.
 - Axios
 - ...
 
-## 3. Api Documentation
+## 3. Api Documentation<a name="3"></a>
 
 This Api documentation was written both for my own use and for the basic need of
 a backend with REST API infrastructure. As you can guess, it provides access
 through a specific port.
 
-### 3.1 Assets
+### 3.1. Assets<a name="3.1"></a>
 
 Assets is designed to reach the basic needs of the website, such as text and
 images. **Asset** type objects are only related with **Content** type objects by
@@ -73,7 +85,7 @@ AssetType {
 }
 ```
 
-#### 3.1.1. `GET` Get all Assets
+#### 3.1.1. `GET` Get all Assets<a name="3.1.1"></a>
 
 ```
 .../api/assets
@@ -90,7 +102,7 @@ _**Response Body** `Array`_
 | url      | String    |              |
 | contents | Content[] | { id, name } |
 
-#### 3.1.2. `GET` Get the spesific Asset with id
+#### 3.1.2. `GET` Get the spesific Asset with id<a name="3.1.2"></a>
 
 ```
 .../api/assets/:id
@@ -113,7 +125,7 @@ _**Response Body** `Object`_
 | url      | String    |              |
 | contents | Content[] | { id, name } |
 
-#### 3.1.3. `POST` Add an Asset
+#### 3.1.3. `POST` Add an Asset<a name="3.1.3"></a>
 
 ```
 .../api/assets
@@ -140,7 +152,7 @@ _**Response Body** `Object`_
 | url      | String    |              |
 | contents | Content[] | { id, name } |
 
-#### 3.1.4. `PUT` Update the spesific Asset with id
+#### 3.1.4. `PUT` Update the spesific Asset with id<a name="3.1.4"></a>
 
 ```
 .../api/assets/:id
@@ -173,7 +185,7 @@ _**Response Body** `Object`_
 | url      | String    |                             |
 | contents | Content[] | { id, name, type, columns } |
 
-#### 3.1.5. `DELETE` Remove the spesific Asset with id
+#### 3.1.5. `DELETE` Remove the spesific Asset with id<a name="3.1.5"></a>
 
 ```
 .../api/assets/:id
@@ -185,7 +197,7 @@ _**Request Params** `Object`_
 | ----- | ------ | ----------- |
 | id    | Number | Required    |
 
-### 3.2 Contents
+### 3.2. Contents<a name="3.2"></a>
 
 Contents are designed as page modules that contain Assets. Since **Content**
 type objects are used inside **Item** type objects, they have a relation with
@@ -200,7 +212,7 @@ ContentType {
 }
 ```
 
-#### 3.2.1. `GET` Get all Contents
+#### 3.2.1. `GET` Get all Contents<a name="3.2.1"></a>
 
 ```
 .../api/contents
@@ -217,7 +229,7 @@ _**Response Body** `Array`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-#### 3.2.2. `GET` Get the spesific Content with id
+#### 3.2.2. `GET` Get the spesific Content with id<a name="3.2.2"></a>
 
 ```
 .../api/contents/:id
@@ -240,7 +252,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-#### 3.2.3. `PUT` Update the spesific Content with id
+#### 3.2.3. `PUT` Update the spesific Content with id<a name="3.2.3"></a>
 
 ```
 .../api/contents/:id
@@ -273,7 +285,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-#### 3.2.4. `PUT` Assign an Asset to Content with ids
+#### 3.2.4. `PUT` Assign an Asset to Content with ids<a name="3.2.4"></a>
 
 ```
 .../api/contents/:id/assets/:aid
@@ -297,9 +309,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-#### 3.2.5. `DELETE` Remove a spesific asset from the spesific Content with ids
-
-<a name="3.2.5"></a>
+#### 3.2.5. `DELETE` Remove a spesific asset from the spesific Content with ids<a name="3.2.5"></a>
 
 This endpoint will remove the spesific Asset with id from Content without
 deleting it from the database.
@@ -326,7 +336,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-#### 3.2.5. `DELETE` Remove the spesific Content with id<a id='3.2.5'></a>
+#### 3.2.6. `DELETE` Remove the spesific Content with id<a id='3.2.6'></a>
 
 ```
 .../api/contents/:id
