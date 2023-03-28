@@ -1,10 +1,8 @@
-<a name="Top"></a>
-
 # BG Portfolio Full Stack Web Site
 
 ## Index
 
-[3.2.5](#325-delete-remove-the-spesific-content-with-id3.2.5)
+5.3.2 [`DELETE` Remove the spesific Content with id](#3.2.5)
 
 ## 1. Overview
 
@@ -328,7 +326,7 @@ _**Response Body** `Object`_
 | item    | Item        | { id, name }                  |
 | assets  | Asset[]     | { id, name, type, text, url } |
 
-#### 3.2.5. `DELETE` Remove the spesific Content with id
+#### 3.2.5. `DELETE` Remove the spesific Content with id<a id='3.2.5'></a>
 
 ```
 .../api/contents/:id
