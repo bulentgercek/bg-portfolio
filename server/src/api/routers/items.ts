@@ -38,6 +38,7 @@ router.get("/", async (req, res) => {
         featuredImageAsset: true,
         categories: {
           parentCategories: true,
+          childCategories: true,
         },
         contents: {
           assets: true,
@@ -86,6 +87,7 @@ router.get("/:id", async (req, res) => {
         featuredImageAsset: true,
         categories: {
           parentCategories: true,
+          childCategories: true,
         },
         contents: {
           assets: true,
@@ -247,12 +249,37 @@ router.put("/:id", async (req, res) => {
   // Get Item
   const dbItem = await ac
     .findOne(Item, validateResults, {
+      select: {
+        featuredImageAsset: {
+          id: true,
+          name: true,
+          url: true,
+        },
+        categories: {
+          id: true,
+          name: true,
+          parentCategories: {
+            id: true,
+            name: true,
+          },
+          childCategories: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       where: {
         id: validateResults.result.params?.id,
       },
       relations: {
         featuredImageAsset: true,
-        contents: true,
+        categories: {
+          parentCategories: true,
+          childCategories: true,
+        },
+        contents: {
+          assets: true,
+        },
       },
     })
     .catch((err) => console.log(err));
