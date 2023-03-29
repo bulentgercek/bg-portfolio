@@ -167,8 +167,9 @@ export namespace ApiController {
     if (
       validateResults.success.params === false ||
       validateResults.success.body === false
-    )
+    ) {
       return validateResults;
+    }
 
     // Add id from validated results to the find options if there is nowhere
     if (!options?.where) {

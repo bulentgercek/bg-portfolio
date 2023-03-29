@@ -19,9 +19,9 @@ In this sense, it is a very educational and developmental study.
 ## 2. Infrastructure<a name="2"></a>
 
 The entire infrastructure of this site runs on a Cloud VPS Server built on
-Hetzner and an Ubuntu Linux server installed on it. The entire setup has been
-installed and managed by myself, and the following applications form the
-building blocks of the system.
+Hetzner and an Ubuntu Linux installed on it. The entire setup has been installed
+and managed by myself, and the following applications form the building blocks
+of the system.
 
 - Nginx HTTP Server
 - Firewall Security with Firewalld
@@ -235,10 +235,11 @@ ContentType {
 
 1. [`GET` Get all Contents](#3.2.1)
 2. [`GET` Get the spesific Content with id](#3.2.2)
-3. [`PUT` Update the spesific Content with id](#3.2.3)
-4. [`PUT` Assign an Asset to Content with ids](#3.2.4)
-5. [`DELETE` Remove a spesific asset from the spesific Content with ids](#3.2.5)
-6. [`DELETE` Remove the spesific Content with id](#3.2.6)
+3. [`POST` Add Content](#3.2.3)
+4. [`PUT` Update the spesific Content with id](#3.2.4)
+5. [`PUT` Assign an Asset to Content with ids](#3.2.5)
+6. [`DELETE` Remove a spesific asset from the spesific Content with ids](#3.2.6)
+7. [`DELETE` Remove the spesific Content with id](#3.2.7)
 
 [⬆Api Documentation](#3)
 
@@ -286,7 +287,32 @@ _**Response Body** `Object`_
 
 [⬆Contents](#3.2)
 
-#### 3.2.3. `PUT` Update the spesific Content with id<a name="3.2.3"></a>
+#### 3.2.3. `POST` Add Content<a name="3.2.3"></a>
+
+_**Request Body** `Object`_
+
+| Field   | Type        | Description         |
+| ------- | ----------- | ------------------- |
+| name    | String      | Optional            |
+| type    | ContentType | Optional            |
+| columns | Number      | Optional            |
+| item    | Item        | id, Optional        |
+| assets  | Number[]    | [ ...id ], Optional |
+
+_**Response Body** `Object`_
+
+| Field   | Type        | Description                               |
+| ------- | ----------- | ----------------------------------------- |
+| id      | Number      |                                           |
+| name    | String      |                                           |
+| type    | ContentType |                                           |
+| columns | Number      |                                           |
+| item    | Item        | { id, name, description, link, featured } |
+| assets  | Asset[]     | { id, name, type, text, url }             |
+
+[⬆Contents](#3.2)
+
+#### 3.2.4. `PUT` Update the spesific Content with id<a name="3.2.4"></a>
 
 ```
 .../api/contents/:id
@@ -321,7 +347,7 @@ _**Response Body** `Object`_
 
 [⬆Contents](#3.2)
 
-#### 3.2.4. `PUT` Assign an Asset to Content with ids<a name="3.2.4"></a>
+#### 3.2.5. `PUT` Assign an Asset to Content with ids<a name="3.2.5"></a>
 
 ```
 .../api/contents/:id/assets/:aid
@@ -347,7 +373,7 @@ _**Response Body** `Object`_
 
 [⬆Contents](#3.2)
 
-#### 3.2.5. `DELETE` Remove a spesific asset from the spesific Content with ids<a name="3.2.5"></a>
+#### 3.2.6. `DELETE` Remove a spesific asset from the spesific Content with ids<a name="3.2.6"></a>
 
 This endpoint will remove the spesific Asset with id from Content without
 deleting it from the database.
@@ -376,7 +402,7 @@ _**Response Body** `Object`_
 
 [⬆Contents](#3.2)
 
-#### 3.2.6. `DELETE` Remove the spesific Content with id<a id='3.2.6'></a>
+#### 3.2.7. `DELETE` Remove the spesific Content with id<a id='3.2.7'></a>
 
 ```
 .../api/contents/:id
@@ -390,6 +416,6 @@ _**Request Params** `Object`_
 
 [⬆Contents](#3.2)
 
-## Web Url
+## Website
 
-[https://www.bulentgercek.com](https://www.bulentgercek.com)
+[bulentgercek.com](bulentgercek.com)

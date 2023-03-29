@@ -134,10 +134,7 @@ router.put("/:id", async (req, res) => {
     .catch((err) => console.log(err));
 
   // Guard clause for Asset
-  if (!(dbAsset instanceof Asset))
-    return res.json(
-      `No Asset found with id ${validateResults.result.params?.id}.`,
-    );
+  if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
 
   // Guard clause for filtering Body
   if (!validateResults.success.body || !validateResults.result.body) return;

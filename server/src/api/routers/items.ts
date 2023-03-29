@@ -190,10 +190,7 @@ router.post("/:id/contents", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  if (!(dbItem instanceof Item))
-    return res.json(
-      `No Item found with id ${validateResults.result.params?.id}.`,
-    );
+  if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
 
   // Guard clause
   if (!validateResults.success.body || !validateResults.result.body) return;
@@ -265,10 +262,7 @@ router.put("/:id", async (req, res) => {
     .catch((err) => console.log(err));
 
   // Guard clause for Item
-  if (!(dbItem instanceof Item))
-    return res.json(
-      `No Item found with id ${validateResults.result.params?.id}.`,
-    );
+  if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
 
   // Guard clause for filtering Body
   if (!validateResults.success.body || !validateResults.result.body) return;

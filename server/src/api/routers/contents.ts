@@ -56,6 +56,71 @@ router.get("/:id", async (req, res) => {
   res.json(dbContent);
 });
 
+// Add Content
+router.post("/", async (req, res) => {
+  const ctxObj = ac.initContext({
+    zInput: {
+      body: z.object({
+        name: z.string().optional(),
+        type: z.nativeEnum(ContentType).optional(),
+        columns: z.number().optional(),
+        item: z.number().optional(),
+        assets: z.array(z.number()).optional(),
+      }),
+    },
+    reqData: { body: req.body },
+  });
+
+  const validateResults = await ac.inputValidate(ctxObj);
+
+  const dbItem = await ac
+    .findOne(Item, validateResults, {
+      where: {
+        id: validateResults.result.body?.item,
+      },
+    })
+    .catch((err) => console.log(err));
+
+  if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
+
+  // Guard Clause for filtering Body
+  if (!validateResults.success.body || !validateResults.result.body) return;
+
+  // Filter out the relational inputs before updating dbContent
+  const filteredBody = filterObject(
+    validateResults.result.body,
+    "item",
+    "assets",
+  );
+
+  const createdContent = ac.create(Content, filteredBody);
+
+  // Add Item to Created Content
+  createdContent.item = dbItem;
+
+  // Add Assets to Created Content
+  if (validateResults.result.body.assets) {
+    const dbAssets = await ac
+      .findAll(Asset, validateResults, {
+        where: {
+          id: In(validateResults.result.body.assets),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    // is validated?
+    if (Array.isArray(dbAssets)) {
+      createdContent.assets = dbAssets;
+    }
+  }
+
+  const savedContent = await ac
+    .addCreated(Content, validateResults, createdContent)
+    .catch((err) => console.log(err));
+
+  res.json(savedContent);
+});
+
 // Update the spesific Content with id
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
@@ -93,9 +158,7 @@ router.put("/:id", async (req, res) => {
     .catch((err) => console.log(err));
 
   if (!(dbContent instanceof Content))
-    return res.json(
-      `No Content found with id ${validateResults.result.params?.id}.`,
-    );
+    return res.status(400).json(validateResults);
 
   // Guard Clause for filtering Body
   if (!validateResults.success.body || !validateResults.result.body) return;
@@ -176,7 +239,8 @@ router.put("/:id/assets/:aid", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  if (!(dbContent instanceof Content)) return res.json(dbContent);
+  if (!(dbContent instanceof Content))
+    return res.status(400).json(validateResults);
 
   // Is Asset exist?
   const isAssetExist = dbContent.assets.findIndex(
@@ -197,7 +261,7 @@ router.put("/:id/assets/:aid", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  if (!(dbAsset instanceof Asset)) return res.json(dbAsset);
+  if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
 
   dbContent.assets = [...dbContent.assets, dbAsset];
 
@@ -240,7 +304,8 @@ router.delete("/:id/assets/:aid", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  if (!(dbContent instanceof Content)) return res.json(dbContent);
+  if (!(dbContent instanceof Content))
+    return res.status(400).json(validateResults);
 
   const dbAsset = await ac
     .findOne(Asset, validateResults, {
@@ -250,7 +315,7 @@ router.delete("/:id/assets/:aid", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  if (!(dbAsset instanceof Asset)) return res.json(dbAsset);
+  if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
 
   dbContent.assets = dbContent.assets.filter(
     (asset) => asset.id !== dbAsset.id,

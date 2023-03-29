@@ -129,9 +129,7 @@ router.put("/:id", async (req, res) => {
     .catch((err) => console.log(err));
 
   if (!(dbCategory instanceof Category))
-    return res.json(
-      `No Category found with id ${validateResults.result.params?.id}.`,
-    );
+    return res.status(400).json(validateResults);
 
   // Guard clause before filtering Body
   if (!validateResults.success.body || !validateResults.result.body) return;
