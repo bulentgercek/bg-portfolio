@@ -10,7 +10,7 @@ import { Asset } from "../../entities/Asset";
 
 const router = Router();
 
-// Get all Items
+// Get Items
 router.get("/", async (req, res) => {
   const validateResults = await ac.inputValidate();
   const dbItems = await ac
@@ -19,7 +19,14 @@ router.get("/", async (req, res) => {
         categories: {
           id: true,
           name: true,
-          parentCategories: true,
+          parentCategories: {
+            id: true,
+            name: true,
+          },
+          childCategories: {
+            id: true,
+            name: true,
+          },
         },
       },
       relations: {
@@ -36,7 +43,7 @@ router.get("/", async (req, res) => {
   res.json(dbItems);
 });
 
-// Get spesific Item
+// Get Item
 router.get("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -54,16 +61,31 @@ router.get("/:id", async (req, res) => {
         categories: {
           id: true,
           name: true,
+          parentCategories: {
+            id: true,
+            name: true,
+          },
+          childCategories: {
+            id: true,
+            name: true,
+          },
         },
       },
-      relations: { categories: true, contents: { assets: true } },
+      relations: {
+        categories: {
+          parentCategories: true,
+        },
+        contents: {
+          assets: true,
+        },
+      },
     })
     .catch((err) => console.log(err));
 
   res.json(dbPortfolioItem);
 });
 
-// Get the Contents of the spesific Item
+// Get Contents of Item
 router.get("/:id/contents", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
@@ -87,7 +109,7 @@ router.get("/:id/contents", async (req, res) => {
   res.json(dbContents);
 });
 
-// Get the spesific Content of the spesific Item
+// Get Content of Item
 router.get("/:id/contents/:cid", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -117,7 +139,7 @@ router.get("/:id/contents/:cid", async (req, res) => {
   res.json(dbContent);
 });
 
-// Add an Item
+// Add Item
 router.post("/", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -161,72 +183,11 @@ router.post("/", async (req, res) => {
   return res.json(addedItem);
 });
 
-// Add Content to a spesific Item
-router.post("/:id/contents", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        id: z.preprocess(Number, z.number()),
-      }),
-      body: z.object({
-        name: z.string().optional(),
-        type: z.nativeEnum(ContentType).optional(),
-        columns: z.number().optional(),
-        assets: z.array(z.number()).optional(),
-      }),
-    },
-    reqData: { params: req.params, body: req.body },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-  const dbItem = await ac
-    .findOne(Item, validateResults, {
-      where: {
-        id: validateResults.result.params?.id,
-      },
-      relations: {
-        contents: true,
-      },
-    })
-    .catch((err) => console.log(err));
-
-  if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
-
-  // Guard clause
-  if (!validateResults.success.body || !validateResults.result.body) return;
-
-  // Filter out the relational inputs before create
-  const filteredBody = filterObject(validateResults.result.body, "assets");
-
-  const createdContent = ac.create(Content, filteredBody);
-
-  // Add Item to Created Content
-  createdContent.item = dbItem;
-
-  // Add Assets to Created Content
-  if (validateResults.result.body.assets) {
-    const dbAssets = await ac
-      .findAll(Asset, validateResults, {
-        where: {
-          id: In(validateResults.result.body.assets),
-        },
-      })
-      .catch((err) => console.log(err));
-
-    // is validated?
-    if (Array.isArray(dbAssets)) {
-      createdContent.assets = dbAssets;
-    }
-  }
-
-  const savedContent = await ac
-    .addCreated(Content, validateResults, createdContent)
-    .catch((err) => console.log(err));
-
-  res.json(savedContent);
-});
-
-// Update an Item
+// Update Item
+// Note : We do not add content here.
+// Because Content will be just like adding Item
+// (because Content without Item relation cannot be created),
+// it is pointless to update it.
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -298,7 +259,7 @@ router.put("/:id", async (req, res) => {
   res.json(finalUpdatedItem);
 });
 
-// Delete Item
+// Remove Item
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {

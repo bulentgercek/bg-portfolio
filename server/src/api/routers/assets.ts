@@ -8,7 +8,7 @@ import { filterObject } from "../../utils";
 
 const router = Router();
 
-// Get all assets
+// Get Assets
 router.get("/", async (req, res) => {
   const validateResults = await ac.inputValidate();
   const dbAssets = await ac
@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
   res.json(dbAssets);
 });
 
-// Get the spesific asset with id
+// Get Asset
 router.get("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
@@ -53,7 +53,7 @@ router.get("/:id", async (req, res) => {
   res.json(dbAsset);
 });
 
-// Add an Asset
+// Add Asset
 router.post("/", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -103,7 +103,7 @@ router.post("/", async (req, res) => {
   res.json(savedAsset);
 });
 
-// Update the spesific Asset with id
+// Update Asset
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -170,7 +170,7 @@ router.put("/:id", async (req, res) => {
   res.json(finalUpdatedAsset);
 });
 
-// Remove the spesific Asset with id
+// Remove Asset
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {

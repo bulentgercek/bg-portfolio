@@ -7,17 +7,32 @@ import { filterObject } from "../../utils";
 
 const router = Router();
 
-// Get all Categories
+// Get Categories
 router.get("/", async (req, res) => {
   const validateResults = await ac.inputValidate();
   const dbCategories = await ac
     .findAll(Category, validateResults, {
+      select: {
+        items: {
+          id: true,
+          name: true,
+          description: true,
+          featured: true,
+          updatedDate: true,
+        },
+        childCategories: {
+          id: true,
+          name: true,
+        },
+        parentCategories: {
+          id: true,
+          name: true,
+        },
+      },
       relations: {
+        items: true,
         parentCategories: true,
         childCategories: true,
-        items: {
-          contents: true,
-        },
       },
     })
     .catch((err) => console.log(err));
@@ -25,7 +40,7 @@ router.get("/", async (req, res) => {
   res.json(dbCategories);
 });
 
-// Get spesific category with id
+// Get Category
 router.get("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
@@ -35,14 +50,27 @@ router.get("/:id", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
   const dbCategory = await ac
     .findOne(Category, validateResults, {
+      select: {
+        childCategories: {
+          id: true,
+          name: true,
+        },
+        parentCategories: {
+          id: true,
+          name: true,
+        },
+      },
       where: {
         id: validateResults.result.params?.id,
       },
       relations: {
-        parentCategories: true,
         items: {
-          contents: true,
+          contents: {
+            assets: true,
+          },
         },
+        parentCategories: true,
+        childCategories: true,
       },
     })
     .catch((err) => console.log(err));
@@ -50,7 +78,7 @@ router.get("/:id", async (req, res) => {
   res.json(dbCategory);
 });
 
-// Add a Category
+// Add Category
 router.post("/", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -98,7 +126,7 @@ router.post("/", async (req, res) => {
   res.json(addedCategory);
 });
 
-// Update a Category
+// Update Category
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -162,7 +190,7 @@ router.put("/:id", async (req, res) => {
   res.json(finalUpdatedCategory);
 });
 
-// Delete spesific category with id
+// Delete Category
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {

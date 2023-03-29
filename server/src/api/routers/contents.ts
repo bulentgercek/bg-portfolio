@@ -9,7 +9,7 @@ import { filterObject } from "../../utils";
 
 const router = Router();
 
-// Get all Contents
+// Get Contents
 router.get("/", async (req, res) => {
   const validateResults = await ac.inputValidate();
   const dbContents = await ac
@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
   res.json(dbContents);
 });
 
-// Get the spesific Content with id
+// Get Content
 router.get("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
@@ -121,7 +121,7 @@ router.post("/", async (req, res) => {
   res.json(savedContent);
 });
 
-// Update the spesific Content with id
+// Update Content
 router.put("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -207,7 +207,7 @@ router.put("/:id", async (req, res) => {
   res.json(finalUpdatedContent);
 });
 
-// Assign an Asset to Content with ids
+// Assign Asset to Content
 router.put("/:id/assets/:aid", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
@@ -272,7 +272,7 @@ router.put("/:id/assets/:aid", async (req, res) => {
   res.json(updatedContent);
 });
 
-// Remove a spesific asset from the spesific Content with ids
+// Remove Asset from Content
 // This endpoint will remove the spesific Asset with id from Content without
 // deleting it from the database.
 router.delete("/:id/assets/:aid", async (req, res) => {
@@ -328,7 +328,7 @@ router.delete("/:id/assets/:aid", async (req, res) => {
   res.json(updatedContent);
 });
 
-// Remove the spesific Content with id
+// Remove Content
 router.delete("/:id", async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {

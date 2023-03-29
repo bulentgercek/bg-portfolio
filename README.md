@@ -65,6 +65,7 @@ through a specific port.
 
 1.  [Assets](#3.1)
 2.  [Contents](#3.2)
+3.  [Items](#3.3)
 
 [⬆Top](#0)
 
@@ -86,15 +87,15 @@ AssetType {
 
 **Assets Endpoints**
 
-1. [`GET` Get all Assets](#3.1.1)
-2. [`GET` Get the spesific Asset with id](#3.1.2)
-3. [`POST` Add an Asset](#3.1.3)
-4. [`PUT` Update the spesific Asset with id](#3.1.4)
-5. [`DELETE` Remove the spesific Asset with id](#3.1.5)
+1. [`GET` Get Assets](#3.1.1)
+2. [`GET` Get Asset](#3.1.2)
+3. [`POST` Add Asset](#3.1.3)
+4. [`PUT` Update Asset](#3.1.4)
+5. [`DELETE` Remove Asset](#3.1.5)
 
 [⬆Api Documentation](#3)
 
-#### 3.1.1. `GET` Get all Assets<a name="3.1.1"></a>
+#### 3.1.1. `GET` Get Assets<a name="3.1.1"></a>
 
 ```
 .../api/assets
@@ -102,18 +103,19 @@ AssetType {
 
 _**Response Body** `Array`_
 
-| Field    | Type      | Description  |
-| -------- | --------- | ------------ |
-| id       | Number    |              |
-| name     | String    |              |
-| type     | AssetType |              |
-| text     | Text      |              |
-| url      | String    |              |
-| contents | Content[] | { id, name } |
+| Field       | Type      | Description  |
+| ----------- | --------- | ------------ |
+| id          | Number    |              |
+| name        | String    |              |
+| type        | AssetType |              |
+| text        | Text      |              |
+| url         | String    |              |
+| contents    | Content[] | { id, name } |
+| updatedDate | Date      |              |
 
 [⬆Assets](#3.1)
 
-#### 3.1.2. `GET` Get the spesific Asset with id<a name="3.1.2"></a>
+#### 3.1.2. `GET` Get Asset<a name="3.1.2"></a>
 
 ```
 .../api/assets/:id
@@ -127,18 +129,19 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field    | Type      | Description  |
-| -------- | --------- | ------------ |
-| id       | Number    |              |
-| name     | String    |              |
-| type     | AssetType |              |
-| text     | String    |              |
-| url      | String    |              |
-| contents | Content[] | { id, name } |
+| Field       | Type      | Description  |
+| ----------- | --------- | ------------ |
+| id          | Number    |              |
+| name        | String    |              |
+| type        | AssetType |              |
+| text        | String    |              |
+| url         | String    |              |
+| contents    | Content[] | { id, name } |
+| updatedDate | Date      |              |
 
 [⬆Assets](#3.1)
 
-#### 3.1.3. `POST` Add an Asset<a name="3.1.3"></a>
+#### 3.1.3. `POST` Add Asset<a name="3.1.3"></a>
 
 ```
 .../api/assets
@@ -156,18 +159,19 @@ _**Request Body** `Object`_
 
 _**Response Body** `Object`_
 
-| Field    | Type      | Description  |
-| -------- | --------- | ------------ |
-| id       | Number    |              |
-| name     | String    |              |
-| type     | AssetType |              |
-| text     | String    |              |
-| url      | String    |              |
-| contents | Content[] | { id, name } |
+| Field       | Type      | Description  |
+| ----------- | --------- | ------------ |
+| id          | Number    |              |
+| name        | String    |              |
+| type        | AssetType |              |
+| text        | String    |              |
+| url         | String    |              |
+| contents    | Content[] | { id, name } |
+| updatedDate | Date      |              |
 
 [⬆Assets](#3.1)
 
-#### 3.1.4. `PUT` Update the spesific Asset with id<a name="3.1.4"></a>
+#### 3.1.4. `PUT` Update Asset<a name="3.1.4"></a>
 
 ```
 .../api/assets/:id
@@ -191,18 +195,19 @@ _**Request Body** `Object`_
 
 _**Response Body** `Object`_
 
-| Field    | Type      | Description                 |
-| -------- | --------- | --------------------------- |
-| id       | Number    |                             |
-| name     | String    |                             |
-| type     | AssetType |                             |
-| text     | String    |                             |
-| url      | String    |                             |
-| contents | Content[] | { id, name, type, columns } |
+| Field       | Type      | Description                 |
+| ----------- | --------- | --------------------------- |
+| id          | Number    |                             |
+| name        | String    |                             |
+| type        | AssetType |                             |
+| text        | String    |                             |
+| url         | String    |                             |
+| contents    | Content[] | { id, name, type, columns } |
+| updatedDate | Date      |                             |
 
 [⬆Assets](#3.1)
 
-#### 3.1.5. `DELETE` Remove the spesific Asset with id<a name="3.1.5"></a>
+#### 3.1.5. `DELETE` Delete Asset<a name="3.1.5"></a>
 
 ```
 .../api/assets/:id
@@ -233,17 +238,17 @@ ContentType {
 
 **Contents Endpoints**
 
-1. [`GET` Get all Contents](#3.2.1)
-2. [`GET` Get the spesific Content with id](#3.2.2)
+1. [`GET` Get Contents](#3.2.1)
+2. [`GET` Get Content](#3.2.2)
 3. [`POST` Add Content](#3.2.3)
-4. [`PUT` Update the spesific Content with id](#3.2.4)
-5. [`PUT` Assign an Asset to Content with ids](#3.2.5)
-6. [`DELETE` Remove a spesific asset from the spesific Content with ids](#3.2.6)
-7. [`DELETE` Remove the spesific Content with id](#3.2.7)
+4. [`PUT` Update Content](#3.2.4)
+5. [`PUT` Assign Asset to Content](#3.2.5)
+6. [`DELETE` Remove Asset from Content](#3.2.6)
+7. [`DELETE` Delete Content](#3.2.7)
 
 [⬆Api Documentation](#3)
 
-#### 3.2.1. `GET` Get all Contents<a name="3.2.1"></a>
+#### 3.2.1. `GET` Get Contents<a name="3.2.1"></a>
 
 ```
 .../api/contents
@@ -251,18 +256,19 @@ ContentType {
 
 _**Response Body** `Array`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| item    | Item        | { id, name }                  |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field       | Type        | Description                   |
+| ----------- | ----------- | ----------------------------- |
+| id          | Number      |                               |
+| name        | String      |                               |
+| type        | ContentType |                               |
+| columns     | Number      |                               |
+| item        | Item        | { id, name }                  |
+| assets      | Asset[]     | { id, name, type, text, url } |
+| updatedDate | Date        |                               |
 
 [⬆Contents](#3.2)
 
-#### 3.2.2. `GET` Get the spesific Content with id<a name="3.2.2"></a>
+#### 3.2.2. `GET` Get Content<a name="3.2.2"></a>
 
 ```
 .../api/contents/:id
@@ -276,14 +282,15 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| item    | Item        | { id, name }                  |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field       | Type        | Description                   |
+| ----------- | ----------- | ----------------------------- |
+| id          | Number      |                               |
+| name        | String      |                               |
+| type        | ContentType |                               |
+| columns     | Number      |                               |
+| item        | Item        | { id, name }                  |
+| assets      | Asset[]     | { id, name, type, text, url } |
+| updatedDate | Date        |                               |
 
 [⬆Contents](#3.2)
 
@@ -301,18 +308,19 @@ _**Request Body** `Object`_
 
 _**Response Body** `Object`_
 
-| Field   | Type        | Description                               |
-| ------- | ----------- | ----------------------------------------- |
-| id      | Number      |                                           |
-| name    | String      |                                           |
-| type    | ContentType |                                           |
-| columns | Number      |                                           |
-| item    | Item        | { id, name, description, link, featured } |
-| assets  | Asset[]     | { id, name, type, text, url }             |
+| Field       | Type        | Description                               |
+| ----------- | ----------- | ----------------------------------------- |
+| id          | Number      |                                           |
+| name        | String      |                                           |
+| type        | ContentType |                                           |
+| columns     | Number      |                                           |
+| item        | Item        | { id, name, description, link, featured } |
+| assets      | Asset[]     | { id, name, type, text, url }             |
+| updatedDate | Date        |                                           |
 
 [⬆Contents](#3.2)
 
-#### 3.2.4. `PUT` Update the spesific Content with id<a name="3.2.4"></a>
+#### 3.2.4. `PUT` Update Content<a name="3.2.4"></a>
 
 ```
 .../api/contents/:id
@@ -336,18 +344,19 @@ _**Request Body** `Object`_
 
 _**Response Body** `Object`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| item    | Item        | { id, name }                  |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field       | Type        | Description                   |
+| ----------- | ----------- | ----------------------------- |
+| id          | Number      |                               |
+| name        | String      |                               |
+| type        | ContentType |                               |
+| columns     | Number      |                               |
+| item        | Item        | { id, name }                  |
+| assets      | Asset[]     | { id, name, type, text, url } |
+| updatedDate | Date        |                               |
 
 [⬆Contents](#3.2)
 
-#### 3.2.5. `PUT` Assign an Asset to Content with ids<a name="3.2.5"></a>
+#### 3.2.5. `PUT` Assign Asset to Content<a name="3.2.5"></a>
 
 ```
 .../api/contents/:id/assets/:aid
@@ -362,18 +371,19 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| item    | Item        | { id, name }                  |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field       | Type        | Description                   |
+| ----------- | ----------- | ----------------------------- |
+| id          | Number      |                               |
+| name        | String      |                               |
+| type        | ContentType |                               |
+| columns     | Number      |                               |
+| item        | Item        | { id, name }                  |
+| assets      | Asset[]     | { id, name, type, text, url } |
+| updatedDate | Date        |                               |
 
 [⬆Contents](#3.2)
 
-#### 3.2.6. `DELETE` Remove a spesific asset from the spesific Content with ids<a name="3.2.6"></a>
+#### 3.2.6. `DELETE` Remove Asset from Content<a name="3.2.6"></a>
 
 This endpoint will remove the spesific Asset with id from Content without
 deleting it from the database.
@@ -391,18 +401,19 @@ _**Request Params** `Object`_
 
 _**Response Body** `Object`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| item    | Item        | { id, name }                  |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field       | Type        | Description                   |
+| ----------- | ----------- | ----------------------------- |
+| id          | Number      |                               |
+| name        | String      |                               |
+| type        | ContentType |                               |
+| columns     | Number      |                               |
+| item        | Item        | { id, name }                  |
+| assets      | Asset[]     | { id, name, type, text, url } |
+| updatedDate | Date        |                               |
 
 [⬆Contents](#3.2)
 
-#### 3.2.7. `DELETE` Remove the spesific Content with id<a id='3.2.7'></a>
+#### 3.2.7. `DELETE` Delete Content<a id='3.2.7'></a>
 
 ```
 .../api/contents/:id
@@ -413,6 +424,249 @@ _**Request Params** `Object`_
 | Field | Type   | Description |
 | ----- | ------ | ----------- |
 | id    | Number | Required    |
+
+[⬆Contents](#3.2)
+
+### 3.3. Items<a name="3.3"></a>
+
+Items was designed as portfolio object. An **Item** can have array of
+**Content** and **Category**.
+
+**Contents Endpoints**
+
+1. [`GET` Get Items](#3.3.1)
+2. [`GET` Get Item](#3.3.2)
+3. [`GET` Get Contents of Item](#3.3.3)
+4. [`GET` Get Content of Item](#3.3.4)
+5. [`POST` Add Item](#3.3.5)
+6. [`PUT` Update Item](#3.3.6)
+7. [`PUT` Delete Item](#3.3.7)
+
+[⬆Api Documentation](#3)
+
+#### 3.3.1. `GET` Get Items<a name="3.3.1"></a>
+
+```
+.../api/items
+```
+
+_**Response Body** `Array`_
+
+| Field              | Type       | Description                                         |
+| ------------------ | ---------- | --------------------------------------------------- |
+| id                 | Number     |                                                     |
+| name               | String     |                                                     |
+| description        | Text       |                                                     |
+| link               | string     |                                                     |
+| featured           | Boolean    |                                                     |
+| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
+| contents           | Content[]  | { id, name, type, columns, assets[] }               |
+| updatedDate        | Date       |                                                     |
+
+[⬆Items](#3.3)
+
+#### 3.3.2. `GET` Get Item<a name="3.3.2"></a>
+
+```
+.../api/items/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Response Body** `Object`_
+
+| Field              | Type       | Description                                         |
+| ------------------ | ---------- | --------------------------------------------------- |
+| id                 | Number     |                                                     |
+| name               | String     |                                                     |
+| description        | Text       |                                                     |
+| link               | string     |                                                     |
+| featured           | Boolean    |                                                     |
+| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
+| contents           | Content[]  | { id, name, type, columns, assets[] }               |
+| updatedDate        | Date       |                                                     |
+
+[⬆Items](#3.3)
+
+#### 3.3.3. `GET` Get Contents of Item<a name="3.3.3"></a>
+
+```
+.../api/items/:id/contents
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Response Body** `Array`_
+
+| Field   | Type        | Description                   |
+| ------- | ----------- | ----------------------------- |
+| id      | Number      |                               |
+| name    | String      |                               |
+| type    | ContentType |                               |
+| columns | Number      |                               |
+| assets  | Asset[]     | { id, name, type, text, url } |
+
+[⬆Items](#3.3)
+
+#### 3.3.4. `GET` Get Content of Item<a name="3.3.4"></a>
+
+```
+.../api/items/:id/contents/:cid
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+| cid   | Number | Required    |
+
+_**Response Body** `Object`_
+
+| Field   | Type        | Description                   |
+| ------- | ----------- | ----------------------------- |
+| id      | Number      |                               |
+| name    | String      |                               |
+| type    | ContentType |                               |
+| columns | Number      |                               |
+| assets  | Asset[]     | { id, name, type, text, url } |
+
+[⬆Items](#3.3)
+
+#### 3.3.5. `POST` Add Item<a name="3.3.5"></a>
+
+```
+.../api/items/
+```
+
+_**Request Body** `Object`_
+
+| Field              | Type       | Description                        |
+| ------------------ | ---------- | ---------------------------------- |
+| name               | String     | default: "Untitled Item", Optional |
+| description        | Text       | Optional                           |
+| link               | string     | Optional                           |
+| featured           | Boolean    | default: false, Optional           |
+| featuredImageAsset | Asset      | { id, name, type, url}             |
+| categories         | Category[] | { id }, Optional                   |
+
+_**Response Body** `Object`_
+
+| Field              | Type       | Description                                         |
+| ------------------ | ---------- | --------------------------------------------------- |
+| id                 | Number     |                                                     |
+| name               | String     |                                                     |
+| description        | Text       |                                                     |
+| link               | string     |                                                     |
+| featured           | Boolean    |                                                     |
+| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
+| updatedDate        | Date       |                                                     |
+
+[⬆Items](#3.3)
+
+#### 3.3.6. `PUT` Update Item<a name="3.3.6"></a>
+
+Another point to be noted is; we do not add content here. Because Content will
+be just like "Add Item" (because Content without Item relation cannot be
+created), it is pointless to update it.
+
+```
+.../api/items/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Request Body** `Object`_
+
+| Field              | Type       | Description                        |
+| ------------------ | ---------- | ---------------------------------- |
+| name               | String     | default: "Untitled Item", Optional |
+| description        | Text       | Optional                           |
+| link               | string     | Optional                           |
+| featured           | Boolean    | default: false, Optional           |
+| featuredImageAsset | Asset      | { id, name, type, url}             |
+| categories         | Category[] | { id }, Optional                   |
+
+_**Response Body** `Object`_
+
+| Field              | Type       | Description                                         |
+| ------------------ | ---------- | --------------------------------------------------- |
+| id                 | Number     |                                                     |
+| name               | String     |                                                     |
+| description        | Text       |                                                     |
+| link               | string     |                                                     |
+| featured           | Boolean    |                                                     |
+| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
+| updatedDate        | Date       |                                                     |
+
+[⬆Items](#3.3)
+
+#### 3.3.7. `DELETE` Delete Item<a name="3.3.7"></a>
+
+```
+.../api/items/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+[⬆Items](#3.3)
+
+### 3.4. Categories<a name="3.2"></a>
+
+**Categories** are designed for grouping Item objects. Categories are in a
+Parent-Child relationship with each other. In order to offer the possibility of
+usage; a **Category** can be added to more than one **Category** as child if
+desired.
+
+**Contents Endpoints**
+
+1. [`GET` Get Categories](#3.4.1)
+2. [`GET` Get Category](#3.4.2)
+3. [`POST` Add Category](#3.4.3)
+4. [`PUT` Update Category](#3.4.4)
+5. [`DELETE` Delete Category](#3.4.5)
+
+[⬆Api Documentation](#3)
+
+#### 3.4.1. `GET` Get Categories<a name="3.4.1"></a>
+
+```
+.../api/categories
+```
+
+_**Response Body** `Array`_
+
+| Field                | Type       | Description                                      |
+| -------------------- | ---------- | ------------------------------------------------ |
+| id                   | Number     |                                                  |
+| name                 | String     |                                                  |
+| description          | Text       |                                                  |
+| items                | Item[]     | { id, name, description, featured, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                     |
+| childCategories      | Category[] | { id, name }                                     |
+| childCategoriesOrder | Number[]   |                                                  |
+| itemsOrder           | Number[]   |                                                  |
+| updatedDate          | Date       |                                                  |
 
 [⬆Contents](#3.2)
 
