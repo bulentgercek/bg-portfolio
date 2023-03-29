@@ -459,7 +459,7 @@ _**Response Body** `Array`_
 | description        | Text       |                                                     |
 | link               | string     |                                                     |
 | featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| featuredImageAsset | Asset      | { id, name, url}                                    |
 | categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
 | contents           | Content[]  | { id, name, type, columns, assets[] }               |
 | updatedDate        | Date       |                                                     |
@@ -487,7 +487,7 @@ _**Response Body** `Object`_
 | description        | Text       |                                                     |
 | link               | string     |                                                     |
 | featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| featuredImageAsset | Asset      | { id, name, url}                                    |
 | categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
 | contents           | Content[]  | { id, name, type, columns, assets[] }               |
 | updatedDate        | Date       |                                                     |
@@ -557,7 +557,7 @@ _**Request Body** `Object`_
 | description        | Text       | Optional                           |
 | link               | string     | Optional                           |
 | featured           | Boolean    | default: false, Optional           |
-| featuredImageAsset | Asset      | { id, name, type, url}             |
+| featuredImageAsset | Asset      | { id}, Optional                    |
 | categories         | Category[] | { id }, Optional                   |
 
 _**Response Body** `Object`_
@@ -569,7 +569,7 @@ _**Response Body** `Object`_
 | description        | Text       |                                                     |
 | link               | string     |                                                     |
 | featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| featuredImageAsset | Asset      | { id, name, url}                                    |
 | categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
 | updatedDate        | Date       |                                                     |
 
@@ -599,7 +599,7 @@ _**Request Body** `Object`_
 | description        | Text       | Optional                           |
 | link               | string     | Optional                           |
 | featured           | Boolean    | default: false, Optional           |
-| featuredImageAsset | Asset      | { id, name, type, url}             |
+| featuredImageAsset | Asset      | { id }, Optional                   |
 | categories         | Category[] | { id }, Optional                   |
 
 _**Response Body** `Object`_
@@ -611,7 +611,7 @@ _**Response Body** `Object`_
 | description        | Text       |                                                     |
 | link               | string     |                                                     |
 | featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, type, url}                              |
+| featuredImageAsset | Asset      | { id, name, url}                                    |
 | categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
 | updatedDate        | Date       |                                                     |
 

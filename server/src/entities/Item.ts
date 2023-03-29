@@ -32,7 +32,7 @@ export class Item {
 
   @OneToOne(() => Asset, { nullable: true })
   @JoinColumn()
-  featuredImageAsset: Asset;
+  featuredImageAsset: Asset | null;
 
   @ManyToMany(() => Category, (category) => category.items, { nullable: true })
   @JoinTable()

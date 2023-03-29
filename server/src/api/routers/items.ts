@@ -6,7 +6,7 @@ import { Content, ContentType } from "../../entities/Content";
 import { Category } from "../../entities/Category";
 import { In } from "typeorm";
 import { filterObject } from "../../utils";
-import { Asset } from "../../entities/Asset";
+import { Asset, AssetType } from "../../entities/Asset";
 
 const router = Router();
 
@@ -16,6 +16,11 @@ router.get("/", async (req, res) => {
   const dbItems = await ac
     .findAll(Item, validateResults, {
       select: {
+        featuredImageAsset: {
+          id: true,
+          name: true,
+          url: true,
+        },
         categories: {
           id: true,
           name: true,
@@ -30,6 +35,7 @@ router.get("/", async (req, res) => {
         },
       },
       relations: {
+        featuredImageAsset: true,
         categories: {
           parentCategories: true,
         },
@@ -58,6 +64,11 @@ router.get("/:id", async (req, res) => {
   const dbPortfolioItem = await ac
     .findOne(Item, validateResults, {
       select: {
+        featuredImageAsset: {
+          id: true,
+          name: true,
+          url: true,
+        },
         categories: {
           id: true,
           name: true,
@@ -72,6 +83,7 @@ router.get("/:id", async (req, res) => {
         },
       },
       relations: {
+        featuredImageAsset: true,
         categories: {
           parentCategories: true,
         },
@@ -148,6 +160,7 @@ router.post("/", async (req, res) => {
         description: z.string().optional(),
         link: z.string().url().optional(),
         featured: z.boolean().optional(),
+        featuredImageAsset: z.number().optional(),
         categories: z.array(z.number()).optional(),
       }),
     },
@@ -160,10 +173,30 @@ router.post("/", async (req, res) => {
   if (!validateResults.success.body || !validateResults.result.body) return;
 
   // Filter out the relational inputs before create
-  const filteredBody = filterObject(validateResults.result.body, "categories");
+  const filteredBody = filterObject(
+    validateResults.result.body,
+    "featuredImageAsset",
+    "categories",
+  );
 
   // Create new Item
   const createdItem = ac.create(Item, filteredBody);
+
+  // Add featured image Asset
+  if (validateResults.result.body.featuredImageAsset) {
+    const dbAsset = await ac
+      .findOne(Asset, validateResults, {
+        where: {
+          id: validateResults.result.body.featuredImageAsset,
+        },
+      })
+      .catch((err) => console.log(err));
+
+    // is validated? is AssetType.Image?
+    if (dbAsset instanceof Asset && dbAsset.type === AssetType.Image) {
+      createdItem.featuredImageAsset = dbAsset;
+    }
+  }
 
   // Add Categories
   if (validateResults.result.body.categories) {
@@ -199,6 +232,7 @@ router.put("/:id", async (req, res) => {
         description: z.string().optional(),
         link: z.string().optional(),
         featured: z.boolean().optional(),
+        featuredImageAsset: z.number().or(z.null()).optional(),
         categories: z.array(z.number()).optional(),
       }),
     },
@@ -217,6 +251,7 @@ router.put("/:id", async (req, res) => {
         id: validateResults.result.params?.id,
       },
       relations: {
+        featuredImageAsset: true,
         contents: true,
       },
     })
@@ -231,6 +266,7 @@ router.put("/:id", async (req, res) => {
   // Filter out the relational inputs before create updatedItem
   const filteredBody: Partial<Item> = filterObject(
     validateResults.result.body,
+    "featuredImageAsset",
     "categories",
   );
 
@@ -239,6 +275,26 @@ router.put("/:id", async (req, res) => {
     ...dbItem,
     ...filteredBody,
   };
+
+  // Add featured image Asset
+  if (validateResults.result.body.featuredImageAsset) {
+    const dbAsset = await ac
+      .findOne(Asset, validateResults, {
+        where: {
+          id: validateResults.result.body.featuredImageAsset,
+        },
+      })
+      .catch((err) => console.log(err));
+
+    // is validated? is AssetType.Image?
+    if (dbAsset instanceof Asset && dbAsset.type === AssetType.Image) {
+      updatedItem.featuredImageAsset = dbAsset;
+    }
+  }
+
+  // Is featuredImageAsset required to be null?
+  if (validateResults.result.body.featuredImageAsset === null)
+    updatedItem.featuredImageAsset = null;
 
   // Add Categories
   if (validateResults.result.body.categories) {

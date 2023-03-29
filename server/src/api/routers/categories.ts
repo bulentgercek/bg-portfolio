@@ -20,11 +20,11 @@ router.get("/", async (req, res) => {
           featured: true,
           updatedDate: true,
         },
-        childCategories: {
+        parentCategories: {
           id: true,
           name: true,
         },
-        parentCategories: {
+        childCategories: {
           id: true,
           name: true,
         },
@@ -51,11 +51,11 @@ router.get("/:id", async (req, res) => {
   const dbCategory = await ac
     .findOne(Category, validateResults, {
       select: {
-        childCategories: {
+        parentCategories: {
           id: true,
           name: true,
         },
-        parentCategories: {
+        childCategories: {
           id: true,
           name: true,
         },
@@ -86,6 +86,7 @@ router.post("/", async (req, res) => {
         name: z.string().optional(),
         description: z.string().nullable().optional(),
         parentCategories: z.array(z.number()).optional(),
+        childCategories: z.array(z.number()).optional(),
       }),
     },
     reqData: { body: req.body },
@@ -105,7 +106,7 @@ router.post("/", async (req, res) => {
   // Create new Category
   const createdCategory = ac.create(Category, filteredBody);
 
-  // Add ParentCategories
+  // Add parent categories
   if (validateResults.result.body.parentCategories) {
     const dbParentCategories = await ac.findAll(Category, validateResults, {
       where: {
@@ -116,6 +117,20 @@ router.post("/", async (req, res) => {
     // is validated?
     if (Array.isArray(dbParentCategories)) {
       createdCategory.parentCategories = dbParentCategories;
+    }
+  }
+
+  // Add child categories
+  if (validateResults.result.body.childCategories) {
+    const dbChildCategories = await ac.findAll(Category, validateResults, {
+      where: {
+        id: In(validateResults.result.body.childCategories),
+      },
+    });
+
+    // is validated?
+    if (Array.isArray(dbChildCategories)) {
+      createdCategory.parentCategories = dbChildCategories;
     }
   }
 
@@ -138,6 +153,7 @@ router.put("/:id", async (req, res) => {
         description: z.string().optional(),
         items: z.array(z.number()).optional(),
         parentCategories: z.array(z.number()).optional(),
+        childCategories: z.array(z.number()).optional(),
       }),
     },
     reqData: { params: req.params, body: req.body },
@@ -152,6 +168,7 @@ router.put("/:id", async (req, res) => {
       },
       relations: {
         parentCategories: true,
+        childCategories: true,
       },
     })
     .catch((err) => console.log(err));
@@ -166,12 +183,14 @@ router.put("/:id", async (req, res) => {
   const filteredBody: Partial<Category> = filterObject(
     validateResults.result.body,
     "parentCategories",
+    "childCategories",
   );
 
   const updatedCategory: Category = { ...dbCategory, ...filteredBody };
 
+  // Add parent categories
   if (validateResults.result.body.parentCategories) {
-    const dbCategories = await ac
+    const dbParentCategories = await ac
       .findAll(Category, validateResults, {
         where: {
           id: In(validateResults.result.body.parentCategories),
@@ -179,8 +198,22 @@ router.put("/:id", async (req, res) => {
       })
       .catch((err) => console.log(err));
 
-    if (Array.isArray(dbCategories))
-      updatedCategory.parentCategories = dbCategories;
+    if (Array.isArray(dbParentCategories))
+      updatedCategory.parentCategories = dbParentCategories;
+  }
+
+  // Add child categories
+  if (validateResults.result.body.childCategories) {
+    const dbChildCategories = await ac
+      .findAll(Category, validateResults, {
+        where: {
+          id: In(validateResults.result.body.childCategories),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    if (Array.isArray(dbChildCategories))
+      updatedCategory.childCategories = dbChildCategories;
   }
 
   const finalUpdatedCategory = await ac
