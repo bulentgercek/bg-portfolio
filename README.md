@@ -656,19 +656,131 @@ desired.
 
 _**Response Body** `Array`_
 
-| Field                | Type       | Description                                      |
-| -------------------- | ---------- | ------------------------------------------------ |
-| id                   | Number     |                                                  |
-| name                 | String     |                                                  |
-| description          | Text       |                                                  |
-| items                | Item[]     | { id, name, description, featured, updatedDate } |
-| parentCategories     | Category[] | { id, name }                                     |
-| childCategories      | Category[] | { id, name }                                     |
-| childCategoriesOrder | Number[]   |                                                  |
-| itemsOrder           | Number[]   |                                                  |
-| updatedDate          | Date       |                                                  |
+| Field                | Type       | Description                                                          |
+| -------------------- | ---------- | -------------------------------------------------------------------- |
+| id                   | Number     |                                                                      |
+| name                 | String     |                                                                      |
+| description          | Text       |                                                                      |
+| items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                                         |
+| childCategories      | Category[] | { id, name }                                                         |
+| childCategoriesOrder | Number[]   |                                                                      |
+| itemsOrder           | Number[]   |                                                                      |
+| updatedDate          | Date       |                                                                      |
 
-[⬆Contents](#3.2)
+[⬆Categories](#3.4)
+
+#### 3.4.2. `GET` Get Category<a name="3.4.2"></a>
+
+```
+.../api/categories/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Response Body** `Array`_
+
+| Field                | Type       | Description                                                          |
+| -------------------- | ---------- | -------------------------------------------------------------------- |
+| id                   | Number     |                                                                      |
+| name                 | String     |                                                                      |
+| description          | Text       |                                                                      |
+| items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                                         |
+| childCategories      | Category[] | { id, name }                                                         |
+| childCategoriesOrder | Number[]   |                                                                      |
+| itemsOrder           | Number[]   |                                                                      |
+| updatedDate          | Date       |                                                                      |
+
+[⬆Categories](#3.4)
+
+#### 3.4.3. `POST` Add Category<a name="3.4.3"></a>
+
+```
+.../api/categories
+```
+
+_**Request Body** `Object`_
+
+| Field            | Type       | Description                            |
+| ---------------- | ---------- | -------------------------------------- |
+| name             | String     | default: "Untitled Category", Optional |
+| description      | Text       | Optional                               |
+| items            | Item[]     | [ ...id], Optional                     |
+| parentCategories | Category[] | [ ...id ], Optional                    |
+| childCategories  | Category[] | [ ...id ], Optional                    |
+
+_**Response Body** `Array`_
+
+| Field                | Type       | Description                                                          |
+| -------------------- | ---------- | -------------------------------------------------------------------- |
+| id                   | Number     |                                                                      |
+| name                 | String     |                                                                      |
+| description          | Text       |                                                                      |
+| items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                                         |
+| childCategories      | Category[] | { id, name }                                                         |
+| childCategoriesOrder | Number[]   |                                                                      |
+| itemsOrder           | Number[]   |                                                                      |
+| updatedDate          | Date       |                                                                      |
+
+[⬆Categories](#3.4)
+
+#### 3.4.4. `PUT` Update Category<a name="3.4.4"></a>
+
+```
+.../api/categories/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Request Body** `Object`_
+
+| Field            | Type       | Description                            |
+| ---------------- | ---------- | -------------------------------------- |
+| name             | String     | default: "Untitled Category", Optional |
+| description      | Text       | Optional                               |
+| items            | Item[]     | [ ...id], Optional                     |
+| parentCategories | Category[] | [ ...id ], Optional                    |
+| childCategories  | Category[] | [ ...id ], Optional                    |
+
+_**Response Body** `Array`_
+
+| Field                | Type       | Description                                                          |
+| -------------------- | ---------- | -------------------------------------------------------------------- |
+| id                   | Number     |                                                                      |
+| name                 | String     |                                                                      |
+| description          | Text       |                                                                      |
+| items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                                         |
+| childCategories      | Category[] | { id, name }                                                         |
+| childCategoriesOrder | Number[]   |                                                                      |
+| itemsOrder           | Number[]   |                                                                      |
+| updatedDate          | Date       |                                                                      |
+
+[⬆Categories](#3.4)
+
+#### 3.4.5. `DELETE` Delete Category<a name="3.4.5"></a>
+
+```
+.../api/categories/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+[⬆Categories](#3.4)
 
 ## Website
 

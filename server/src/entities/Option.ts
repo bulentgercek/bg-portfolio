@@ -42,8 +42,4 @@ export class Option {
 
   @Column({ type: "text", nullable: true })
   description: string;
-
-  @Column({})
-  @UpdateDateColumn()
-  updatedDate: Date;
 }

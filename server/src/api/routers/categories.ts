@@ -3,6 +3,7 @@ import { In } from "typeorm";
 import { z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { Category } from "../../entities/Category";
+import { Item } from "../../entities/Item";
 import { filterObject } from "../../utils";
 
 const router = Router();
@@ -85,6 +86,7 @@ router.post("/", async (req, res) => {
       body: z.object({
         name: z.string().optional(),
         description: z.string().nullable().optional(),
+        items: z.array(z.number()).optional(),
         parentCategories: z.array(z.number()).optional(),
         childCategories: z.array(z.number()).optional(),
       }),
@@ -100,11 +102,28 @@ router.post("/", async (req, res) => {
   // Filter out the relational inputs before create
   const filteredBody = filterObject(
     validateResults.result.body,
+    "items",
     "parentCategories",
+    "childCategories",
   );
 
   // Create new Category
   const createdCategory = ac.create(Category, filteredBody);
+
+  // Get Items
+  if (validateResults.result.body.items) {
+    const dbItems = await ac
+      .findAll(Item, validateResults, {
+        where: {
+          id: In(validateResults.result.body?.items),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    if (Array.isArray(dbItems)) {
+      createdCategory.items = dbItems;
+    }
+  }
 
   // Add parent categories
   if (validateResults.result.body.parentCategories) {
@@ -161,6 +180,7 @@ router.put("/:id", async (req, res) => {
 
   const validateResults = await ac.inputValidate(ctxObj);
 
+  // Get Category
   const dbCategory = await ac
     .findOne(Category, validateResults, {
       where: {
@@ -182,11 +202,28 @@ router.put("/:id", async (req, res) => {
   // Filter out the relational inputs before create
   const filteredBody: Partial<Category> = filterObject(
     validateResults.result.body,
+    "items",
     "parentCategories",
     "childCategories",
   );
 
+  // Override Given Values
   const updatedCategory: Category = { ...dbCategory, ...filteredBody };
+
+  // Get Items
+  if (validateResults.result.body.items) {
+    const dbItems = await ac
+      .findAll(Item, validateResults, {
+        where: {
+          id: In(validateResults.result.body.items),
+        },
+      })
+      .catch((err) => console.log(err));
+
+    if (Array.isArray(dbItems)) {
+      updatedCategory.items = dbItems;
+    }
+  }
 
   // Add parent categories
   if (validateResults.result.body.parentCategories) {
