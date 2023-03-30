@@ -85,7 +85,7 @@ AssetType {
 }
 ```
 
-**Assets Endpoints**
+**Endpoints**
 
 1. [`GET` Get Assets](#3.1.1)
 2. [`GET` Get Asset](#3.1.2)
@@ -236,7 +236,7 @@ ContentType {
 }
 ```
 
-**Contents Endpoints**
+**Endpoints**
 
 1. [`GET` Get Contents](#3.2.1)
 2. [`GET` Get Content](#3.2.2)
@@ -256,15 +256,14 @@ ContentType {
 
 _**Response Body** `Array`_
 
-| Field       | Type        | Description                   |
-| ----------- | ----------- | ----------------------------- |
-| id          | Number      |                               |
-| name        | String      |                               |
-| type        | ContentType |                               |
-| columns     | Number      |                               |
-| item        | Item        | { id, name }                  |
-| assets      | Asset[]     | { id, name, type, text, url } |
-| updatedDate | Date        |                               |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| item    | Item        | { id, name }                               |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Contents](#3.2)
 
@@ -282,15 +281,14 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field       | Type        | Description                   |
-| ----------- | ----------- | ----------------------------- |
-| id          | Number      |                               |
-| name        | String      |                               |
-| type        | ContentType |                               |
-| columns     | Number      |                               |
-| item        | Item        | { id, name }                  |
-| assets      | Asset[]     | { id, name, type, text, url } |
-| updatedDate | Date        |                               |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| item    | Item        | { id, name }                               |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Contents](#3.2)
 
@@ -308,15 +306,14 @@ _**Request Body** `Object`_
 
 _**Response Body** `Object`_
 
-| Field       | Type        | Description                               |
-| ----------- | ----------- | ----------------------------------------- |
-| id          | Number      |                                           |
-| name        | String      |                                           |
-| type        | ContentType |                                           |
-| columns     | Number      |                                           |
-| item        | Item        | { id, name, description, link, featured } |
-| assets      | Asset[]     | { id, name, type, text, url }             |
-| updatedDate | Date        |                                           |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| item    | Item        | { id, name, description, link, featured }  |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Contents](#3.2)
 
@@ -344,15 +341,14 @@ _**Request Body** `Object`_
 
 _**Response Body** `Object`_
 
-| Field       | Type        | Description                   |
-| ----------- | ----------- | ----------------------------- |
-| id          | Number      |                               |
-| name        | String      |                               |
-| type        | ContentType |                               |
-| columns     | Number      |                               |
-| item        | Item        | { id, name }                  |
-| assets      | Asset[]     | { id, name, type, text, url } |
-| updatedDate | Date        |                               |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| item    | Item        | { id, name }                               |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Contents](#3.2)
 
@@ -371,15 +367,14 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field       | Type        | Description                   |
-| ----------- | ----------- | ----------------------------- |
-| id          | Number      |                               |
-| name        | String      |                               |
-| type        | ContentType |                               |
-| columns     | Number      |                               |
-| item        | Item        | { id, name }                  |
-| assets      | Asset[]     | { id, name, type, text, url } |
-| updatedDate | Date        |                               |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| item    | Item        | { id, name }                               |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Contents](#3.2)
 
@@ -401,15 +396,14 @@ _**Request Params** `Object`_
 
 _**Response Body** `Object`_
 
-| Field       | Type        | Description                   |
-| ----------- | ----------- | ----------------------------- |
-| id          | Number      |                               |
-| name        | String      |                               |
-| type        | ContentType |                               |
-| columns     | Number      |                               |
-| item        | Item        | { id, name }                  |
-| assets      | Asset[]     | { id, name, type, text, url } |
-| updatedDate | Date        |                               |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| item    | Item        | { id, name }                               |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Contents](#3.2)
 
@@ -432,7 +426,7 @@ _**Request Params** `Object`_
 Items was designed as portfolio object. An **Item** can have array of
 **Content** and **Category**.
 
-**Contents Endpoints**
+**Endpoints**
 
 1. [`GET` Get Items](#3.3.1)
 2. [`GET` Get Item](#3.3.2)
@@ -452,17 +446,17 @@ Items was designed as portfolio object. An **Item** can have array of
 
 _**Response Body** `Array`_
 
-| Field              | Type       | Description                                         |
-| ------------------ | ---------- | --------------------------------------------------- |
-| id                 | Number     |                                                     |
-| name               | String     |                                                     |
-| description        | Text       |                                                     |
-| link               | string     |                                                     |
-| featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, url}                                    |
-| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
-| contents           | Content[]  | { id, name, type, columns, assets[] }               |
-| updatedDate        | Date       |                                                     |
+| Field              | Type          | Description                                         |
+| ------------------ | ------------- | --------------------------------------------------- |
+| id                 | Number        |                                                     |
+| name               | String        |                                                     |
+| description        | Text          |                                                     |
+| link               | string        |                                                     |
+| featured           | Boolean       |                                                     |
+| featuredImageAsset | Asset or Null | { id, name, url }                                   |
+| categories         | Category[]    | { id, name, parentCategories[], childCategories[] } |
+| contents           | Content[]     | { id, name, type, columns, assets[] }               |
+| updatedDate        | Date          |                                                     |
 
 [⬆Items](#3.3)
 
@@ -480,17 +474,17 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field              | Type       | Description                                         |
-| ------------------ | ---------- | --------------------------------------------------- |
-| id                 | Number     |                                                     |
-| name               | String     |                                                     |
-| description        | Text       |                                                     |
-| link               | string     |                                                     |
-| featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, url}                                    |
-| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
-| contents           | Content[]  | { id, name, type, columns, assets[] }               |
-| updatedDate        | Date       |                                                     |
+| Field              | Type          | Description                                         |
+| ------------------ | ------------- | --------------------------------------------------- |
+| id                 | Number        |                                                     |
+| name               | String        |                                                     |
+| description        | Text          |                                                     |
+| link               | string        |                                                     |
+| featured           | Boolean       |                                                     |
+| featuredImageAsset | Asset or Null | { id, name, url }                                   |
+| categories         | Category[]    | { id, name, parentCategories[], childCategories[] } |
+| contents           | Content[]     | { id, name, type, columns, assets[] }               |
+| updatedDate        | Date          |                                                     |
 
 [⬆Items](#3.3)
 
@@ -508,13 +502,13 @@ _**Request Params** `Number`_
 
 _**Response Body** `Array`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Items](#3.3)
 
@@ -533,13 +527,13 @@ _**Request Params** `Number`_
 
 _**Response Body** `Object`_
 
-| Field   | Type        | Description                   |
-| ------- | ----------- | ----------------------------- |
-| id      | Number      |                               |
-| name    | String      |                               |
-| type    | ContentType |                               |
-| columns | Number      |                               |
-| assets  | Asset[]     | { id, name, type, text, url } |
+| Field   | Type        | Description                                |
+| ------- | ----------- | ------------------------------------------ |
+| id      | Number      |                                            |
+| name    | String      |                                            |
+| type    | ContentType |                                            |
+| columns | Number      |                                            |
+| assets  | Asset[]     | { id, name, type, text, url, updatedDate } |
 
 [⬆Items](#3.3)
 
@@ -551,27 +545,27 @@ _**Response Body** `Object`_
 
 _**Request Body** `Object`_
 
-| Field              | Type       | Description                        |
-| ------------------ | ---------- | ---------------------------------- |
-| name               | String     | default: "Untitled Item", Optional |
-| description        | Text       | Optional                           |
-| link               | string     | Optional                           |
-| featured           | Boolean    | default: false, Optional           |
-| featuredImageAsset | Asset      | { id}, Optional                    |
-| categories         | Category[] | { id }, Optional                   |
+| Field              | Type          | Description                        |
+| ------------------ | ------------- | ---------------------------------- |
+| name               | String        | default: "Untitled Item", Optional |
+| description        | Text          | Optional                           |
+| link               | string        | Optional                           |
+| featured           | Boolean       | default: false, Optional           |
+| featuredImageAsset | Asset or Null | { id }, Optional                   |
+| categories         | Category[]    | { id }, Optional                   |
 
 _**Response Body** `Object`_
 
-| Field              | Type       | Description                                         |
-| ------------------ | ---------- | --------------------------------------------------- |
-| id                 | Number     |                                                     |
-| name               | String     |                                                     |
-| description        | Text       |                                                     |
-| link               | string     |                                                     |
-| featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, url}                                    |
-| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
-| updatedDate        | Date       |                                                     |
+| Field              | Type          | Description                                         |
+| ------------------ | ------------- | --------------------------------------------------- |
+| id                 | Number        |                                                     |
+| name               | String        |                                                     |
+| description        | Text          |                                                     |
+| link               | string        |                                                     |
+| featured           | Boolean       |                                                     |
+| featuredImageAsset | Asset or Null | { id, name, url }                                   |
+| categories         | Category[]    | { id, name, parentCategories[], childCategories[] } |
+| updatedDate        | Date          |                                                     |
 
 [⬆Items](#3.3)
 
@@ -593,27 +587,27 @@ _**Request Params** `Number`_
 
 _**Request Body** `Object`_
 
-| Field              | Type       | Description                        |
-| ------------------ | ---------- | ---------------------------------- |
-| name               | String     | default: "Untitled Item", Optional |
-| description        | Text       | Optional                           |
-| link               | string     | Optional                           |
-| featured           | Boolean    | default: false, Optional           |
-| featuredImageAsset | Asset      | { id }, Optional                   |
-| categories         | Category[] | { id }, Optional                   |
+| Field              | Type          | Description                        |
+| ------------------ | ------------- | ---------------------------------- |
+| name               | String        | default: "Untitled Item", Optional |
+| description        | Text          | Optional                           |
+| link               | string        | Optional                           |
+| featured           | Boolean       | default: false, Optional           |
+| featuredImageAsset | Asset or Null | { id }, Optional                   |
+| categories         | Category[]    | { id }, Optional                   |
 
 _**Response Body** `Object`_
 
-| Field              | Type       | Description                                         |
-| ------------------ | ---------- | --------------------------------------------------- |
-| id                 | Number     |                                                     |
-| name               | String     |                                                     |
-| description        | Text       |                                                     |
-| link               | string     |                                                     |
-| featured           | Boolean    |                                                     |
-| featuredImageAsset | Asset      | { id, name, url}                                    |
-| categories         | Category[] | { id, name, parentCategories[], childCategories[] } |
-| updatedDate        | Date       |                                                     |
+| Field              | Type          | Description                                         |
+| ------------------ | ------------- | --------------------------------------------------- |
+| id                 | Number        |                                                     |
+| name               | String        |                                                     |
+| description        | Text          |                                                     |
+| link               | string        |                                                     |
+| featured           | Boolean       |                                                     |
+| featuredImageAsset | Asset or Null | { id, name, url }                                   |
+| categories         | Category[]    | { id, name, parentCategories[], childCategories[] } |
+| updatedDate        | Date          |                                                     |
 
 [⬆Items](#3.3)
 
@@ -631,14 +625,14 @@ _**Request Params** `Number`_
 
 [⬆Items](#3.3)
 
-### 3.4. Categories<a name="3.2"></a>
+### 3.4. Categories<a name="3.4"></a>
 
 **Categories** are designed for grouping Item objects. Categories are in a
 Parent-Child relationship with each other. In order to offer the possibility of
 usage; a **Category** can be added to more than one **Category** as child if
 desired.
 
-**Contents Endpoints**
+**Endpoints**
 
 1. [`GET` Get Categories](#3.4.1)
 2. [`GET` Get Category](#3.4.2)
@@ -664,8 +658,8 @@ _**Response Body** `Array`_
 | items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
 | parentCategories     | Category[] | { id, name }                                                         |
 | childCategories      | Category[] | { id, name }                                                         |
-| childCategoriesOrder | Number[]   |                                                                      |
-| itemsOrder           | Number[]   |                                                                      |
+| childCategoriesOrder | Number[]   | Not implemented                                                      |
+| itemsOrder           | Number[]   | Not implemented                                                      |
 | updatedDate          | Date       |                                                                      |
 
 [⬆Categories](#3.4)
@@ -692,8 +686,8 @@ _**Response Body** `Array`_
 | items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
 | parentCategories     | Category[] | { id, name }                                                         |
 | childCategories      | Category[] | { id, name }                                                         |
-| childCategoriesOrder | Number[]   |                                                                      |
-| itemsOrder           | Number[]   |                                                                      |
+| childCategoriesOrder | Number[]   | Not implemented                                                      |
+| itemsOrder           | Number[]   | Not implemented                                                      |
 | updatedDate          | Date       |                                                                      |
 
 [⬆Categories](#3.4)
@@ -724,8 +718,8 @@ _**Response Body** `Array`_
 | items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
 | parentCategories     | Category[] | { id, name }                                                         |
 | childCategories      | Category[] | { id, name }                                                         |
-| childCategoriesOrder | Number[]   |                                                                      |
-| itemsOrder           | Number[]   |                                                                      |
+| childCategoriesOrder | Number[]   | Not implemented                                                      |
+| itemsOrder           | Number[]   | Not implemented                                                      |
 | updatedDate          | Date       |                                                                      |
 
 [⬆Categories](#3.4)
@@ -762,8 +756,8 @@ _**Response Body** `Array`_
 | items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
 | parentCategories     | Category[] | { id, name }                                                         |
 | childCategories      | Category[] | { id, name }                                                         |
-| childCategoriesOrder | Number[]   |                                                                      |
-| itemsOrder           | Number[]   |                                                                      |
+| childCategoriesOrder | Number[]   | Not implemented                                                      |
+| itemsOrder           | Number[]   | Not implemented                                                      |
 | updatedDate          | Date       |                                                                      |
 
 [⬆Categories](#3.4)
@@ -781,6 +775,154 @@ _**Request Params** `Number`_
 | id    | Number | Required    |
 
 [⬆Categories](#3.4)
+
+### 3.5. Options<a name="3.5"></a>
+
+Note...
+
+**Custom Types**
+
+```javascript
+enum OptionCategory {
+  System = "system",
+  Category = "category",
+  Item = "item",
+  Content = "content",
+  Asset = "asset",
+}
+
+enum OptionType {
+  Boolean = "boolean",
+  String = "string",
+  Number = "number",
+}
+```
+
+**Endpoints**
+
+1. [`GET` Get Options](#3.5.1)
+2. [`GET` Get Option](#3.5.2)
+3. [`POST` Add Option](#3.5.3)
+4. [`PUT` Update Option](#3.5.4)
+5. [`DELETE` Delete Option](#3.5.5)
+
+[⬆Api Documentation](#3)
+
+#### 3.5.1. `GET` Get Options<a name="3.5.1"></a>
+
+```
+.../api/options
+```
+
+_**Response Body** `Array`_
+
+| Field    | Type           | Description |
+| -------- | -------------- | ----------- |
+| id       | Number         |             |
+| name     | String         |             |
+| category | OptionCategory |             |
+| type     | OptionType     |             |
+| value    | Text           |             |
+
+[⬆Options](#3.5)
+
+#### 3.5.2. `GET` Get Option<a name="3.5.2"></a>
+
+```
+.../api/options/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Response Body** `Object`_
+
+| Field    | Type           | Description |
+| -------- | -------------- | ----------- |
+| id       | Number         |             |
+| name     | String         |             |
+| category | OptionCategory |             |
+| type     | OptionType     |             |
+| value    | Text           |             |
+
+[⬆Options](#3.5)
+
+#### 3.5.3. `POST` Add Option<a name="3.5.3"></a>
+
+```
+.../api/options
+```
+
+_**Request Body** `Object`_
+
+| Field    | Type           | Description                          |
+| -------- | -------------- | ------------------------------------ |
+| name     | String         | default: "Untitled Option", Optional |
+| category | OptionCategory | default: "system", Optional          |
+| type     | OptionType     | default: "boolean", Optional         |
+| value    | Text           | Optional                             |
+
+_**Response Body** `Object`_
+
+| Field    | Type           | Description |
+| -------- | -------------- | ----------- |
+| id       | Number         |             |
+| name     | String         |             |
+| category | OptionCategory |             |
+| type     | OptionType     |             |
+| value    | Text           |             |
+
+[⬆Options](#3.5)
+
+#### 3.5.4. `PUT` Update Option<a name="3.5.4"></a>
+
+```
+.../api/options/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+_**Request Body** `Object`_
+
+| Field    | Type           | Description                          |
+| -------- | -------------- | ------------------------------------ |
+| name     | String         | default: "Untitled Option", Optional |
+| category | OptionCategory | default: "system", Optional          |
+| type     | OptionType     | default: "boolean", Optional         |
+| value    | Text           | Optional                             |
+
+_**Response Body** `Object`_
+
+| Field    | Type           | Description |
+| -------- | -------------- | ----------- |
+| id       | Number         |             |
+| name     | String         |             |
+| category | OptionCategory |             |
+| type     | OptionType     |             |
+| value    | Text           |             |
+
+[⬆Options](#3.5)
+
+#### 3.5.5. `DELETE` Delete Option<a name="3.5.4"></a>
+
+```
+.../api/options/:id
+```
+
+_**Request Params** `Number`_
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| id    | Number | Required    |
+
+[⬆Options](#3.5)
 
 ## Website
 

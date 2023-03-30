@@ -1,15 +1,11 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum OptionCategory {
   System = "system",
   Category = "category",
   Item = "item",
   Content = "content",
+  Asset = "asset",
 }
 
 export enum OptionType {
@@ -41,5 +37,5 @@ export class Option {
   type: OptionType;
 
   @Column({ type: "text", nullable: true })
-  description: string;
+  value: string;
 }

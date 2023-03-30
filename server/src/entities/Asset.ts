@@ -2,8 +2,8 @@ import {
   Column,
   Entity,
   ManyToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Content } from "./Content";
 import { Item } from "./Item";
@@ -37,4 +37,7 @@ export class Asset {
 
   @ManyToMany(() => Content, (content) => content.assets, { nullable: true })
   contents: Content[];
+
+  @UpdateDateColumn()
+  updatedDate: Date;
 }
