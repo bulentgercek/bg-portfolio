@@ -65,9 +65,11 @@ This Api documentation was written both for my own use and for the basic need of
 a backend with REST API infrastructure. As you can guess, it provides access
 through a specific port.
 
-1.  [Assets](#3.1)
-2.  [Contents](#3.2)
-3.  [Items](#3.3)
+1. [Assets](#3.1)
+2. [Contents](#3.2)
+3. [Items](#3.3)
+4. [Categories](#3.4)
+5. [Options](#3.5)
 
 [⬆Top](#0)
 
