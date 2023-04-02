@@ -39,7 +39,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Frontend"
+      "originalText": "Frontend",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -79,7 +80,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Backend"
+      "originalText": "Backend",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -119,7 +121,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "dep:\n* Cors\n* Dotenv\n* Express\n* Helmet\n* TypeORM (Mysql)\n\ndevDep:\n* Typescript\n    ts-node\n    ts-node-dev\n* jest\n    ts-jest\n    @types/jest\n"
+      "originalText": "dep:\n* Cors\n* Dotenv\n* Express\n* Helmet\n* TypeORM (Mysql)\n\ndevDep:\n* Typescript\n    ts-node\n    ts-node-dev\n* jest\n    ts-jest\n    @types/jest\n",
+      "lineHeight": 1.2
     },
     {
       "type": "arrow",
@@ -221,8 +224,8 @@
     },
     {
       "type": "arrow",
-      "version": 5491,
-      "versionNonce": 2041214058,
+      "version": 5497,
+      "versionNonce": 1379537643,
       "isDeleted": false,
       "id": "yAbRIhjiT5eoFjUJWtDTe",
       "fillStyle": "hachure",
@@ -235,15 +238,15 @@
       "y": 419.3060143720762,
       "strokeColor": "#1864ab",
       "backgroundColor": "transparent",
-      "width": 866.5949260278792,
-      "height": 188.3302722465104,
+      "width": 829.9932369083908,
+      "height": 182.61519623817662,
       "seed": 1619599407,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1679414144160,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -265,15 +268,15 @@
           0
         ],
         [
-          -866.5949260278792,
-          188.3302722465104
+          -829.9932369083908,
+          182.61519623817662
         ]
       ]
     },
     {
       "type": "text",
-      "version": 3383,
-      "versionNonce": 599056182,
+      "version": 3385,
+      "versionNonce": 1073365637,
       "isDeleted": false,
       "id": "HmQv2iROcwoynAit1KJT3",
       "fillStyle": "hachure",
@@ -282,8 +285,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1099.190684528631,
-      "y": 701.99477326465,
+      "x": -1061.6793119597378,
+      "y": 696.3680673793161,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 349.919677734375,
@@ -294,7 +297,7 @@
       ],
       "roundness": null,
       "boundElements": [],
-      "updated": 1679414144160,
+      "updated": 1679563739571,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -303,12 +306,13 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "table: categories\nmodel: Category\n* id: number\n* name: string\n* description: html\n* items: Iitem []\n* parentCategories: Category []\n* childCategoriesOrder: simple-array\n* itemsOrder: simple-array"
+      "originalText": "table: categories\nmodel: Category\n* id: number\n* name: string\n* description: html\n* items: Iitem []\n* parentCategories: Category []\n* childCategoriesOrder: simple-array\n* itemsOrder: simple-array",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 2277,
-      "versionNonce": 1173641002,
+      "version": 2279,
+      "versionNonce": 94688331,
       "isDeleted": false,
       "id": "HhHF-YMiM_AO4OiznWAPw",
       "fillStyle": "hachure",
@@ -317,8 +321,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -936.5528775590642,
-      "y": 622.7648507145,
+      "x": -899.041504990171,
+      "y": 617.1381448291661,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 138.4319610595703,
@@ -334,7 +338,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1679414144160,
+      "updated": 1679563739571,
       "link": null,
       "locked": false,
       "fontSize": 28,
@@ -343,12 +347,13 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Database"
+      "originalText": "Database",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 3853,
-      "versionNonce": 58689654,
+      "version": 3881,
+      "versionNonce": 341124421,
       "isDeleted": false,
       "id": "vRpwcqq4Kw5MBg6XpOIMu",
       "fillStyle": "hachure",
@@ -357,12 +362,12 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -687.5025117027649,
-      "y": 701.99477326465,
+      "x": -649.9911391338717,
+      "y": 696.3680673793161,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 254.01979064941406,
-      "height": 264,
+      "height": 288,
       "seed": 438085621,
       "groupIds": [
         "NaEQP72tJz9zaoj_2XZPf",
@@ -370,21 +375,22 @@
       ],
       "roundness": null,
       "boundElements": [],
-      "updated": 1679414144160,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "fontSize": 20,
       "fontFamily": 1,
-      "text": "table: items\nmodel: Item\n* id: number\n* name: string\n* description: text\n* link: string\n* updatedDate\n* categories: Category []\n* contents: Content []\n\n",
+      "text": "table: items\nmodel: Item\n* id: number\n* name: string\n* description: text\n* link: string\n* featured: boolean\n* categories: Category []\n* contents: Content []\n* updatedDate\n\n",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "table: items\nmodel: Item\n* id: number\n* name: string\n* description: text\n* link: string\n* updatedDate\n* categories: Category []\n* contents: Content []\n\n"
+      "originalText": "table: items\nmodel: Item\n* id: number\n* name: string\n* description: text\n* link: string\n* featured: boolean\n* categories: Category []\n* contents: Content []\n* updatedDate\n\n",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 3762,
-      "versionNonce": 477356522,
+      "version": 3764,
+      "versionNonce": 1659796875,
       "isDeleted": false,
       "id": "7VY8YW0bugdWjFQR8iKUm",
       "fillStyle": "hachure",
@@ -393,8 +399,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1766.2407742851965,
-      "y": 984.3915685203054,
+      "x": -1728.7294017163033,
+      "y": 978.7648626349716,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 368.939697265625,
@@ -410,7 +416,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1679414144160,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -419,12 +425,13 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "table: assets\nmodel: Asset\n* id: number\n* name: string\n* AssetType: \"image\" | \"video\" | \"text\"\n* text: text\n* url: string\n* contents: Content []"
+      "originalText": "table: assets\nmodel: Asset\n* id: number\n* name: string\n* AssetType: \"image\" | \"video\" | \"text\"\n* text: text\n* url: string\n* contents: Content []",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 3950,
-      "versionNonce": 2124614070,
+      "version": 3952,
+      "versionNonce": 1743149061,
       "isDeleted": false,
       "id": "zJHcUKXOIglpEugtR7nYV",
       "fillStyle": "hachure",
@@ -433,8 +440,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1766.2407742851965,
-      "y": 702.7350862709949,
+      "x": -1728.7294017163033,
+      "y": 697.108380385661,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 513.7996215820312,
@@ -450,7 +457,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1679414144160,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -459,12 +466,13 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "table: contents\nmodel: Content\n* id: number\n* name: string\n* ContentType: \"textBlock\" | \"imageGalleryMasonary\"\n* columns: number\n* item: Item\n* assets: Asset []\n      "
+      "originalText": "table: contents\nmodel: Content\n* id: number\n* name: string\n* ContentType: \"textBlock\" | \"imageGalleryMasonary\"\n* columns: number\n* item: Item\n* assets: Asset []\n      ",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 3665,
-      "versionNonce": 2016679082,
+      "version": 3668,
+      "versionNonce": 649227301,
       "isDeleted": false,
       "id": "r47HBf5tJ7bSFE4b29VKm",
       "fillStyle": "hachure",
@@ -473,9 +481,9 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1100.7365444114444,
-      "y": 986.3224424799195,
-      "strokeColor": "#000000",
+      "x": -1063.2251718425512,
+      "y": 980.6957365945856,
+      "strokeColor": "#0b7285",
       "backgroundColor": "transparent",
       "width": 296.23974609375,
       "height": 192,
@@ -490,7 +498,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1679414144160,
+      "updated": 1679837917000,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -499,12 +507,13 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "table: users\nmodel: User\n* id: number\n* name: string\n* type: enum { admin, editor }\n* password: password\n* updatedDate\n"
+      "originalText": "table: users\nmodel: User\n* id: number\n* name: string\n* type: enum { admin, editor }\n* password: password\n* updatedDate\n",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 2194,
-      "versionNonce": 1682203382,
+      "version": 2195,
+      "versionNonce": 537235915,
       "isDeleted": false,
       "id": "o_v2uFe0xOq_Ze6avtMNF",
       "fillStyle": "hachure",
@@ -513,7 +522,7 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1355.3017225732458,
+      "x": -1356.2395068874682,
       "y": 1300.2601840116108,
       "strokeColor": "#1864ab",
       "backgroundColor": "transparent",
@@ -528,7 +537,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1679414144161,
+      "updated": 1679525271179,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -537,12 +546,13 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "API Post Ideas\nAdd Category : /api/categories\nAdd Item to Category : /api/categories/:id/items  |  /api/items/:categoryId\nAdd Content to Item : /api/items/:id/contents"
+      "originalText": "API Post Ideas\nAdd Category : /api/categories\nAdd Item to Category : /api/categories/:id/items  |  /api/items/:categoryId\nAdd Content to Item : /api/items/:id/contents",
+      "lineHeight": 1.2
     },
     {
       "type": "arrow",
-      "version": 4198,
-      "versionNonce": 987754346,
+      "version": 4208,
+      "versionNonce": 31055883,
       "isDeleted": false,
       "id": "qP8ylOsN08HXecgwh_--7",
       "fillStyle": "hachure",
@@ -551,19 +561,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1015.2132160041078,
-      "y": 1196.1412682770774,
+      "x": -1001.1884243903346,
+      "y": 1190.5145623917433,
       "strokeColor": "#1864ab",
       "backgroundColor": "transparent",
-      "width": 2.482764046705256,
-      "height": 88.49967407784834,
+      "width": 11.760673895358309,
+      "height": 94.12637996318244,
       "seed": 295261244,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1679414144161,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -585,8 +595,8 @@
           0
         ],
         [
-          -2.482764046705256,
-          88.49967407784834
+          -11.760673895358309,
+          94.12637996318244
         ]
       ]
     },
@@ -623,7 +633,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "BG Portfolio"
+      "originalText": "BG Portfolio",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -667,7 +678,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Namecheap Shared Hosting Compatible Framework"
+      "originalText": "Namecheap Shared Hosting Compatible Framework",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -705,7 +717,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Error Handling Stages"
+      "originalText": "Error Handling Stages",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -738,7 +751,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Zod Input Validation With Request \n(params | body | query?)"
+      "originalText": "Zod Input Validation With Request \n(params | body | query?)",
+      "lineHeight": 1.2
     },
     {
       "type": "arrow",
@@ -851,7 +865,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "true"
+      "originalText": "true",
+      "lineHeight": 1.2
     },
     {
       "type": "diamond",
@@ -917,7 +932,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "false"
+      "originalText": "false",
+      "lineHeight": 1.2
     },
     {
       "type": "arrow",
@@ -1049,7 +1065,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Cloud Server Setup"
+      "originalText": "Cloud Server Setup",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1091,7 +1108,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Login\nssh root@your_server_ip"
+      "originalText": "Login\nssh root@your_server_ip",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1133,7 +1151,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Add a User\nadduser bulentgercek"
+      "originalText": "Add a User\nadduser bulentgercek",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1175,7 +1194,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Add Admin Right to User\nusermod -aG sudo bulentgercek"
+      "originalText": "Add Admin Right to User\nusermod -aG sudo bulentgercek",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1217,7 +1237,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Install Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts"
+      "originalText": "Install Node.js with NVM\ninstall nvm steps:\ncurl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash\nsource ~/.bashrc\ninstall node.js:\nnvm install v14.10.0 or nvm install --lts",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1259,7 +1280,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Setup Server Blocks for Nginx\n(These are same concept as Apache Http Hosts)\nCreate Necessary Folders for Server Block for Your Domain:\nsudo mkdir -p /var/www/your_domain/html\nAssign Ownership for $USER Environment Variable\nsudo chown -R $USER:$USER /var/www/your_domain/html\nEnsure Permissions Sets For Spesific Server Block:\nsudo chmod -R 755 /var/www/your_domain"
+      "originalText": "Setup Server Blocks for Nginx\n(These are same concept as Apache Http Hosts)\nCreate Necessary Folders for Server Block for Your Domain:\nsudo mkdir -p /var/www/your_domain/html\nAssign Ownership for $USER Environment Variable\nsudo chown -R $USER:$USER /var/www/your_domain/html\nEnsure Permissions Sets For Spesific Server Block:\nsudo chmod -R 755 /var/www/your_domain",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1299,7 +1321,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "server {\n        listen 80;\n        listen [::]:80;\n\n        root /var/www/your_domain/html;\n        index index.html index.htm index.nginx-debian.html;\n\n        server_name your_domain www.your_domain;\n\n        location / {\n                try_files $uri $uri/ =404;\n        }\n}"
+      "originalText": "server {\n        listen 80;\n        listen [::]:80;\n\n        root /var/www/your_domain/html;\n        index index.html index.htm index.nginx-debian.html;\n\n        server_name your_domain www.your_domain;\n\n        location / {\n                try_files $uri $uri/ =404;\n        }\n}",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1339,7 +1362,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Create Nginx sites-available directive for domain (Without editing global)\nsudo nano /etc/nginx/sites-available/your_domain"
+      "originalText": "Create Nginx sites-available directive for domain (Without editing global)\nsudo nano /etc/nginx/sites-available/your_domain",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1381,7 +1405,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Add New Site to site-enabled\nsudo ln -s /etc/nginx/sites-available/your_domain /etc/nginx/sites-enabled/"
+      "originalText": "Add New Site to site-enabled\nsudo ln -s /etc/nginx/sites-available/your_domain /etc/nginx/sites-enabled/",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1421,7 +1446,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Add More Hash Bucket Size for More Server Names\nsudo nano /etc/nginx/nginx.conf"
+      "originalText": "Add More Hash Bucket Size for More Server Names\nsudo nano /etc/nginx/nginx.conf",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1461,7 +1487,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "...\nhttp {\n    ...\n    server_names_hash_bucket_size 64;\n    ...\n}\n..."
+      "originalText": "...\nhttp {\n    ...\n    server_names_hash_bucket_size 64;\n    ...\n}\n...",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -1503,7 +1530,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Get Your Domain and set your nameservers\nCreate Droplet"
+      "originalText": "Get Your Domain and set your nameservers\nCreate Droplet",
+      "lineHeight": 1.2
     },
     {
       "type": "arrow",
@@ -2219,7 +2247,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Postgres Install"
+      "originalText": "Postgres Install",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2252,7 +2281,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo apt update"
+      "originalText": "sudo apt update",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2285,7 +2315,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo apt install postgresql postgresql-contrib"
+      "originalText": "sudo apt install postgresql postgresql-contrib",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2318,7 +2349,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo systemctl start postgresql.service"
+      "originalText": "sudo systemctl start postgresql.service",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2351,7 +2383,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Detailed Link\nhttps://www.digitalocean.com/community/tutorials/\nhow-to-install-and-use-postgresql-on-ubuntu-20-04"
+      "originalText": "Detailed Link\nhttps://www.digitalocean.com/community/tutorials/\nhow-to-install-and-use-postgresql-on-ubuntu-20-04",
+      "lineHeight": 1.2
     },
     {
       "type": "rectangle",
@@ -2421,7 +2454,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "SSL Certificate Setup"
+      "originalText": "SSL Certificate Setup",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2456,7 +2490,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Detailed Link\nhttps://certbot.eff.org/"
+      "originalText": "Detailed Link\nhttps://certbot.eff.org/",
+      "lineHeight": 1.2
     },
     {
       "type": "rectangle",
@@ -2521,7 +2556,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Nginx Install"
+      "originalText": "Nginx Install",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2557,7 +2593,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo apt update"
+      "originalText": "sudo apt update",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2593,7 +2630,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo apt install nginx"
+      "originalText": "sudo apt install nginx",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2628,7 +2666,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Detailed Link\nhttps://www.digitalocean.com/community/tutorials/\nhow-to-install-nginx-on-ubuntu-20-04"
+      "originalText": "Detailed Link\nhttps://www.digitalocean.com/community/tutorials/\nhow-to-install-nginx-on-ubuntu-20-04",
+      "lineHeight": 1.2
     },
     {
       "type": "rectangle",
@@ -2702,7 +2741,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Firewalld Install"
+      "originalText": "Firewalld Install",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2738,7 +2778,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo apt update"
+      "originalText": "sudo apt update",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2774,7 +2815,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sudo apt install firewalld"
+      "originalText": "sudo apt install firewalld",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2814,7 +2856,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Detailed Link\nhttps://www.digitalocean.com/community/tutorials/\nhow-to-set-up-a-firewall-using-firewalld-on-centos-7"
+      "originalText": "Detailed Link\nhttps://www.digitalocean.com/community/tutorials/\nhow-to-set-up-a-firewall-using-firewalld-on-centos-7",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2849,7 +2892,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "!Check the listening ports\nnetstat -tulp"
+      "originalText": "!Check the listening ports\nnetstat -tulp",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2882,7 +2926,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Usage"
+      "originalText": "Usage",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2915,7 +2960,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Switching Over to the postgres Account\nsudo -i -u postgres"
+      "originalText": "Switching Over to the postgres Account\nsudo -i -u postgres",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2948,7 +2994,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "PostgreSQL prompt\npsql"
+      "originalText": "PostgreSQL prompt\npsql",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -2981,7 +3028,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "PostgreSQL prompt Useful Commands\nList Databases: \\l\nList Users: \\du"
+      "originalText": "PostgreSQL prompt Useful Commands\nList Databases: \\l\nList Users: \\du",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3014,7 +3062,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Change Password\nALTER USER postgres WITH PASSWORD 'test';"
+      "originalText": "Change Password\nALTER USER postgres WITH PASSWORD 'test';",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3047,7 +3096,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Create New User\nCREATE USER bulentgercek WITH PASSWORD 'test';"
+      "originalText": "Create New User\nCREATE USER bulentgercek WITH PASSWORD 'test';",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3080,7 +3130,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Change Priviliages for User\nALTER USER bulentgercek WITH SUPERUSER;"
+      "originalText": "Change Priviliages for User\nALTER USER bulentgercek WITH SUPERUSER;",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3113,7 +3164,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Remove User\nDROP USER bulentgercek;"
+      "originalText": "Remove User\nDROP USER bulentgercek;",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3146,7 +3198,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "PostgreSQL Docs Command\nman psql"
+      "originalText": "PostgreSQL Docs Command\nman psql",
+      "lineHeight": 1.2
     },
     {
       "type": "rectangle",
@@ -3207,7 +3260,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Git Reset"
+      "originalText": "Git Reset",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3240,7 +3294,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Revert Uncommited Changes\ngit reset –hard\n\nRemove New Created Files\ngit clean -fxd"
+      "originalText": "Revert Uncommited Changes\ngit reset –hard\n\nRemove New Created Files\ngit clean -fxd",
+      "lineHeight": 1.2
     },
     {
       "type": "rectangle",
@@ -3310,7 +3365,8 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "PM2"
+      "originalText": "PM2",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3348,12 +3404,13 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Put PM2 to Startup\npm2 startup"
+      "originalText": "Put PM2 to Startup\npm2 startup",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
-      "version": 4075,
-      "versionNonce": 603570794,
+      "version": 4077,
+      "versionNonce": 154941989,
       "isDeleted": false,
       "id": "2w7kHEFnP1Q_nIQaPQ6VW",
       "fillStyle": "hachure",
@@ -3362,8 +3419,8 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -687.5025117027648,
-      "y": 980.3846217373825,
+      "x": -649.9911391338716,
+      "y": 974.7579158520487,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
       "width": 537.4794921875,
@@ -3380,7 +3437,7 @@
           "type": "arrow"
         }
       ],
-      "updated": 1679414144163,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "fontSize": 20,
@@ -3389,7 +3446,8 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "table: options\nmodel: Option\n* id: number\n* name: string\n* OptionCategory: \"system\" | \"category\" | \"item\" | \"user\"\n* OptionType: \"boolean\" | \"string\" | \"number\"\n* description: html\n* value: string\n* updatedDate\n"
+      "originalText": "table: options\nmodel: Option\n* id: number\n* name: string\n* OptionCategory: \"system\" | \"category\" | \"item\" | \"user\"\n* OptionType: \"boolean\" | \"string\" | \"number\"\n* description: html\n* value: string\n* updatedDate\n",
+      "lineHeight": 1.2
     },
     {
       "type": "text",
@@ -3427,12 +3485,13 @@
       "textAlign": "center",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "sanitize-html"
+      "originalText": "sanitize-html",
+      "lineHeight": 1.2
     },
     {
       "type": "arrow",
-      "version": 287,
-      "versionNonce": 1160373546,
+      "version": 293,
+      "versionNonce": 1123849259,
       "isDeleted": false,
       "id": "Ngs2QOWwKxpk_nIKkebRG",
       "fillStyle": "hachure",
@@ -3441,19 +3500,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -1781.2964360171914,
-      "y": 1129.9129107372476,
+      "x": -1743.785063448298,
+      "y": 1127.2131344574623,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 116.27069736560293,
-      "height": 3.1701106285663627,
+      "width": 153.78206993449612,
+      "height": 5.225897321419325,
       "seed": 1000375649,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1679414144163,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -3475,15 +3534,15 @@
           0
         ],
         [
-          -116.27069736560293,
-          3.1701106285663627
+          -153.78206993449612,
+          5.225897321419325
         ]
       ]
     },
     {
       "type": "arrow",
-      "version": 213,
-      "versionNonce": 1722931830,
+      "version": 216,
+      "versionNonce": 1666688683,
       "isDeleted": false,
       "id": "jkVbIkcdeO8j9CTYT6CWK",
       "fillStyle": "hachure",
@@ -3492,19 +3551,19 @@
       "roughness": 1,
       "opacity": 100,
       "angle": 0,
-      "x": -364.9913007117659,
-      "y": 1234.3294706924025,
+      "x": -351.9949749083223,
+      "y": 1228.7027648070687,
       "strokeColor": "#000000",
       "backgroundColor": "transparent",
-      "width": 205.06209452235635,
-      "height": 76.72531379156999,
+      "width": 192.06576871891275,
+      "height": 82.35201967690386,
       "seed": 484715468,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
       "boundElements": [],
-      "updated": 1679414144163,
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
       "startBinding": {
@@ -3522,8 +3581,8 @@
           0
         ],
         [
-          205.06209452235635,
-          76.72531379156999
+          192.06576871891275,
+          82.35201967690386
         ]
       ]
     },
@@ -3558,46 +3617,36 @@
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "System Default Options\n* Max Category Deep, System, \n"
+      "originalText": "System Default Options\n* Max Category Deep, System, \n",
+      "lineHeight": 1.2
     },
     {
-      "id": "kPDOYQa5xro6JcwpOkChD",
       "type": "arrow",
-      "x": -1784.1716384224828,
-      "y": 735.2552155514624,
-      "width": 107.84519613556813,
-      "height": 31.884666683559317,
-      "angle": 0,
-      "strokeColor": "#000000",
-      "backgroundColor": "transparent",
+      "version": 147,
+      "versionNonce": 2143752037,
+      "isDeleted": false,
+      "id": "kPDOYQa5xro6JcwpOkChD",
       "fillStyle": "hachure",
       "strokeWidth": 1,
       "strokeStyle": "solid",
       "roughness": 1,
       "opacity": 100,
+      "angle": 0,
+      "x": -1746.6602658535899,
+      "y": 740.3920865292594,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "width": 145.3565687044611,
+      "height": 38.604363595141876,
+      "seed": 1616138346,
       "groupIds": [],
       "roundness": {
         "type": 2
       },
-      "seed": 1616138346,
-      "version": 141,
-      "versionNonce": 396859318,
-      "isDeleted": false,
-      "boundElements": null,
-      "updated": 1679414154927,
+      "boundElements": [],
+      "updated": 1679563739573,
       "link": null,
       "locked": false,
-      "points": [
-        [
-          0,
-          0
-        ],
-        [
-          -107.84519613556813,
-          -31.884666683559317
-        ]
-      ],
-      "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "zJHcUKXOIglpEugtR7nYV",
         "focus": -0.03139071486843601,
@@ -3608,30 +3657,41 @@
         "focus": -0.5895226190023329,
         "gap": 15.136574163216665
       },
+      "lastCommittedPoint": null,
       "startArrowhead": null,
-      "endArrowhead": "arrow"
+      "endArrowhead": "arrow",
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          -145.3565687044611,
+          -38.604363595141876
+        ]
+      ]
     },
     {
-      "id": "kDa6oMA3OpoRuZBpBU11Q",
       "type": "text",
-      "x": -2089.889324858963,
-      "y": 679.9259410123448,
-      "width": 182.7359161376953,
-      "height": 38.4,
-      "angle": 0,
-      "strokeColor": "#000000",
-      "backgroundColor": "transparent",
+      "version": 278,
+      "versionNonce": 68430122,
+      "isDeleted": false,
+      "id": "kDa6oMA3OpoRuZBpBU11Q",
       "fillStyle": "hachure",
       "strokeWidth": 1,
       "strokeStyle": "solid",
       "roughness": 1,
       "opacity": 100,
+      "angle": 0,
+      "x": -2089.889324858963,
+      "y": 679.9259410123448,
+      "strokeColor": "#000000",
+      "backgroundColor": "transparent",
+      "width": 182.7359161376953,
+      "height": 38.4,
+      "seed": 439118262,
       "groupIds": [],
       "roundness": null,
-      "seed": 439118262,
-      "version": 278,
-      "versionNonce": 68430122,
-      "isDeleted": false,
       "boundElements": [
         {
           "id": "kPDOYQa5xro6JcwpOkChD",
@@ -3641,13 +3701,14 @@
       "updated": 1679414154561,
       "link": null,
       "locked": false,
-      "text": "Content can be added \nafter Item is created",
       "fontSize": 16,
       "fontFamily": 1,
+      "text": "Content can be added \nafter Item is created",
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Content can be added \nafter Item is created"
+      "originalText": "Content can be added \nafter Item is created",
+      "lineHeight": 1.2
     }
   ],
   "appState": {
