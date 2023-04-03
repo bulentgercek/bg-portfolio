@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api/config";
 import { Asset, AssetType, Content } from "../api/types";
-import Darkmode from "../components/Darkmode";
+import Darkmode from "./Darkmode";
 
 function BackupApp() {
   const [dbAssets, setAssets] = useState<Asset[]>([]);

@@ -11,15 +11,15 @@ import Layout from "./pages/Layout";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout value="Welcome Home" />,
+    element: <Layout value="home" />,
   },
   {
     path: "/about",
-    element: <Layout value="About" />,
+    element: <Layout value="about" />,
   },
   {
     path: "/works",
-    element: <Layout value="Works" />,
+    element: <Layout value="works" />,
   },
   {
     path: "*",
