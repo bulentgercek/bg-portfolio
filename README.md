@@ -556,7 +556,7 @@ _**Request Body** `Object`_
 | link               | string        | Optional                           |
 | featured           | Boolean       | default: false, Optional           |
 | featuredImageAsset | Asset or Null | { id }, Optional                   |
-| categories         | Category[]    | { id }, Optional                   |
+| categories         | Category[]    | { id }, Required                   |
 
 _**Response Body** `Object`_
 

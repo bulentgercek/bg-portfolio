@@ -34,7 +34,7 @@ export class Item {
   @JoinColumn()
   featuredImageAsset: Asset | null;
 
-  @ManyToMany(() => Category, (category) => category.items, { nullable: true })
+  @ManyToMany(() => Category, (category) => category.items, { nullable: false })
   @JoinTable()
   categories: Category[];
 
