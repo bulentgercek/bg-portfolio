@@ -175,50 +175,50 @@ router.post("/", async (req, res) => {
   if (!validateResults.success.body || !validateResults.result.body)
     return res.status(400).json(validateResults);
 
-  // // Filter out the relational inputs before create
-  // const filteredBody = filterObject(
-  //   validateResults.result.body,
-  //   "featuredImageAsset",
-  //   "categories",
-  // );
+  // Filter out the relational inputs before create
+  const filteredBody = filterObject(
+    validateResults.result.body,
+    "featuredImageAsset",
+    "categories",
+  );
 
-  // // Create new Item
-  // const createdItem = ac.create(Item, filteredBody);
+  // Create new Item
+  const createdItem = ac.create(Item, filteredBody);
 
-  // // Add featured image Asset
-  // if (validateResults.result.body.featuredImageAsset) {
-  //   const dbAsset = await ac
-  //     .findOne(Asset, validateResults, {
-  //       where: {
-  //         id: validateResults.result.body.featuredImageAsset,
-  //       },
-  //     })
-  //     .catch((err) => console.log(err));
+  // Add featured image Asset
+  if (validateResults.result.body.featuredImageAsset) {
+    const dbAsset = await ac
+      .findOne(Asset, validateResults, {
+        where: {
+          id: validateResults.result.body.featuredImageAsset,
+        },
+      })
+      .catch((err) => console.log(err));
 
-  //   // is validated? is AssetType.Image?
-  //   if (dbAsset instanceof Asset && dbAsset.type === AssetType.Image) {
-  //     createdItem.featuredImageAsset = dbAsset;
-  //   }
-  // }
+    // is validated? is AssetType.Image?
+    if (dbAsset instanceof Asset && dbAsset.type === AssetType.Image) {
+      createdItem.featuredImageAsset = dbAsset;
+    }
+  }
 
-  // // Add Categories
-  // const dbCategories = await ac.findAll(Category, validateResults, {
-  //   where: {
-  //     id: In(validateResults.result.body.categories),
-  //   },
-  // });
+  // Add Categories
+  const dbCategories = await ac.findAll(Category, validateResults, {
+    where: {
+      id: In(validateResults.result.body.categories),
+    },
+  });
 
-  // // is validated?
-  // if (Array.isArray(dbCategories)) {
-  //   createdItem.categories = dbCategories;
-  // } else {
-  //   return res.status(400).json({
-  //     message: "Invalid Category. You cannot add item without category.",
-  //   });
-  // }
+  // is validated?
+  if (Array.isArray(dbCategories)) {
+    createdItem.categories = dbCategories;
+  } else {
+    return res.status(400).json({
+      message: "Invalid Category. You cannot add item without category.",
+    });
+  }
 
-  // const addedItem = await ac.addCreated(Item, validateResults, createdItem);
-  // return res.json(addedItem);
+  const addedItem = await ac.addCreated(Item, validateResults, createdItem);
+  return res.json(addedItem);
 });
 
 // Update Item
