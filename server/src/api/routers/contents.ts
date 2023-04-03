@@ -84,7 +84,8 @@ router.post("/", async (req, res) => {
   if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
 
   // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return;
+  if (!validateResults.success.body || !validateResults.result.body)
+    return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before updating dbContent
   const filteredBody = filterObject(
@@ -161,7 +162,8 @@ router.put("/:id", async (req, res) => {
     return res.status(400).json(validateResults);
 
   // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return;
+  if (!validateResults.success.body || !validateResults.result.body)
+    return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before updating dbContent
   const filteredBody: Partial<Content> = filterObject(

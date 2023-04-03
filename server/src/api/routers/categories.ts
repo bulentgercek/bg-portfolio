@@ -97,7 +97,8 @@ router.post("/", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Guard clause
-  if (!validateResults.success.body || !validateResults.result.body) return;
+  if (!validateResults.success.body || !validateResults.result.body)
+    return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create
   const filteredBody = filterObject(
@@ -197,7 +198,8 @@ router.put("/:id", async (req, res) => {
     return res.status(400).json(validateResults);
 
   // Guard clause before filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return;
+  if (!validateResults.success.body || !validateResults.result.body)
+    return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create
   const filteredBody: Partial<Category> = filterObject(

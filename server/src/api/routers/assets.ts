@@ -71,7 +71,8 @@ router.post("/", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return;
+  if (!validateResults.success.body || !validateResults.result.body)
+    return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before updating dbContent
   const filteredBody: Partial<Asset> = filterObject(
@@ -137,7 +138,8 @@ router.put("/:id", async (req, res) => {
   if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
 
   // Guard clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return;
+  if (!validateResults.success.body || !validateResults.result.body)
+    return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create updatedAsset
   const filteredBody: Partial<Asset> = filterObject(
