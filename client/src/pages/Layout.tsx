@@ -5,26 +5,47 @@ import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
 import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import Content from "./Content";
 import Footer from "./Footer";
-import Sidebar from "./Sidebar";
+import Navigation from "./Navigation";
 
 interface LayoutProps {
   value: string;
 }
 
 const Layout: React.FC<LayoutProps> = ({ value }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [sidebarToggle, setSidebarToogle] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState("w-[325px]");
+  const [sidebarGap, setSidebarGap] = useState("gap-x-[20px]");
+  const [logoAreaWidth, setLogoAreaWidth] = useState("w-[285px]");
+  const [sidebarVisibilty, setSidebarVisibilty] = useState("flex");
+  const [navListSwitch, setNavListSwitch] = useState(nav_list_switch_open);
+
+  const changePageVariables = (state: boolean) => {
+    if (state) {
+      setLogoAreaWidth("w-[285px]");
+      setNavListSwitch(nav_list_switch_close);
+      setSidebarVisibilty("flex");
+      setSidebarWidth("w-[325px]");
+      setSidebarGap("gap-x-[20px]");
+    } else {
+      setLogoAreaWidth("w-[124px]");
+      setNavListSwitch(nav_list_switch_open);
+      setSidebarWidth("w-0");
+      setSidebarGap("gap-x-[0px]");
+    }
+  };
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMenuOpen(true);
-      } else {
-        setIsMenuOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    changePageVariables(sidebarToggle);
+  }, [sidebarToggle]);
+
+  const mql = window.matchMedia("(min-width: 768px)");
+  mql.addEventListener("change", (event: MediaQueryListEvent) => {
+    if (sidebarToggle && event.matches) {
+      changePageVariables(true);
+      return;
+    }
+    changePageVariables(false);
+  });
 
   return (
     <div
@@ -33,26 +54,36 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
     >
       <div
         id="logo"
-        className="xs:w-[129px] xs:gap-[15px] absolute left-[60px] top-[40px] flex 
-        h-[64px] flex-row items-center sm:w-[281px] sm:gap-[167px]"
+        className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${logoAreaWidth} transition-all  duration-500 ease-out`}
       >
         <img src={bg_logo}></img>
-        <img src={isMenuOpen ? nav_list_switch_close : nav_list_switch_open} />
+        <img
+          className="cursor-pointer"
+          src={navListSwitch}
+          onClick={() => setSidebarToogle(!sidebarToggle)}
+        />
       </div>
 
-      <div id="main" className="flex w-full flex-row items-start gap-5 pt-10">
-        {isMenuOpen && (
-          <div id="sidebar" className="flex w-[325px] flex-col items-start">
-            <div
-              id="nav"
-              className="item-start flex w-[325px] flex-col gap-[10px] rounded-2xl bg-indigo-50 p-5 pt-10"
-            >
-              <Sidebar value="home" />
-            </div>
+      <div
+        id="main"
+        className={`flex w-full flex-row items-start ${sidebarGap} pt-10 transition-all duration-700 ease-out`}
+      >
+        <div
+          id="sidebar"
+          className={`${sidebarVisibilty} ${sidebarWidth} flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out`}
+        >
+          <div
+            id="nav"
+            className="item-start flex w-[325px] flex-col gap-[10px] rounded-2xl bg-indigo-50 p-5 pt-10"
+          >
+            <Navigation value="home" />
           </div>
-        )}
+        </div>
 
-        <div id="content" className="flex w-full flex-col items-start gap-5">
+        <div
+          id="content"
+          className="flex-grow flex-col items-start gap-5 rounded-2xl bg-indigo-50/50 p-5 pt-10"
+        >
           <Content value="home" />
         </div>
       </div>
