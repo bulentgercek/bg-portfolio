@@ -6,45 +6,91 @@ import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import Content from "./Content";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
+import { LayoutProps, StatesDataType, StatesFuseboxType, StatesType } from ".";
 
-interface LayoutProps {
-  value: string;
-}
+// Page Element States Data
+const statesData: StatesDataType = {
+  sidebarWidth: {
+    w0px: "w-0",
+    w325px: "w-[325px]",
+  },
+  logoAreaWidth: {
+    w285px: "w-[285px]",
+    w124px: "w-[124px]",
+  },
+  navListSwitch: {
+    close: nav_list_switch_close,
+    open: nav_list_switch_open,
+  },
+  sidebarGap: {
+    gap20px: "gap-x-[20px]",
+    gap0px: "gap-x-[0px]",
+  },
+  sidebarVisibilty: {
+    flex: "flex",
+    hidden: "hidden",
+  },
+};
+
+// Assign Page Element Default States from States Data
+const states: StatesType = {
+  sidebarWidth: statesData.sidebarWidth.w325px,
+  logoAreaWidth: statesData.logoAreaWidth.w285px,
+  navListSwitch: statesData.navListSwitch.close,
+  sidebarVisibilty: statesData.sidebarVisibilty.flex,
+  sidebarGap: statesData.sidebarGap.gap20px,
+};
+
+// Assign State Defaults like a fusebox
+const statesFusebox: StatesFuseboxType = {
+  isWindowResizedDown: false,
+  isNavToggleOpen: true,
+};
 
 const Layout: React.FC<LayoutProps> = ({ value }) => {
-  const [sidebarToggle, setSidebarToogle] = useState(true);
-  const [sidebarWidth, setSidebarWidth] = useState("w-[325px]");
-  const [sidebarGap, setSidebarGap] = useState("gap-x-[20px]");
-  const [logoAreaWidth, setLogoAreaWidth] = useState("w-[285px]");
-  const [sidebarVisibilty, setSidebarVisibilty] = useState("flex");
-  const [navListSwitch, setNavListSwitch] = useState(nav_list_switch_open);
+  const [statesUpdate, setStatesUpdate] = useState(false);
 
-  const changePageVariables = (state: boolean) => {
-    if (state) {
-      setLogoAreaWidth("w-[285px]");
-      setNavListSwitch(nav_list_switch_close);
-      setSidebarVisibilty("flex");
-      setSidebarWidth("w-[325px]");
-      setSidebarGap("gap-x-[20px]");
+  // Page Element State Handler
+  const pageElementsHandler = (
+    fusebox: typeof statesFusebox,
+    states: StatesType,
+  ) => {
+    if (!statesUpdate) return;
+    if (!fusebox.isNavToggleOpen || fusebox.isWindowResizedDown) {
+      states.sidebarWidth = statesData.sidebarWidth.w0px;
+      states.logoAreaWidth = statesData.logoAreaWidth.w124px;
+      states.navListSwitch = statesData.navListSwitch.open;
+      // states.sidebarVisibilty = statesData.sidebarVisibilty.hidden;
+      states.sidebarGap = statesData.sidebarGap.gap0px;
     } else {
-      setLogoAreaWidth("w-[124px]");
-      setNavListSwitch(nav_list_switch_open);
-      setSidebarWidth("w-0");
-      setSidebarGap("gap-x-[0px]");
+      states.sidebarWidth = statesData.sidebarWidth.w325px;
+      states.logoAreaWidth = statesData.logoAreaWidth.w285px;
+      states.navListSwitch = statesData.navListSwitch.close;
+      // states.sidebarVisibilty = statesData.sidebarVisibilty.flex;
+      states.sidebarGap = statesData.sidebarGap.gap20px;
     }
+    console.log(fusebox);
+    console.log(states);
   };
 
   useEffect(() => {
-    changePageVariables(sidebarToggle);
-  }, [sidebarToggle]);
+    pageElementsHandler(statesFusebox, states);
+    setStatesUpdate(false);
+  }, [statesUpdate]);
 
   const mql = window.matchMedia("(min-width: 768px)");
   mql.addEventListener("change", (event: MediaQueryListEvent) => {
-    if (sidebarToggle && event.matches) {
-      changePageVariables(true);
-      return;
+    if (event.matches) {
+      setStatesUpdate(() => {
+        statesFusebox.isWindowResizedDown = false;
+        return !statesUpdate;
+      });
+    } else {
+      setStatesUpdate(() => {
+        statesFusebox.isWindowResizedDown = true;
+        return !statesUpdate;
+      });
     }
-    changePageVariables(false);
   });
 
   return (
@@ -54,23 +100,28 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
     >
       <div
         id="logo"
-        className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${logoAreaWidth} transition-all  duration-500 ease-out`}
+        className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} transition-all  duration-500 ease-out`}
       >
         <img src={bg_logo}></img>
         <img
           className="cursor-pointer"
-          src={navListSwitch}
-          onClick={() => setSidebarToogle(!sidebarToggle)}
+          src={states.navListSwitch}
+          onClick={() =>
+            setStatesUpdate(() => {
+              statesFusebox.isNavToggleOpen = !statesFusebox.isNavToggleOpen;
+              return !statesUpdate;
+            })
+          }
         />
       </div>
 
       <div
         id="main"
-        className={`flex w-full flex-row items-start ${sidebarGap} pt-10 transition-all duration-700 ease-out`}
+        className={`flex w-full flex-row items-start ${states.sidebarGap} pt-10 transition-all duration-700 ease-out`}
       >
         <div
           id="sidebar"
-          className={`${sidebarVisibilty} ${sidebarWidth} flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out`}
+          className={`${states.sidebarVisibilty} ${states.sidebarWidth} flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out`}
         >
           <div
             id="nav"
