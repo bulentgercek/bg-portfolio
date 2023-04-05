@@ -1,7 +1,7 @@
 /**
- * TypeORM DAL Types/Interfaces
+ * TypeORM Api
  *
- * These are the identical versions of
+ * These Types/Interfaces are the identical versions of
  * Api outputs for Api endpoints
  */
 /**

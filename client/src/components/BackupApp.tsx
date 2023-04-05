@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/config";
-import { Asset, AssetType, Content } from "../api/types";
+import { Asset, AssetType, Content } from "../api";
 import Darkmode from "./Darkmode";
 
 function BackupApp() {
