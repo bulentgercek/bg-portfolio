@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
-import api from "../api/config";
-import { Asset, AssetType, Content } from "../api";
+import { Api } from "../api";
+import { Asset, AssetType, Content } from "../api/interfaces";
 import Darkmode from "./Darkmode";
 
 function BackupApp() {
-  const [dbAssets, setAssets] = useState<Asset[]>([]);
+  const [assets, setAssets] = useState<Asset[]>([]);
 
   useEffect(() => {
-    api
-      .get<Asset[]>("/assets")
-      .then((response) => {
-        setAssets(response.data);
-      })
-      .catch((error) => console.log(error));
+    const getAssets = async () => {
+      const assets = await Api.getAssets();
+      setAssets(assets);
+    };
+    getAssets();
   }, []);
 
   const renderValue = (key: string, value: any) => {
@@ -50,8 +49,8 @@ function BackupApp() {
         id="Asset"
         className="relative flex-row text-indigo-900 dark:text-indigo-100"
       >
-        {dbAssets.map((asset) => {
-          const dbContent: Partial<Content>[] = dbAssets[0].contents!;
+        {assets.map((asset) => {
+          const dbContent: Partial<Content>[] = assets[0].contents!;
           const countNonNullProperties = Object.values(dbContent[0]).length;
 
           console.log(countNonNullProperties);

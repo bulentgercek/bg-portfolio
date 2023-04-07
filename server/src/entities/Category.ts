@@ -12,7 +12,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: "Untitled Category", nullable: true })
+  @Column({ default: "Untitled Category" })
   name: string;
 
   @Column({ type: "text", nullable: true })

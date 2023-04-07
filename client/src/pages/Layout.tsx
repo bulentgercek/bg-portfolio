@@ -54,19 +54,20 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
   const [states, setStates] = useState<StatesType>(statesOpen);
   const [isNavToggleOpen, setIsNavToggleOpen] = useState<boolean>(true);
 
-  // Get current location from router
+  // Navigation variables and functions
   const location = useLocation();
 
-  // Navigation constants
   const navigateToHome = () => {
     // if we are not at the home page navigate it
     if (location.pathname !== "/") return <Navigate to="/" />;
   };
 
+  // Hook for re-rendering element states using the navigation toggle
   useEffect(() => {
     isNavToggleOpen ? setStates(statesOpen) : setStates(statesClose);
   }, [isNavToggleOpen]);
 
+  // Media query function and hook for controlling window resize
   const mediaQueryChangeHandler = (event: MediaQueryListEvent) => {
     event.matches ? setIsNavToggleOpen(false) : setIsNavToggleOpen(true);
   };
@@ -82,6 +83,7 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
       id="layout"
       className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-10"
     >
+      {/* Logo Area : Logo, Navigation Switch */}
       <div
         id="logo"
         className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} z-10 transition-all duration-500 ease-out`}
@@ -102,6 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
         />
       </div>
 
+      {/* Main Area : Sidebar, Navigation, Content */}
       <div
         id="main"
         className={`relative flex w-full flex-row items-start ${states.sidebarGap} pt-10 transition-all duration-700 ease-out`}
@@ -126,6 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
         </div>
       </div>
 
+      {/* Footer Area */}
       <div
         id="footer"
         className="flex h-[112px] w-full flex-row items-center gap-5 rounded-2xl bg-indigo-50 p-5"
