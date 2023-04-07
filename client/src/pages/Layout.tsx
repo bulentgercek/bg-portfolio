@@ -68,11 +68,11 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
   }, [isNavToggleOpen]);
 
   const mediaQueryChangeHandler = (event: MediaQueryListEvent) => {
-    event.matches ? setIsNavToggleOpen(true) : setIsNavToggleOpen(false);
+    event.matches ? setIsNavToggleOpen(false) : setIsNavToggleOpen(true);
   };
 
   useEffect(() => {
-    const mql: MediaQueryList = window.matchMedia("(width > 768px)");
+    const mql: MediaQueryList = window.matchMedia("(width < 768px)");
     mql.addEventListener("change", mediaQueryChangeHandler);
     return () => mql.removeEventListener("change", mediaQueryChangeHandler);
   }, []);
