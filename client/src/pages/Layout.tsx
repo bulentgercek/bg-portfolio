@@ -49,75 +49,26 @@ const statesClose: StatesType = {
   navListSwitch: statesData.navListSwitch.open,
   sidebarGap: statesData.sidebarGap.gap0px,
 };
-// Page Elements Main States
-const states: StatesType = { ...statesOpen };
-
-// Assign State Defaults like a fusebox
-const statesFusebox: StatesFuseboxType = {
-  isNavTempModeActive: false,
-  isNavToggleOpen: true,
-};
 
 const Layout: React.FC<LayoutProps> = ({ value }) => {
-  const [statesUpdate, setStatesUpdate] = useState(false);
+  const [states, setStates] = useState<StatesType>(statesOpen);
+  const [isNavToggleOpen, setIsNavToggleOpen] = useState<boolean>(true);
 
   // Get current location from router
   const location = useLocation();
 
   // Navigation constants
   const navigateToHome = () => {
-    if (location.pathname === "/") {
-      // Do nothing if already on the home page
-      return;
-    }
-    return <Navigate to="/" />;
-  };
-
-  // Page Element State Handler
-  const pageElementsHandler = (
-    fusebox: StatesFuseboxType,
-    states: StatesType,
-  ) => {
-    if (!statesUpdate) return;
-
-    if (fusebox.isNavToggleOpen) {
-      Object.assign(states, statesOpen);
-      setStatesUpdate(!statesUpdate);
-    } else {
-      Object.assign(states, statesClose);
-      setStatesUpdate(!statesUpdate);
-    }
+    // if we are not at the home page navigate it
+    if (location.pathname !== "/") return <Navigate to="/" />;
   };
 
   useEffect(() => {
-    pageElementsHandler(statesFusebox, states);
-    setStatesUpdate(false);
-  }, [statesUpdate]);
+    isNavToggleOpen ? setStates(statesOpen) : setStates(statesClose);
+  }, [isNavToggleOpen]);
 
   const mediaQueryChangeHandler = (event: MediaQueryListEvent) => {
-    if (event.matches) {
-      // if windows size > then 768
-      setStatesUpdate(() => {
-        // If windows resized up that first check if navigation temp active
-        // so open navigation and deactivate navigation temp mode
-        if (statesFusebox.isNavTempModeActive) {
-          statesFusebox.isNavToggleOpen = true;
-          statesFusebox.isNavTempModeActive = false;
-        }
-        return !statesUpdate;
-      });
-    } else {
-      // if windows size < then 768
-      setStatesUpdate(() => {
-        // If windows resized down, first check if navigation open
-        // if it is then close navigation and activate navigation temp mode
-        if (statesFusebox.isNavToggleOpen) {
-          statesFusebox.isNavToggleOpen = false;
-          statesFusebox.isNavTempModeActive = true;
-        }
-        return !statesUpdate;
-      });
-    }
+    event.matches ? setIsNavToggleOpen(true) : setIsNavToggleOpen(false);
   };
 
   useEffect(() => {
@@ -145,12 +96,9 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
           id="nav_list_switch"
           className="duration-250 cursor-pointer transition-all ease-out hover:scale-110"
           src={states.navListSwitch}
-          onClick={() =>
-            setStatesUpdate(() => {
-              statesFusebox.isNavToggleOpen = !statesFusebox.isNavToggleOpen;
-              return !statesUpdate;
-            })
-          }
+          onClick={() => {
+            setIsNavToggleOpen(!isNavToggleOpen);
+          }}
         />
       </div>
 
