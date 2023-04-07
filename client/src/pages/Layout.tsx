@@ -33,18 +33,29 @@ const statesData: StatesDataType = {
 };
 
 // Assign Page Element Default States from States Data
-const states: StatesType = {
+// Page Elements Open States
+const statesOpen: StatesType = {
   sidebarWidth: statesData.sidebarWidth.w325px,
   logoAreaWidth: statesData.logoAreaWidth.w285px,
   navListSwitch: statesData.navListSwitch.close,
   sidebarVisibilty: statesData.sidebarVisibilty.flex,
   sidebarGap: statesData.sidebarGap.gap20px,
 };
+// Page Elements Close States
+const statesClose: StatesType = {
+  sidebarWidth: statesData.sidebarWidth.w0px,
+  logoAreaWidth: statesData.logoAreaWidth.w124px,
+  navListSwitch: statesData.navListSwitch.open,
+  sidebarGap: statesData.sidebarGap.gap0px,
+};
+// Page Elements Main States
+const states: StatesType = { ...statesOpen };
 
 // Assign State Defaults like a fusebox
 const statesFusebox: StatesFuseboxType = {
   isWindowResizedDown: false,
   isNavToggleOpen: true,
+  isNavToggleOpenTemp: false,
 };
 
 const Layout: React.FC<LayoutProps> = ({ value }) => {
@@ -56,21 +67,12 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
     states: StatesType,
   ) => {
     if (!statesUpdate) return;
-    if (!fusebox.isNavToggleOpen || fusebox.isWindowResizedDown) {
-      states.sidebarWidth = statesData.sidebarWidth.w0px;
-      states.logoAreaWidth = statesData.logoAreaWidth.w124px;
-      states.navListSwitch = statesData.navListSwitch.open;
-      // states.sidebarVisibilty = statesData.sidebarVisibilty.hidden;
-      states.sidebarGap = statesData.sidebarGap.gap0px;
+
+    if (!fusebox.isNavToggleOpen) {
+      Object.assign(states, statesClose);
     } else {
-      states.sidebarWidth = statesData.sidebarWidth.w325px;
-      states.logoAreaWidth = statesData.logoAreaWidth.w285px;
-      states.navListSwitch = statesData.navListSwitch.close;
-      // states.sidebarVisibilty = statesData.sidebarVisibilty.flex;
-      states.sidebarGap = statesData.sidebarGap.gap20px;
+      Object.assign(states, statesOpen);
     }
-    console.log(fusebox);
-    console.log(states);
   };
 
   useEffect(() => {
@@ -78,20 +80,39 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
     setStatesUpdate(false);
   }, [statesUpdate]);
 
-  const mql = window.matchMedia("(min-width: 768px)");
-  mql.addEventListener("change", (event: MediaQueryListEvent) => {
+  const mediaQueryChangeHandler = (event: MediaQueryListEvent) => {
     if (event.matches) {
+      // if windows size > then 768
       setStatesUpdate(() => {
-        statesFusebox.isWindowResizedDown = false;
+        // Check temporary active that means Navigation closed
+        // so open navigation and disable temp
+        if (statesFusebox.isNavToggleOpenTemp) {
+          statesFusebox.isNavToggleOpen = true;
+          statesFusebox.isNavToggleOpenTemp = false;
+        }
+        // statesFusebox.isWindowResizedDown = false;
         return !statesUpdate;
       });
     } else {
+      // if windows size < then 768
       setStatesUpdate(() => {
-        statesFusebox.isWindowResizedDown = true;
+        // Check if navigation open when we resize down window
+        // then activate temp and close
+        if (statesFusebox.isNavToggleOpen) {
+          statesFusebox.isNavToggleOpen = false;
+          statesFusebox.isNavToggleOpenTemp = true;
+        }
+        // statesFusebox.isWindowResizedDown = true;
         return !statesUpdate;
       });
     }
-  });
+  };
+
+  useEffect(() => {
+    const mql = window.matchMedia("(width > 768px)");
+    mql.addEventListener("change", mediaQueryChangeHandler);
+    return () => mql.removeEventListener("change", mediaQueryChangeHandler);
+  }, []);
 
   return (
     <div
@@ -100,7 +121,7 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
     >
       <div
         id="logo"
-        className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} transition-all  duration-500 ease-out`}
+        className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} z-10 transition-all duration-500 ease-out`}
       >
         <img src={bg_logo}></img>
         <img
@@ -117,11 +138,11 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
 
       <div
         id="main"
-        className={`flex w-full flex-row items-start ${states.sidebarGap} pt-10 transition-all duration-700 ease-out`}
+        className={`relative flex w-full flex-row items-start ${states.sidebarGap} pt-10 transition-all duration-700 ease-out`}
       >
         <div
           id="sidebar"
-          className={`${states.sidebarVisibilty} ${states.sidebarWidth} flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out`}
+          className={`${states.sidebarVisibilty} ${states.sidebarWidth} absolute flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out sm:relative`}
         >
           <div
             id="nav"

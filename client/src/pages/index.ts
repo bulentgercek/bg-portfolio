@@ -11,7 +11,7 @@ export type StatesType = {
   logoAreaWidth: string;
   navListSwitch: string;
   sidebarGap: string;
-  sidebarVisibilty: string;
+  sidebarVisibilty?: string;
 };
 
 export type StatesDataType = {
@@ -40,4 +40,5 @@ export type StatesDataType = {
 export type StatesFuseboxType = {
   isWindowResizedDown: boolean;
   isNavToggleOpen: boolean;
+  isNavToggleOpenTemp: boolean;
 };
