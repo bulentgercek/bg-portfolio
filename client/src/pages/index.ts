@@ -36,8 +36,3 @@ export type StatesDataType = {
     hidden: string;
   };
 };
-
-export type StatesFuseboxType = {
-  isNavTempModeActive: boolean;
-  isNavToggleOpen: boolean;
-};

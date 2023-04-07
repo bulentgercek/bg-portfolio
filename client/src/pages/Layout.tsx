@@ -6,7 +6,7 @@ import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import Content from "./Content";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
-import { LayoutProps, StatesDataType, StatesFuseboxType, StatesType } from ".";
+import { LayoutProps, StatesDataType, StatesType } from ".";
 import { Navigate, useLocation } from "react-router-dom";
 
 // Page Element States Data
