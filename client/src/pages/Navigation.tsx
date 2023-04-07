@@ -11,12 +11,12 @@ const Navigation: React.FC<NavigationProps> = ({ value }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getAssets = async () => {
+    const fetchData = async () => {
       const dbCategories = await Api.getCategories();
       setCategories(dbCategories);
       setLoading(false);
     };
-    getAssets();
+    fetchData();
   }, []);
 
   return (
