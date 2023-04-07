@@ -38,7 +38,6 @@ export type StatesDataType = {
 };
 
 export type StatesFuseboxType = {
-  isWindowResizedDown: boolean;
+  isNavTempModeActive: boolean;
   isNavToggleOpen: boolean;
-  isNavToggleOpenTemp: boolean;
 };

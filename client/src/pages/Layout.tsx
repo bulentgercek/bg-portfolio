@@ -7,6 +7,7 @@ import Content from "./Content";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
 import { LayoutProps, StatesDataType, StatesFuseboxType, StatesType } from ".";
+import { Navigate, useLocation } from "react-router-dom";
 
 // Page Element States Data
 const statesData: StatesDataType = {
@@ -53,25 +54,38 @@ const states: StatesType = { ...statesOpen };
 
 // Assign State Defaults like a fusebox
 const statesFusebox: StatesFuseboxType = {
-  isWindowResizedDown: false,
+  isNavTempModeActive: false,
   isNavToggleOpen: true,
-  isNavToggleOpenTemp: false,
 };
 
 const Layout: React.FC<LayoutProps> = ({ value }) => {
   const [statesUpdate, setStatesUpdate] = useState(false);
 
+  // Get current location from router
+  const location = useLocation();
+
+  // Navigation constants
+  const navigateToHome = () => {
+    if (location.pathname === "/") {
+      // Do nothing if already on the home page
+      return;
+    }
+    return <Navigate to="/" />;
+  };
+
   // Page Element State Handler
   const pageElementsHandler = (
-    fusebox: typeof statesFusebox,
+    fusebox: StatesFuseboxType,
     states: StatesType,
   ) => {
     if (!statesUpdate) return;
 
-    if (!fusebox.isNavToggleOpen) {
-      Object.assign(states, statesClose);
-    } else {
+    if (fusebox.isNavToggleOpen) {
       Object.assign(states, statesOpen);
+      setStatesUpdate(!statesUpdate);
+    } else {
+      Object.assign(states, statesClose);
+      setStatesUpdate(!statesUpdate);
     }
   };
 
@@ -84,32 +98,30 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
     if (event.matches) {
       // if windows size > then 768
       setStatesUpdate(() => {
-        // Check temporary active that means Navigation closed
-        // so open navigation and disable temp
-        if (statesFusebox.isNavToggleOpenTemp) {
+        // If windows resized up that first check if navigation temp active
+        // so open navigation and deactivate navigation temp mode
+        if (statesFusebox.isNavTempModeActive) {
           statesFusebox.isNavToggleOpen = true;
-          statesFusebox.isNavToggleOpenTemp = false;
+          statesFusebox.isNavTempModeActive = false;
         }
-        // statesFusebox.isWindowResizedDown = false;
         return !statesUpdate;
       });
     } else {
       // if windows size < then 768
       setStatesUpdate(() => {
-        // Check if navigation open when we resize down window
-        // then activate temp and close
+        // If windows resized down, first check if navigation open
+        // if it is then close navigation and activate navigation temp mode
         if (statesFusebox.isNavToggleOpen) {
           statesFusebox.isNavToggleOpen = false;
-          statesFusebox.isNavToggleOpenTemp = true;
+          statesFusebox.isNavTempModeActive = true;
         }
-        // statesFusebox.isWindowResizedDown = true;
         return !statesUpdate;
       });
     }
   };
 
   useEffect(() => {
-    const mql = window.matchMedia("(width > 768px)");
+    const mql: MediaQueryList = window.matchMedia("(width > 768px)");
     mql.addEventListener("change", mediaQueryChangeHandler);
     return () => mql.removeEventListener("change", mediaQueryChangeHandler);
   }, []);
@@ -123,9 +135,15 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
         id="logo"
         className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} z-10 transition-all duration-500 ease-out`}
       >
-        <img src={bg_logo}></img>
         <img
-          className="cursor-pointer"
+          id="bg_logo"
+          className="cursor-pointer transition-transform hover:scale-105"
+          src={bg_logo}
+          onClick={navigateToHome}
+        ></img>
+        <img
+          id="nav_list_switch"
+          className="duration-250 cursor-pointer transition-all ease-out hover:scale-110"
           src={states.navListSwitch}
           onClick={() =>
             setStatesUpdate(() => {
