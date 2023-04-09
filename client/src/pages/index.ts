@@ -1,4 +1,9 @@
 /**
+ * Consts
+ */
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+/**
  * Layout
  * Interfaces, Types
  */
@@ -36,3 +41,22 @@ export type StatesDataType = {
     hidden: string;
   };
 };
+
+/**
+ * Navigation
+ * Interfaces, Types
+ */
+export interface NavListElementType {
+  id: number;
+  name: string;
+  route: string;
+  parentCategory?: number | null;
+  class: NavListItemClass;
+}
+
+export enum NavListItemClass {
+  About = "about",
+  Works = "works",
+  Category = "category",
+  Item = "item",
+}
