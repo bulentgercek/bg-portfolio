@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
         categories: {
           id: true,
           name: true,
-          parentCategories: {
+          parentCategory: {
             id: true,
             name: true,
           },
@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
       relations: {
         featuredImageAsset: true,
         categories: {
-          parentCategories: true,
+          parentCategory: true,
           childCategories: true,
         },
         contents: {
@@ -73,7 +73,7 @@ router.get("/:id", async (req, res) => {
         categories: {
           id: true,
           name: true,
-          parentCategories: {
+          parentCategory: {
             id: true,
             name: true,
           },
@@ -86,7 +86,7 @@ router.get("/:id", async (req, res) => {
       relations: {
         featuredImageAsset: true,
         categories: {
-          parentCategories: true,
+          parentCategory: true,
           childCategories: true,
         },
         contents: {
@@ -261,7 +261,7 @@ router.put("/:id", async (req, res) => {
         categories: {
           id: true,
           name: true,
-          parentCategories: {
+          parentCategory: {
             id: true,
             name: true,
           },
@@ -277,7 +277,7 @@ router.put("/:id", async (req, res) => {
       relations: {
         featuredImageAsset: true,
         categories: {
-          parentCategories: true,
+          parentCategory: true,
           childCategories: true,
         },
         contents: {

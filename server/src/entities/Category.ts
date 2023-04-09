@@ -4,6 +4,8 @@ import {
   ManyToMany,
   PrimaryGeneratedColumn,
   JoinTable,
+  OneToMany,
+  ManyToOne,
 } from "typeorm";
 import { Item } from "./Item";
 
@@ -21,13 +23,12 @@ export class Category {
   @ManyToMany(() => Item, (item) => item.categories, { nullable: true })
   items: Item[];
 
-  @ManyToMany(() => Category, (category) => category.childCategories, {
+  @ManyToOne(() => Category, (category) => category.childCategories, {
     nullable: true,
   })
-  @JoinTable()
-  parentCategories: Category[];
+  parentCategory: Category;
 
-  @ManyToMany(() => Category, (category) => category.parentCategories, {
+  @OneToMany(() => Category, (category) => category.parentCategory, {
     nullable: true,
   })
   childCategories: Category[];

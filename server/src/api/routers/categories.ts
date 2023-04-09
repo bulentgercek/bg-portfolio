@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
           featured: true,
           updatedDate: true,
         },
-        parentCategories: {
+        parentCategory: {
           id: true,
           name: true,
         },
@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
       },
       relations: {
         items: true,
-        parentCategories: true,
+        parentCategory: true,
         childCategories: true,
       },
     })
@@ -52,7 +52,7 @@ router.get("/:id", async (req, res) => {
   const dbCategory = await ac
     .findOne(Category, validateResults, {
       select: {
-        parentCategories: {
+        parentCategory: {
           id: true,
           name: true,
         },
@@ -70,7 +70,7 @@ router.get("/:id", async (req, res) => {
             assets: true,
           },
         },
-        parentCategories: true,
+        parentCategory: true,
         childCategories: true,
       },
     })
@@ -87,7 +87,7 @@ router.post("/", async (req, res) => {
         name: z.string().optional(),
         description: z.string().nullable().optional(),
         items: z.array(z.number()).optional(),
-        parentCategories: z.array(z.number()).optional(),
+        parentCategory: z.number().optional(),
         childCategories: z.array(z.number()).optional(),
       }),
     },
@@ -104,7 +104,7 @@ router.post("/", async (req, res) => {
   const filteredBody = filterObject(
     validateResults.result.body,
     "items",
-    "parentCategories",
+    "parentCategory",
     "childCategories",
   );
 
@@ -126,17 +126,17 @@ router.post("/", async (req, res) => {
     }
   }
 
-  // Add parent categories
-  if (validateResults.result.body.parentCategories) {
-    const dbParentCategories = await ac.findAll(Category, validateResults, {
+  // Add parent category
+  if (validateResults.result.body.parentCategory) {
+    const dbParentCategory = await ac.findOne(Category, validateResults, {
       where: {
-        id: In(validateResults.result.body.parentCategories),
+        id: validateResults.result.body.parentCategory,
       },
     });
 
     // is validated?
-    if (Array.isArray(dbParentCategories)) {
-      createdCategory.parentCategories = dbParentCategories;
+    if (dbParentCategory instanceof Category) {
+      createdCategory.parentCategory = dbParentCategory;
     }
   }
 
@@ -150,7 +150,7 @@ router.post("/", async (req, res) => {
 
     // is validated?
     if (Array.isArray(dbChildCategories)) {
-      createdCategory.parentCategories = dbChildCategories;
+      createdCategory.childCategories = dbChildCategories;
     }
   }
 
@@ -172,7 +172,7 @@ router.put("/:id", async (req, res) => {
         name: z.string().optional(),
         description: z.string().optional(),
         items: z.array(z.number()).optional(),
-        parentCategories: z.array(z.number()).optional(),
+        parentCategory: z.number().optional(),
         childCategories: z.array(z.number()).optional(),
       }),
     },
@@ -188,7 +188,7 @@ router.put("/:id", async (req, res) => {
         id: validateResults.result.params?.id,
       },
       relations: {
-        parentCategories: true,
+        parentCategory: true,
         childCategories: true,
       },
     })
@@ -205,7 +205,7 @@ router.put("/:id", async (req, res) => {
   const filteredBody: Partial<Category> = filterObject(
     validateResults.result.body,
     "items",
-    "parentCategories",
+    "parentCategory",
     "childCategories",
   );
 
@@ -227,18 +227,18 @@ router.put("/:id", async (req, res) => {
     }
   }
 
-  // Add parent categories
-  if (validateResults.result.body.parentCategories) {
-    const dbParentCategories = await ac
-      .findAll(Category, validateResults, {
+  // Add parent category
+  if (validateResults.result.body.parentCategory) {
+    const dbParentCategory = await ac
+      .findOne(Category, validateResults, {
         where: {
-          id: In(validateResults.result.body.parentCategories),
+          id: validateResults.result.body.parentCategory,
         },
       })
       .catch((err) => console.log(err));
 
-    if (Array.isArray(dbParentCategories))
-      updatedCategory.parentCategories = dbParentCategories;
+    if (dbParentCategory instanceof Category)
+      updatedCategory.parentCategory = dbParentCategory;
   }
 
   // Add child categories
