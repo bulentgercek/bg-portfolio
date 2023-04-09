@@ -300,13 +300,13 @@ _**Response Body** `Object`_
 
 _**Request Body** `Object`_
 
-| Field   | Type        | Description         |
-| ------- | ----------- | ------------------- |
-| name    | String      | Optional            |
-| type    | ContentType | Optional            |
-| columns | Number      | Optional            |
-| item    | Item        | id, Optional        |
-| assets  | Number[]    | [ ...id ], Optional |
+| Field   | Type        | Description                            |
+| ------- | ----------- | -------------------------------------- |
+| name    | String      | Optional                               |
+| type    | ContentType | default: imageGalleryMasonry, Optional |
+| columns | Number      | Optional                               |
+| item    | Item        | id, Optional                           |
+| assets  | Number[]    | [ ...id ], Optional                    |
 
 _**Response Body** `Object`_
 
