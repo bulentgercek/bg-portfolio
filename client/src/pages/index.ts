@@ -7,9 +7,9 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL;
  * Layout
  * Interfaces, Types
  */
-export interface LayoutProps {
+export type LayoutProps = {
   value: string;
-}
+};
 
 export type StatesType = {
   sidebarWidth: string;
@@ -17,6 +17,7 @@ export type StatesType = {
   navListSwitch: string;
   sidebarGap: string;
   sidebarVisibilty?: string;
+  backgroundFill?: string;
 };
 
 export type StatesDataType = {
@@ -40,19 +41,23 @@ export type StatesDataType = {
     flex: string;
     hidden: string;
   };
+  backgroundFill: {
+    bgColorOpacity25: string;
+    bgColorOpacity0: string;
+  };
 };
 
 /**
  * Navigation
  * Interfaces, Types
  */
-export interface NavListElementType {
+export type NavListElementType = {
   id: number;
   name: string;
   route: string;
   parentCategory?: number | null;
   class: NavListItemClass;
-}
+};
 
 export enum NavListItemClass {
   About = "about",
@@ -60,3 +65,9 @@ export enum NavListItemClass {
   Category = "category",
   Item = "item",
 }
+
+export type RouteDataType = {
+  rootRoute: string;
+  categoryId: string | null;
+  itemId: string | null;
+};

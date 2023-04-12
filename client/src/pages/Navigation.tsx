@@ -1,13 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BASE_URL, NavListElementType, NavListItemClass } from ".";
+
+import {
+  BASE_URL,
+  NavListElementType,
+  NavListItemClass,
+  RouteDataType,
+} from ".";
 import { Api } from "../api";
 import { Category } from "../api/interfaces";
+import { getNavlistElements, createKey } from "../utils";
 
-interface NavigationProps {
+type NavigationProps = {
   value: string;
-}
+};
 
+// Init values for navData state
 const rootNavData: NavListElementType[] = [
   {
     id: 0,
@@ -37,44 +45,37 @@ const rootNavData: NavListElementType[] = [
   },
 ];
 
+/**
+ * Navigation Function Component
+ */
 const Navigation: React.FC<NavigationProps> = ({ value }) => {
-  const [navData, setNavData] = useState<NavListElementType[]>([]);
   const [dbcategories, setDbCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [routeData, setRouteData] = useState<RouteDataType>();
+  const [navData, setNavData] = useState<NavListElementType[]>([
+    ...rootNavData,
+  ]);
 
-  // Preventing the strict mode multiple calls on dev environment
-  const isMountedRef = useRef(false);
+  // Ref variable to see Routes first time it updated without waiting the second render
+  // But remember that is not a good approach Bulent :D
+  const routeDataRef = useRef<RouteDataType>({} as RouteDataType);
 
   // Navigation variables and functions
   const location = useLocation();
-
-  const createKey = (navListElement: NavListElementType) => {
-    let key: string = "";
-
-    switch (navListElement.class) {
-      case NavListItemClass.About:
-        key = `a${navListElement.id}`;
-        break;
-      case NavListItemClass.Works:
-        key = `w${navListElement.id}`;
-        break;
-      case NavListItemClass.Category:
-        key = `c${navListElement.id}`;
-        break;
-      case NavListItemClass.Item:
-        key = `i${navListElement.id}`;
-        break;
-    }
-
-    return key;
-  };
+  const urlParams = new URLSearchParams(location.search);
 
   useEffect(() => {
-    if (!isMountedRef.current) {
-      setNavData((prev) => prev.concat(rootNavData));
-      isMountedRef.current = true;
-    }
-  }, []);
+    const newRouteData = {
+      rootRoute: location.pathname.replace(/^\/|\/$/g, ""),
+      categoryId: urlParams.get("categoryId"),
+      itemId: urlParams.get("itemId"),
+    };
+    setRouteData(() => newRouteData);
+
+    // Console log current value of routeData state
+    routeDataRef.current = newRouteData;
+    console.log(routeDataRef.current);
+  }, [location]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,7 +84,10 @@ const Navigation: React.FC<NavigationProps> = ({ value }) => {
       setLoading(false);
     };
     fetchData();
+    console.log(dbcategories);
   }, []);
+
+  // console.log(getNavlistElements(navData, "id", 1));
 
   return (
     <div>
@@ -92,22 +96,11 @@ const Navigation: React.FC<NavigationProps> = ({ value }) => {
       ) : (
         <ul>
           {navData.map((category) => {
-            if (category.parentCategory === undefined)
-              return (
-                <li key={createKey(category)} className="cursor-pointer">
-                  <Link to={`${BASE_URL}${category.route}`}>
-                    {category.name}
-                  </Link>
-                </li>
-              );
-            else if (category.parentCategory !== null)
-              return (
-                <li key={createKey(category)} className="cursor-pointer px-1">
-                  <Link to={`${BASE_URL}${category.route}`}>
-                    {category.name}
-                  </Link>
-                </li>
-              );
+            return (
+              <li key={createKey(category)} className={`cursor-pointer`}>
+                <Link to={`${BASE_URL}${category.route}`}>{category.name}</Link>
+              </li>
+            );
           })}
         </ul>
       )}

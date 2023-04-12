@@ -13,7 +13,7 @@ export enum AssetType {
   Text = "text",
 }
 
-export interface Asset {
+export type Asset = {
   id: number;
   name: string;
   type: AssetType;
@@ -21,12 +21,12 @@ export interface Asset {
   url: string | null;
   contents: Content[] | null;
   updatedDate: string;
-}
+};
 
 /**
  * Categories
  */
-export interface Category {
+export type Category = {
   id: number;
   name: string;
   description: string | null;
@@ -35,7 +35,7 @@ export interface Category {
   childCategories: Category[] | null;
   childCategoriesOrder: number[] | null;
   itemsOrder: number[] | null;
-}
+};
 
 /**
  * Contents
@@ -45,19 +45,19 @@ export enum ContentType {
   ImageGalleryMasonry = "imageGalleryMasonry",
 }
 
-export interface Content {
+export type Content = {
   id: number;
   name: string;
   type: ContentType;
   columns: number;
   item: Item;
   assets: Asset[] | null;
-}
+};
 
 /**
  * Items
  */
-export interface Item {
+export type Item = {
   id: number;
   name: string;
   description: string | null;
@@ -67,7 +67,7 @@ export interface Item {
   categories: Category[] | null;
   contents: Content[] | null;
   updatedDate: Date;
-}
+};
 
 /**
  * Options
@@ -86,10 +86,10 @@ export enum OptionType {
   Number = "number",
 }
 
-export interface Option {
+export type Option = {
   id: number;
   name: string;
   category: OptionCategory;
   type: OptionType;
   value: string | null;
-}
+};
