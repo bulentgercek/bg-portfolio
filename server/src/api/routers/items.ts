@@ -163,7 +163,7 @@ router.post("/", async (req, res) => {
         link: z.string().url().optional(),
         featured: z.boolean().optional(),
         featuredImageAsset: z.number().optional(),
-        categories: z.array(z.number()),
+        categories: z.array(z.number()).optional(),
       }),
     },
     reqData: { body: req.body },
@@ -202,19 +202,19 @@ router.post("/", async (req, res) => {
   }
 
   // Add Categories
-  const dbCategories = await ac.findAll(Category, validateResults, {
-    where: {
-      id: In(validateResults.result.body.categories),
-    },
-  });
+  if (validateResults.result.body.categories) {
+    const dbCategories = await ac
+      .findAll(Category, validateResults, {
+        where: {
+          id: In(validateResults.result.body.categories),
+        },
+      })
+      .catch((err) => console.log(err));
 
-  // is validated?
-  if (Array.isArray(dbCategories)) {
-    createdItem.categories = dbCategories;
-  } else {
-    return res.status(400).json({
-      message: "Invalid Category. You cannot add item without category.",
-    });
+    // is validated?
+    if (Array.isArray(dbCategories)) {
+      createdItem.categories = dbCategories;
+    }
   }
 
   const addedItem = await ac.addCreated(Item, validateResults, createdItem);
