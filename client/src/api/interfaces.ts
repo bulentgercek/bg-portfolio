@@ -31,7 +31,7 @@ export type Category = {
   name: string;
   description: string | null;
   items: Item[] | null;
-  parentCategories: Category[] | null;
+  parentCategory: Category | null;
   childCategories: Category[] | null;
   childCategoriesOrder: number[] | null;
   itemsOrder: number[] | null;
