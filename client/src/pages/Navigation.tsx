@@ -1,107 +1,143 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 
-import {
-  BASE_URL,
-  NavListElementType,
-  NavListItemClass,
-  RouteDataType,
-} from ".";
+import { BASE_URL, NavListElementType, RouteDataType } from ".";
 import { Api } from "../api";
 import { Category } from "../api/interfaces";
-import { getNavlistElements, createKey } from "../utils";
-
-type NavigationProps = {
-  value: string;
-};
-
-// Init values for navData state
-const rootNavData: NavListElementType[] = [
-  {
-    id: 0,
-    name: "About",
-    route: "/about",
-    class: NavListItemClass.About,
-  },
-  {
-    id: 0,
-    name: "Works",
-    route: "/works",
-    class: NavListItemClass.Works,
-  },
-  {
-    id: 1,
-    name: "Printed Media",
-    route: "/works/?categoryId=1",
-    parentCategory: null,
-    class: NavListItemClass.Category,
-  },
-  {
-    id: 1,
-    name: "Garanti Bank Posters",
-    route: "/works/?categoryId=1&itemId=1",
-    parentCategory: 1,
-    class: NavListItemClass.Item,
-  },
-];
+import { getCategoryById, getCategoryByName, sortCategories } from "../utils";
 
 /**
  * Navigation Function Component
  */
-const Navigation: React.FC<NavigationProps> = ({ value }) => {
+const Navigation: React.FC = () => {
   const [dbcategories, setDbCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [routeData, setRouteData] = useState<RouteDataType>();
-  const [navData, setNavData] = useState<NavListElementType[]>([
-    ...rootNavData,
-  ]);
+  const [navData, setNavData] = useState<NavListElementType[]>([]);
 
-  // Ref variable to see Routes first time it updated without waiting the second render
-  // But remember that is not a good approach Bulent :D
-  const routeDataRef = useRef<RouteDataType>({} as RouteDataType);
-
-  // Navigation variables and functions
-  const location = useLocation();
-  const urlParams = new URLSearchParams(location.search);
-
-  useEffect(() => {
-    const newRouteData = {
-      rootRoute: location.pathname.replace(/^\/|\/$/g, ""),
-      categoryId: urlParams.get("categoryId"),
-      itemId: urlParams.get("itemId"),
-    };
-    setRouteData(() => newRouteData);
-
-    // Console log current value of routeData state
-    routeDataRef.current = newRouteData;
-    console.log(routeDataRef.current);
-  }, [location]);
-
+  // onMount: Fetch dbCategories
   useEffect(() => {
     const fetchData = async () => {
       const fetchResult = await Api.getCategories();
       setDbCategories(fetchResult);
-      setLoading(false);
+
+      // Delay for to see loading longer
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+
+      console.clear();
+      console.log("onMount: dbCategories set.");
     };
     fetchData();
-    console.log(dbcategories);
   }, []);
 
-  // console.log(getNavlistElements(navData, "id", 1));
+  // onRender: Set Route Variables
+  const { cid = null, iid = null } = useParams();
+  const locationPathname = useLocation().pathname;
+
+  // onChange locationPathname: Update routeData
+  useEffect(() => {
+    if (dbcategories.length === 0) return;
+
+    const newRouteData: RouteDataType = {
+      cid: cid !== null ? parseInt(cid, 10) : null,
+      iid: iid !== null ? parseInt(iid, 10) : null,
+    };
+    setRouteData(newRouteData);
+    console.log("onChanges locationPathname : routeData set.");
+  }, [locationPathname, dbcategories]);
+
+  // onChange routeData: Update navData
+  useEffect(() => {
+    if (routeData === undefined) return;
+    console.log("routeData: ", routeData);
+
+    // Constants
+    const rootCategory = getCategoryByName(dbcategories, "Root");
+    const dbCategoriesSorted = sortCategories(dbcategories, "name");
+
+    // is Root category found?
+    if (!rootCategory) {
+      console.log({ message: "Root category not found!" });
+      return;
+    }
+
+    let routeCategory: Category = rootCategory;
+
+    if (routeData.cid !== null) {
+      routeCategory = getCategoryById(dbcategories, routeData.cid) || routeCategory;
+    }
+
+    console.log("routeCategory:", routeCategory);
+
+    // Create an tree array for selected category
+    const getActiveCategoryRootTree = (): NavListElementType[] => {
+      let activeCategory = routeCategory;
+      const activeCategoryRootTree: NavListElementType[] = [];
+
+      if (activeCategory.name !== "Root") {
+        activeCategoryRootTree.push({
+          category: routeCategory,
+          route: `/category/${routeCategory.id}`,
+        });
+
+        // Loop until the parent reaches to Root add it to array of NavListElementType
+        while (
+          activeCategoryRootTree[activeCategoryRootTree.length - 1].category.id !== rootCategory?.id
+        ) {
+          const upperLevelParent = dbCategoriesSorted.find(
+            (category) => activeCategory?.parentCategory?.id === category.id,
+          );
+
+          // Add it to array but not include the root category
+          if (upperLevelParent && upperLevelParent.id !== rootCategory.id) {
+            activeCategoryRootTree.splice(0, 0, {
+              category: upperLevelParent,
+              route: `/category/${upperLevelParent.id}`,
+            });
+            activeCategory = upperLevelParent;
+          } else {
+            break;
+          }
+        }
+      }
+      return activeCategoryRootTree;
+    };
+    // const result = getActiveCategoryRootTree();
+    // setNavData(() => result);
+    /**
+     * IMPORTANT NOTES TO MYSELF
+     * Create Final navData: Add Root Items and Categories using dbCategoriesSorted
+     * 1. Check if the Root has it own items then sort them by name and add them too navData or
+     * reconsider again how the items should be added to the navData. Maybe in? -> if (routeData?.type === "item")
+     * 2. Add categories of Root with looping on them and check if the id equeal with activeCategoryRootTree[0] then add activeCategoryRootTree
+     * and its own items -> if (routeData?.type === "item")
+     */
+  }, [routeData]);
 
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <p>Loading Navigation Data...</p>
       ) : (
         <ul>
-          {navData.map((category) => {
+          {navData.map((element) => {
             return (
-              <li key={createKey(category)} className={`cursor-pointer`}>
-                <Link to={`${BASE_URL}${category.route}`}>{category.name}</Link>
+              <li key={element.category.id}>
+                <Link to={`${BASE_URL}${element.route}`}>{element.category.name}</Link>
               </li>
             );
           })}
+          <li key="c5">
+            <Link to={`${BASE_URL}/category/5`}>Works</Link>
+          </li>
+          <li key="c3">
+            <Link to={`${BASE_URL}/category/3`}>Printed Media</Link>
+          </li>
+          <li key="i1">
+            <Link to={`${BASE_URL}/category/3/item/1`}>Garanti Bank Posters</Link>
+          </li>
         </ul>
       )}
     </div>

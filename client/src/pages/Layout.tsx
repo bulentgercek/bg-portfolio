@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 import bg_logo from "../assets/bg_logo.svg";
 import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
@@ -54,19 +54,11 @@ const closeStates: StatesType = {
   sidebarGap: statesData.sidebarGap.gap0px,
 };
 
-const Layout: React.FC<LayoutProps> = ({ value }) => {
+const Layout: React.FC = () => {
   const [states, setStates] = useState<StatesType>(closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] =
     useState<boolean>(false);
-
-  // Navigation variables and functions
-  const location = useLocation();
-
-  const navigateToHome = () => {
-    // if we are not at the home page navigate it
-    if (location.pathname !== "/") return <Navigate to="/" />;
-  };
 
   // Hook for re-rendering element states using the navigation toggle
   useEffect(() => {
@@ -114,12 +106,13 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
           id="logo"
           className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
         >
-          <img
-            id="bg_logo"
-            className="cursor-pointer transition-transform hover:scale-105"
-            src={bg_logo}
-            onClick={navigateToHome}
-          ></img>
+          <Link to="/">
+            <img
+              id="bg_logo"
+              className="cursor-pointer transition-transform hover:scale-105"
+              src={bg_logo}
+            ></img>
+          </Link>
           <img
             id="nav_list_switch"
             className="duration-250 cursor-pointer transition-all ease-out hover:scale-110"
@@ -143,7 +136,7 @@ const Layout: React.FC<LayoutProps> = ({ value }) => {
               id="nav"
               className="item-start flex w-[325px] flex-col gap-[10px] rounded-2xl bg-indigo-50 p-5 pt-10"
             >
-              <Navigation value="home" />
+              <Navigation />
             </div>
           </div>
 

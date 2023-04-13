@@ -1,25 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import {
-  createBrowserRouter,
-  Navigate,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import Layout from "./pages/Layout";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout value="home" />,
+    element: <Layout />,
   },
   {
-    path: "/about",
-    element: <Layout value="about" />,
+    path: "/category/:cid",
+    element: <Layout />,
   },
   {
-    path: "/works",
-    element: <Layout value="works" />,
+    path: "/category/:cid/item/:iid",
+    element: <Layout />,
   },
   {
     path: "*",
@@ -28,7 +24,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <RouterProvider router={router}></RouterProvider>,
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <RouterProvider router={router}></RouterProvider>,
+  // </React.StrictMode>,
 );

@@ -1,3 +1,5 @@
+import { Category } from "../api/interfaces";
+
 /**
  * Consts
  */
@@ -8,7 +10,8 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL;
  * Interfaces, Types
  */
 export type LayoutProps = {
-  value: string;
+  type: string;
+  id: string;
 };
 
 export type StatesType = {
@@ -52,22 +55,11 @@ export type StatesDataType = {
  * Interfaces, Types
  */
 export type NavListElementType = {
-  id: number;
-  name: string;
+  category: Category;
   route: string;
-  parentCategory?: number | null;
-  class: NavListItemClass;
 };
 
-export enum NavListItemClass {
-  About = "about",
-  Works = "works",
-  Category = "category",
-  Item = "item",
-}
-
 export type RouteDataType = {
-  rootRoute: string;
-  categoryId: string | null;
-  itemId: string | null;
+  cid: number | null;
+  iid: number | null;
 };

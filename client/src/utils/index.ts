@@ -1,60 +1,45 @@
-import { NavListElementType, NavListItemClass } from "../pages";
-
 /**
  * Navigation Functions
  */
+
+import { Category } from "../api/interfaces";
+
 /**
- * Get Element object result with a key parameter from NavListElementType[]
- * @param navData
- * @param property
- * @param value
- * @returns NavListElementType
+ * Get Category by name
+ * @param categories Category[]
+ * @returns Category | undefined
  */
-export const getNavlistElement = (
-  navData: NavListElementType[],
-  property: keyof NavListElementType,
-  value: number,
-) => {
-  return navData.find((item) => item[property] === value);
+export const getCategoryByName = (categories: Category[], name: string) => {
+  const result = categories.find((category) => category.name === name);
+  return result;
 };
 
 /**
- * Get Element array result with a key parameter from NavListElementType[]
- * @param navData
- * @param property
- * @param value
- * @returns NavListElementType[]
+ * Get Category by id
+ * @param categories Category[]
+ * @returns Category | undefined
  */
-export const getNavlistElements = (
-  navData: NavListElementType[],
-  property: keyof NavListElementType,
-  value: number,
-) => {
-  return navData.filter((item) => item[property] === value);
+export const getCategoryById = (categories: Category[], id: number | null) => {
+  const result = categories.find((category) => category.id === id);
+  return result;
 };
 
 /**
- * Create unique keys for navigation list elements
- * @param navListElement
- * @returns
+ * Sort Categories
+ * @param categories Category[]
+ * @param by "name" | "id"
+ * @returns Category[]
  */
-export const createKey = (navListElement: NavListElementType): string => {
-  let key: string = "";
+export const sortCategories = (categories: Category[], by: "name" | "id") => {
+  let result: Category[] = [];
 
-  switch (navListElement.class) {
-    case NavListItemClass.About:
-      key = `a${navListElement.id}`;
-      break;
-    case NavListItemClass.Works:
-      key = `w${navListElement.id}`;
-      break;
-    case NavListItemClass.Category:
-      key = `c${navListElement.id}`;
-      break;
-    case NavListItemClass.Item:
-      key = `i${navListElement.id}`;
-      break;
+  if (by === "name") {
+    result = categories.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  return key;
+  if (by === "id") {
+    result = categories.sort((a, b) => a.id - b.id);
+  }
+
+  return result;
 };
