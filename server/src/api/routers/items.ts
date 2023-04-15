@@ -44,6 +44,9 @@ router.get("/", async (req, res) => {
           assets: true,
         },
       },
+      order: {
+        name: "ASC",
+      },
     })
     .catch((err) => console.log(err));
 
@@ -360,9 +363,7 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const removedItem = await ac
-    .remove(Item, validateResults)
-    .catch((err) => console.log(err));
+  const removedItem = await ac.remove(Item, validateResults).catch((err) => console.log(err));
 
   res.json(removedItem);
 });

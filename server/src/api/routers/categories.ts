@@ -4,7 +4,7 @@ import { z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { Category } from "../../entities/Category";
 import { Item } from "../../entities/Item";
-import { filterObject } from "../../utils";
+import { filterObject, sortDbArray } from "../../utils";
 
 const router = Router();
 
@@ -35,8 +35,18 @@ router.get("/", async (req, res) => {
         parentCategory: true,
         childCategories: true,
       },
+      order: {
+        name: "ASC",
+      },
     })
     .catch((err) => console.log(err));
+
+  if (Array.isArray(dbCategories)) {
+    dbCategories.forEach((category) => {
+      category.childCategories = sortDbArray(category.childCategories, "name");
+      category.items = sortDbArray(category.items, "name");
+    });
+  }
 
   res.json(dbCategories);
 });
@@ -72,6 +82,9 @@ router.get("/:id", async (req, res) => {
         },
         parentCategory: true,
         childCategories: true,
+      },
+      order: {
+        name: "ASC",
       },
     })
     .catch((err) => console.log(err));
@@ -194,8 +207,7 @@ router.put("/:id", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
-  if (!(dbCategory instanceof Category))
-    return res.status(400).json(validateResults);
+  if (!(dbCategory instanceof Category)) return res.status(400).json(validateResults);
 
   // Guard clause before filtering Body
   if (!validateResults.success.body || !validateResults.result.body)
@@ -237,8 +249,7 @@ router.put("/:id", async (req, res) => {
       })
       .catch((err) => console.log(err));
 
-    if (dbParentCategory instanceof Category)
-      updatedCategory.parentCategory = dbParentCategory;
+    if (dbParentCategory instanceof Category) updatedCategory.parentCategory = dbParentCategory;
   }
 
   // Add child categories
@@ -251,8 +262,7 @@ router.put("/:id", async (req, res) => {
       })
       .catch((err) => console.log(err));
 
-    if (Array.isArray(dbChildCategories))
-      updatedCategory.childCategories = dbChildCategories;
+    if (Array.isArray(dbChildCategories)) updatedCategory.childCategories = dbChildCategories;
   }
 
   const finalUpdatedCategory = await ac
