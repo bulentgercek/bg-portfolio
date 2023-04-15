@@ -1,4 +1,4 @@
-import { Category } from "../api/interfaces";
+import { Category, Item } from "../api/interfaces";
 
 /**
  * Consts
@@ -9,12 +9,7 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL;
  * Layout
  * Interfaces, Types
  */
-export type LayoutProps = {
-  type: string;
-  id: string;
-};
-
-export type StatesType = {
+export type States = {
   sidebarWidth: string;
   logoAreaWidth: string;
   navListSwitch: string;
@@ -23,7 +18,7 @@ export type StatesType = {
   backgroundFill?: string;
 };
 
-export type StatesDataType = {
+export type StatesData = {
   sidebarWidth: {
     w0px: string;
     w325px: string;
@@ -54,12 +49,13 @@ export type StatesDataType = {
  * Navigation
  * Interfaces, Types
  */
-export type NavListElementType = {
-  category: Category;
-  route: string;
-};
-
-export type RouteDataType = {
+export type RouteData = {
   cid: number | null;
   iid: number | null;
+};
+
+export type NavElement = {
+  element: Category | Item;
+  route: string;
+  childElement: NavElement[];
 };

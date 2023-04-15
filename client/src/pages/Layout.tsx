@@ -7,10 +7,10 @@ import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import Content from "./Content";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
-import { LayoutProps, StatesDataType, StatesType } from ".";
+import { StatesData, States } from ".";
 
 // Page Element States Data
-const statesData: StatesDataType = {
+const statesData: StatesData = {
   sidebarWidth: {
     w0px: "w-0",
     w325px: "w-[325px]",
@@ -39,7 +39,7 @@ const statesData: StatesDataType = {
 
 // Assign Page Element Default States from States Data
 // Page Elements Open States
-const openStates: StatesType = {
+const openStates: States = {
   sidebarWidth: statesData.sidebarWidth.w325px,
   logoAreaWidth: statesData.logoAreaWidth.w285px,
   navListSwitch: statesData.navListSwitch.close,
@@ -47,7 +47,7 @@ const openStates: StatesType = {
   sidebarGap: statesData.sidebarGap.gap20px,
 };
 // Page Elements Close States
-const closeStates: StatesType = {
+const closeStates: States = {
   sidebarWidth: statesData.sidebarWidth.w0px,
   logoAreaWidth: statesData.logoAreaWidth.w124px,
   navListSwitch: statesData.navListSwitch.open,
@@ -55,10 +55,9 @@ const closeStates: StatesType = {
 };
 
 const Layout: React.FC = () => {
-  const [states, setStates] = useState<StatesType>(closeStates);
+  const [states, setStates] = useState<States>(closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
-  const [backgroundFillActive, setBackgroundFillActive] =
-    useState<boolean>(false);
+  const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
 
   // Hook for re-rendering element states using the navigation toggle
   useEffect(() => {
@@ -88,8 +87,7 @@ const Layout: React.FC = () => {
     const mql: MediaQueryList = window.matchMedia("(width < 768px)");
     mql.addEventListener("change", () => mediaQueryChangeHandler(mql));
     mediaQueryChangeHandler(mql); // check the current size when the page loads
-    return () =>
-      mql.removeEventListener("change", () => mediaQueryChangeHandler(mql));
+    return () => mql.removeEventListener("change", () => mediaQueryChangeHandler(mql));
   }, []);
 
   return (
