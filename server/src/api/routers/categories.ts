@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { In } from "typeorm";
-import { z } from "zod";
+import { number, z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { Category } from "../../entities/Category";
 import { Item } from "../../entities/Item";
@@ -17,9 +17,6 @@ router.get("/", async (req, res) => {
         items: {
           id: true,
           name: true,
-          description: true,
-          featured: true,
-          updatedDate: true,
         },
         parentCategory: {
           id: true,
@@ -41,6 +38,7 @@ router.get("/", async (req, res) => {
     })
     .catch((err) => console.log(err));
 
+  // Sort childCategories and items
   if (Array.isArray(dbCategories)) {
     dbCategories.forEach((category) => {
       category.childCategories = sortDbArray(category.childCategories, "name");
@@ -62,6 +60,10 @@ router.get("/:id", async (req, res) => {
   const dbCategory = await ac
     .findOne(Category, validateResults, {
       select: {
+        items: {
+          id: true,
+          name: true,
+        },
         parentCategory: {
           id: true,
           name: true,
@@ -185,8 +187,8 @@ router.put("/:id", async (req, res) => {
         name: z.string().optional(),
         description: z.string().optional(),
         items: z.array(z.number()).optional(),
-        parentCategory: z.number().optional(),
-        childCategories: z.array(z.number()).optional(),
+        parentCategory: z.number().optional().nullable(),
+        childCategories: z.array(z.number()).optional().nullable(),
       }),
     },
     reqData: { params: req.params, body: req.body },
@@ -250,6 +252,8 @@ router.put("/:id", async (req, res) => {
       .catch((err) => console.log(err));
 
     if (dbParentCategory instanceof Category) updatedCategory.parentCategory = dbParentCategory;
+  } else {
+    updatedCategory.parentCategory = null;
   }
 
   // Add child categories
@@ -263,6 +267,8 @@ router.put("/:id", async (req, res) => {
       .catch((err) => console.log(err));
 
     if (Array.isArray(dbChildCategories)) updatedCategory.childCategories = dbChildCategories;
+  } else {
+    updatedCategory.parentCategory = null;
   }
 
   const finalUpdatedCategory = await ac

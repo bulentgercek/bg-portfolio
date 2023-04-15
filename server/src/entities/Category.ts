@@ -26,7 +26,7 @@ export class Category {
   @ManyToOne(() => Category, (category) => category.childCategories, {
     nullable: true,
   })
-  parentCategory: Category;
+  parentCategory: Category | null;
 
   @OneToMany(() => Category, (category) => category.parentCategory, {
     nullable: true,
