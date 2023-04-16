@@ -4,7 +4,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { NavElement, RouteData } from ".";
 import { Api } from "../api";
 import { Category, Item } from "../api/interfaces";
-import { getCategoryById, getBreadcrumbsTree, getItemById, isCategory } from "../../utils";
+import { getCategoryById, getBreadcrumbs, isCategory } from "../../utils";
 
 /**
  * Navigation Function Component
@@ -52,8 +52,8 @@ const Navigation: React.FC = () => {
   useEffect(() => {
     if (dbCategories.length === 0 && dbItems.length === 0) return;
 
-    console.clear();
-    console.log("Console cleared by: ", Navigation.name);
+    // console.clear();
+    // console.log("Console cleared by: ", Navigation.name);
     // console.log("onMount: dbCategories:", dbCategories);
     // console.log("onMount: dbItems:", dbItems);
     // console.log("routeData: ", routeData);
@@ -63,19 +63,19 @@ const Navigation: React.FC = () => {
     // console.log("activeCategory: ", activeCategory);
     // console.log("activeItem: ", getItemById(dbItems, routeData.iid) || null);
 
-    const breadCrumbsTree = getBreadcrumbsTree(dbCategories, activeCategory);
+    const breadcrumbs = getBreadcrumbs(dbCategories, activeCategory);
 
-    // console.log("activeCategoryParentTree:", JSON.stringify(breadCrumbsTree, null, 2));
+    // console.log("activeCategoryParentTree:", JSON.stringify(breadcrumbs, null, 2));
 
     const createNavData = (
       dbCategories: Category[],
       dbItems: Item[],
-      breadCrumbsTree: Category[],
+      breadcrumbs: Category[],
     ): NavElement[] => {
       const tNavData: NavElement[] = [];
 
-      const isCategoryOnParentTree = (categoryChecked: Category) => {
-        const categoryFoundOnParentTree = breadCrumbsTree.find((c) => c.id === categoryChecked.id);
+      const inBreadcrumbs = (categoryChecked: Category) => {
+        const categoryFoundOnParentTree = breadcrumbs.find((c) => c.id === categoryChecked.id);
         return categoryFoundOnParentTree;
       };
 
@@ -115,18 +115,17 @@ const Navigation: React.FC = () => {
           };
           parentCategoryElement.childElement.push(navChildCategory);
 
-          if (!isCategoryOnParentTree(childCategory)) continue;
+          // if
+          if (!inBreadcrumbs(childCategory)) continue;
 
           // Add child items to Parent's childElement array
-          const childItems = childCategory.items;
-          if (childItems) {
-            for (const item of childItems) {
-              navChildCategory.childElement.push({
-                element: item,
-                route: `/category/${navChildCategory.element.id}/item/${item.id}`,
-                childElement: [],
-              });
-            }
+          const childItems = childCategory.items || [];
+          for (const item of childItems) {
+            navChildCategory.childElement.push({
+              element: item,
+              route: `/category/${navChildCategory.element.id}/item/${item.id}`,
+              childElement: [],
+            });
           }
 
           addChildElements(navChildCategory);
@@ -137,7 +136,7 @@ const Navigation: React.FC = () => {
       for (const tNavRootElement of tNavData) {
         if (
           isCategory(tNavRootElement.element) &&
-          isCategoryOnParentTree(tNavRootElement.element as Category)
+          inBreadcrumbs(tNavRootElement.element as Category)
         )
           addChildElements(tNavRootElement);
       }
@@ -146,7 +145,7 @@ const Navigation: React.FC = () => {
       return tNavData;
     };
 
-    const createdNavData = createNavData(dbCategories, dbItems, breadCrumbsTree);
+    const createdNavData = createNavData(dbCategories, dbItems, breadcrumbs);
     setNavData(createdNavData);
   }, [locationPathname, dbCategories, dbItems]);
 

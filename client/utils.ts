@@ -64,7 +64,7 @@ export const sortDbArray = <T extends Sort>(array: T[] | null, by: "name" | "id"
  * @param rootCategory Category
  * @returns Category[]
  */
-export const getBreadcrumbsTree = (
+export const getBreadcrumbs = (
   categories: Category[],
   currentCategory: Category | null,
 ): Category[] => {
