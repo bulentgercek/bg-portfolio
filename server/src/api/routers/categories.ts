@@ -188,7 +188,7 @@ router.put("/:id", async (req, res) => {
         description: z.string().optional(),
         items: z.array(z.number()).optional(),
         parentCategory: z.number().optional().nullable(),
-        childCategories: z.array(z.number()).optional().nullable(),
+        childCategories: z.array(z.number()).optional(),
       }),
     },
     reqData: { params: req.params, body: req.body },
@@ -267,8 +267,6 @@ router.put("/:id", async (req, res) => {
       .catch((err) => console.log(err));
 
     if (Array.isArray(dbChildCategories)) updatedCategory.childCategories = dbChildCategories;
-  } else {
-    updatedCategory.parentCategory = null;
   }
 
   const finalUpdatedCategory = await ac
