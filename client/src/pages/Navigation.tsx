@@ -1,143 +1,209 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
-import { BASE_URL, NavListElementType, RouteDataType } from ".";
+import { NavElement, RouteData } from ".";
 import { Api } from "../api";
-import { Category } from "../api/interfaces";
-import { getCategoryById, getCategoryByName, sortCategories } from "../utils";
+import { Category, Item } from "../api/interfaces";
+import { getCategoryById, getBreadcrumbsTree, getItemById, isCategory } from "../../utils";
 
 /**
  * Navigation Function Component
  */
 const Navigation: React.FC = () => {
-  const [dbcategories, setDbCategories] = useState<Category[]>([]);
+  const [dbCategories, setDbCategories] = useState<Category[]>([]);
+  const [dbItems, setDbItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [routeData, setRouteData] = useState<RouteDataType>();
-  const [navData, setNavData] = useState<NavListElementType[]>([]);
+  const [navData, setNavData] = useState<NavElement[]>([]);
 
-  // onMount: Fetch dbCategories
+  /**
+   * onMount: Fetch dbCategories
+   */
   useEffect(() => {
     const fetchData = async () => {
-      const fetchResult = await Api.getCategories();
-      setDbCategories(fetchResult);
+      const fetchCategories = await Api.getCategories();
+      setDbCategories(fetchCategories);
+
+      const fetchItems = await Api.getItems();
+      setDbItems(fetchItems);
 
       // Delay for to see loading longer
       setTimeout(() => {
         setLoading(false);
       }, 1000);
-
-      console.clear();
-      console.log("onMount: dbCategories set.");
     };
+
     fetchData();
   }, []);
 
-  // onRender: Set Route Variables
+  /**
+   * onRender: Set route variables
+   */
   const { cid = null, iid = null } = useParams();
   const locationPathname = useLocation().pathname;
 
-  // onChange locationPathname: Update routeData
+  const routeData: RouteData = {
+    cid: cid !== null ? parseInt(cid, 10) : null,
+    iid: iid !== null ? parseInt(iid, 10) : null,
+  };
+
+  /**
+   * onChange locationPathname: createNavData
+   */
   useEffect(() => {
-    if (dbcategories.length === 0) return;
+    if (dbCategories.length === 0 && dbItems.length === 0) return;
 
-    const newRouteData: RouteDataType = {
-      cid: cid !== null ? parseInt(cid, 10) : null,
-      iid: iid !== null ? parseInt(iid, 10) : null,
-    };
-    setRouteData(newRouteData);
-    console.log("onChanges locationPathname : routeData set.");
-  }, [locationPathname, dbcategories]);
+    console.clear();
+    console.log("Console cleared by: ", Navigation.name);
+    // console.log("onMount: dbCategories:", dbCategories);
+    // console.log("onMount: dbItems:", dbItems);
+    // console.log("routeData: ", routeData);
 
-  // onChange routeData: Update navData
-  useEffect(() => {
-    if (routeData === undefined) return;
-    console.log("routeData: ", routeData);
+    const activeCategory = getCategoryById(dbCategories, routeData.cid) || null;
 
-    // Constants
-    const rootCategory = getCategoryByName(dbcategories, "Root");
-    const dbCategoriesSorted = sortCategories(dbcategories, "name");
+    // console.log("activeCategory: ", activeCategory);
+    // console.log("activeItem: ", getItemById(dbItems, routeData.iid) || null);
 
-    // is Root category found?
-    if (!rootCategory) {
-      console.log({ message: "Root category not found!" });
-      return;
-    }
+    const breadCrumbsTree = getBreadcrumbsTree(dbCategories, activeCategory);
 
-    let routeCategory: Category = rootCategory;
+    // console.log("activeCategoryParentTree:", JSON.stringify(breadCrumbsTree, null, 2));
 
-    if (routeData.cid !== null) {
-      routeCategory = getCategoryById(dbcategories, routeData.cid) || routeCategory;
-    }
+    const createNavData = (
+      dbCategories: Category[],
+      dbItems: Item[],
+      breadCrumbsTree: Category[],
+    ): NavElement[] => {
+      const tNavData: NavElement[] = [];
 
-    console.log("routeCategory:", routeCategory);
+      const isCategoryOnParentTree = (categoryChecked: Category) => {
+        const categoryFoundOnParentTree = breadCrumbsTree.find((c) => c.id === categoryChecked.id);
+        return categoryFoundOnParentTree;
+      };
 
-    // Create an tree array for selected category
-    const getActiveCategoryRootTree = (): NavListElementType[] => {
-      let activeCategory = routeCategory;
-      const activeCategoryRootTree: NavListElementType[] = [];
-
-      if (activeCategory.name !== "Root") {
-        activeCategoryRootTree.push({
-          category: routeCategory,
-          route: `/category/${routeCategory.id}`,
+      // Add Root Categories
+      for (const dbCategory of dbCategories) {
+        if (dbCategory.parentCategory) continue;
+        tNavData.push({
+          element: dbCategory,
+          route: `/category/${dbCategory.id}`,
+          childElement: [],
         });
-
-        // Loop until the parent reaches to Root add it to array of NavListElementType
-        while (
-          activeCategoryRootTree[activeCategoryRootTree.length - 1].category.id !== rootCategory?.id
-        ) {
-          const upperLevelParent = dbCategoriesSorted.find(
-            (category) => activeCategory?.parentCategory?.id === category.id,
-          );
-
-          // Add it to array but not include the root category
-          if (upperLevelParent && upperLevelParent.id !== rootCategory.id) {
-            activeCategoryRootTree.splice(0, 0, {
-              category: upperLevelParent,
-              route: `/category/${upperLevelParent.id}`,
-            });
-            activeCategory = upperLevelParent;
-          } else {
-            break;
-          }
-        }
       }
-      return activeCategoryRootTree;
+
+      // Add Root Items
+      for (const dbItem of dbItems) {
+        if (dbItem.categories && dbItem.categories.length > 0) continue;
+        tNavData.push({
+          element: dbItem,
+          route: `/item/${dbItem.id}`,
+          childElement: [],
+        });
+      }
+
+      // Recursive Function: Add child elements to Parent Root Element
+      const addChildElements = (parentCategoryElement: NavElement) => {
+        const childCategories = dbCategories.filter(
+          (c) => c.parentCategory && c.parentCategory.id === parentCategoryElement.element.id,
+        );
+
+        // console.log("Recursive - parentCElement: ", parentCElement.element.name, childCategories);
+        // Add child categories to Parent's childElement array
+        for (const childCategory of childCategories) {
+          const navChildCategory: NavElement = {
+            element: childCategory,
+            route: `/category/${childCategory.id}`,
+            childElement: [],
+          };
+          parentCategoryElement.childElement.push(navChildCategory);
+
+          if (!isCategoryOnParentTree(childCategory)) continue;
+
+          // Add child items to Parent's childElement array
+          const childItems = childCategory.items;
+          if (childItems) {
+            for (const item of childItems) {
+              navChildCategory.childElement.push({
+                element: item,
+                route: `/category/${navChildCategory.element.id}/item/${item.id}`,
+                childElement: [],
+              });
+            }
+          }
+
+          addChildElements(navChildCategory);
+        }
+      };
+
+      // Add child elements to Root elements
+      for (const tNavRootElement of tNavData) {
+        if (
+          isCategory(tNavRootElement.element) &&
+          isCategoryOnParentTree(tNavRootElement.element as Category)
+        )
+          addChildElements(tNavRootElement);
+      }
+
+      // Final
+      return tNavData;
     };
-    // const result = getActiveCategoryRootTree();
-    // setNavData(() => result);
-    /**
-     * IMPORTANT NOTES TO MYSELF
-     * Create Final navData: Add Root Items and Categories using dbCategoriesSorted
-     * 1. Check if the Root has it own items then sort them by name and add them too navData or
-     * reconsider again how the items should be added to the navData. Maybe in? -> if (routeData?.type === "item")
-     * 2. Add categories of Root with looping on them and check if the id equeal with activeCategoryRootTree[0] then add activeCategoryRootTree
-     * and its own items -> if (routeData?.type === "item")
-     */
-  }, [routeData]);
+
+    const createdNavData = createNavData(dbCategories, dbItems, breadCrumbsTree);
+    setNavData(createdNavData);
+  }, [locationPathname, dbCategories, dbItems]);
+
+  /**
+   * JSX Variables
+   */
+  const isItem = (route: string) => route.includes("item");
+
+  const getItemClass = (route: string, routeData: RouteData) => {
+    const routeParts = route.split("/");
+    const cid = routeParts.includes("category")
+      ? parseInt(routeParts[routeParts.indexOf("category") + 1], 10)
+      : null;
+    const iid = routeParts.includes("item")
+      ? parseInt(routeParts[routeParts.indexOf("item") + 1], 10)
+      : null;
+
+    if (routeData.cid === cid && routeData.iid === iid) {
+      return "text-yellow-500";
+    } else {
+      return isItem(route) ? "text-green-500" : "text-blue-500";
+    }
+  };
 
   return (
     <div>
       {loading ? (
         <p>Loading Navigation Data...</p>
       ) : (
-        <ul>
-          {navData.map((element) => {
-            return (
-              <li key={element.category.id}>
-                <Link to={`${BASE_URL}${element.route}`}>{element.category.name}</Link>
-              </li>
-            );
+        <ul className="text-gray-700">
+          {navData.map((navElement: NavElement) => {
+            const renderNav = (items: NavElement[]) => {
+              return items.map((item) => (
+                <li key={item.element.id} className="my-2">
+                  <Link
+                    to={item.route}
+                    className={`text-lg font-semibold hover:text-blue-500 ${getItemClass(
+                      item.route,
+                      routeData,
+                    )}`}
+                  >
+                    {item.element.name}
+                    {!isItem(item.route) && item.childElement.length === 0 && (
+                      <span className="ml-2">{"+"}</span>
+                    )}
+                    {!isItem(item.route) && item.childElement.length > 0 && (
+                      <span className="ml-2">{"-"}</span>
+                    )}
+                  </Link>
+                  {item.childElement.length > 0 && (
+                    <ul className="ml-4">{renderNav(item.childElement)}</ul>
+                  )}
+                </li>
+              ));
+            };
+            return renderNav([navElement]);
           })}
-          <li key="c5">
-            <Link to={`${BASE_URL}/category/5`}>Works</Link>
-          </li>
-          <li key="c3">
-            <Link to={`${BASE_URL}/category/3`}>Printed Media</Link>
-          </li>
-          <li key="i1">
-            <Link to={`${BASE_URL}/category/3/item/1`}>Garanti Bank Posters</Link>
-          </li>
         </ul>
       )}
     </div>

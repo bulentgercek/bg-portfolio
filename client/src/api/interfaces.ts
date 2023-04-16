@@ -60,13 +60,13 @@ export type Content = {
 export type Item = {
   id: number;
   name: string;
-  description: string | null;
-  link: string | null;
-  featured: boolean;
-  featuredImageAsset: Asset | null;
-  categories: Category[] | null;
-  contents: Content[] | null;
-  updatedDate: Date;
+  description?: string | null;
+  link?: string | null;
+  featured?: boolean;
+  featuredImageAsset?: Asset | null;
+  categories?: Category[] | null;
+  contents?: Content[] | null;
+  updatedDate?: Date;
 };
 
 /**
