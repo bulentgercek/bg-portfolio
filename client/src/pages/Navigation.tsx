@@ -2,39 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 
 import { NavElement, RouteData } from ".";
-import { Api } from "../api";
 import { Category, Item } from "../api/interfaces";
 import { getCategoryById, getBreadcrumbs, isCategory } from "../../utils";
+
+type NavigationProps = {
+  dbCategories: Category[];
+  dbItems: Item[];
+  loading: boolean;
+};
 
 /**
  * Navigation Function Component
  */
-const Navigation: React.FC = () => {
-  const [dbCategories, setDbCategories] = useState<Category[]>([]);
-  const [dbItems, setDbItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading }) => {
   const [navData, setNavData] = useState<NavElement[]>([]);
 
-  /**
-   * onMount: Fetch dbCategories
-   */
   useEffect(() => {
-    const fetchData = async () => {
-      const fetchCategories = await Api.getCategories();
-      setDbCategories(fetchCategories);
-
-      const fetchItems = await Api.getItems();
-      setDbItems(fetchItems);
-
-      // Delay for to see loading longer
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-    };
-
-    fetchData();
-  }, []);
-
+    console.log("onMount: loading:", loading);
+  }, [loading]);
   /**
    * onRender: Set route variables
    */
@@ -52,7 +37,6 @@ const Navigation: React.FC = () => {
   useEffect(() => {
     if (dbCategories.length === 0 && dbItems.length === 0) return;
 
-    // console.clear();
     // console.log("Console cleared by: ", Navigation.name);
     // console.log("onMount: dbCategories:", dbCategories);
     // console.log("onMount: dbItems:", dbItems);

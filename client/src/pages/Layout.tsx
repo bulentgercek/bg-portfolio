@@ -8,6 +8,8 @@ import Content from "./Content";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
 import { StatesData, States } from ".";
+import { Category, Item } from "../api/interfaces";
+import { Api } from "../api";
 
 // Page Element States Data
 const statesData: StatesData = {
@@ -55,9 +57,32 @@ const closeStates: States = {
 };
 
 const Layout: React.FC = () => {
+  const [dbCategories, setDbCategories] = useState<Category[]>([]);
+  const [dbItems, setDbItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [states, setStates] = useState<States>(closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
+
+  /**
+   * onMount: Fetch dbCategories
+   */
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchCategories = await Api.getCategories();
+      setDbCategories(fetchCategories);
+
+      const fetchItems = await Api.getItems();
+      setDbItems(fetchItems);
+
+      // Delay for to see loading longer
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    };
+
+    fetchData();
+  }, []);
 
   // Hook for re-rendering element states using the navigation toggle
   useEffect(() => {
@@ -134,7 +159,7 @@ const Layout: React.FC = () => {
               id="nav"
               className="item-start flex w-[325px] flex-col gap-[10px] rounded-2xl bg-indigo-50 p-5 pt-10"
             >
-              <Navigation />
+              <Navigation dbCategories={dbCategories} dbItems={dbItems} loading={loading} />
             </div>
           </div>
 
