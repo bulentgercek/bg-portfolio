@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 
 import bg_logo from "../assets/bg_logo.svg";
 import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
@@ -7,7 +7,7 @@ import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import Content from "./Content";
 import Footer from "./Footer";
 import Navigation from "./Navigation";
-import { StatesData, States } from ".";
+import { StatesData, States, RouteData } from ".";
 import { Category, Item } from "../api/interfaces";
 import { Api } from "../api";
 
@@ -63,6 +63,17 @@ const Layout: React.FC = () => {
   const [states, setStates] = useState<States>(closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
+
+  /**
+   * onRender: Set route variables
+   */
+  const { cid = null, iid = null } = useParams();
+  const locationPathname = useLocation().pathname;
+
+  const routeData: RouteData = {
+    cid: cid !== null ? parseInt(cid, 10) : null,
+    iid: iid !== null ? parseInt(iid, 10) : null,
+  };
 
   /**
    * onMount: Fetch dbCategories
@@ -157,9 +168,14 @@ const Layout: React.FC = () => {
           >
             <div
               id="nav"
-              className="item-start flex w-[325px] flex-col gap-[10px] rounded-2xl bg-indigo-50 p-5 pt-10"
+              className="item-start flex w-[325px] flex-col rounded-2xl bg-indigo-50 p-5 pt-10"
             >
-              <Navigation dbCategories={dbCategories} dbItems={dbItems} loading={loading} />
+              <Navigation
+                dbCategories={dbCategories}
+                dbItems={dbItems}
+                loading={loading}
+                routeData={routeData}
+              />
             </div>
           </div>
 

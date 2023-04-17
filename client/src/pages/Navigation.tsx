@@ -1,35 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+import arrow_right from "../assets/arrow_right.svg";
+import arrow_down from "../assets/arrow_down.svg";
 import { NavElement, RouteData } from ".";
 import { Category, Item } from "../api/interfaces";
-import { getCategoryById, getBreadcrumbs, isCategory } from "../../utils";
-
-type NavigationProps = {
-  dbCategories: Category[];
-  dbItems: Item[];
-  loading: boolean;
-};
+import {
+  getCategoryById,
+  getBreadcrumbs,
+  isThisElementACategory,
+  isThisCategoryElementSelected,
+  isThisElementHasChildElement,
+} from "../../utils";
 
 /**
  * Navigation Function Component
  */
-const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading }) => {
+type NavigationProps = {
+  dbCategories: Category[];
+  dbItems: Item[];
+  loading: boolean;
+  routeData: RouteData;
+};
+
+const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading, routeData }) => {
   const [navData, setNavData] = useState<NavElement[]>([]);
-
-  useEffect(() => {
-    console.log("onMount: loading:", loading);
-  }, [loading]);
-  /**
-   * onRender: Set route variables
-   */
-  const { cid = null, iid = null } = useParams();
-  const locationPathname = useLocation().pathname;
-
-  const routeData: RouteData = {
-    cid: cid !== null ? parseInt(cid, 10) : null,
-    iid: iid !== null ? parseInt(iid, 10) : null,
-  };
 
   /**
    * onChange locationPathname: createNavData
@@ -59,8 +54,8 @@ const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading 
       const tNavData: NavElement[] = [];
 
       const inBreadcrumbs = (categoryChecked: Category) => {
-        const categoryFoundOnParentTree = breadcrumbs.find((c) => c.id === categoryChecked.id);
-        return categoryFoundOnParentTree;
+        const categoryFoundInBreadcrumbs = breadcrumbs.find((c) => c.id === categoryChecked.id);
+        return categoryFoundInBreadcrumbs;
       };
 
       // Add Root Categories
@@ -119,7 +114,7 @@ const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading 
       // Add child elements to Root elements
       for (const tNavRootElement of tNavData) {
         if (
-          isCategory(tNavRootElement.element) &&
+          isThisElementACategory(tNavRootElement) &&
           inBreadcrumbs(tNavRootElement.element as Category)
         )
           addChildElements(tNavRootElement);
@@ -131,66 +126,116 @@ const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading 
 
     const createdNavData = createNavData(dbCategories, dbItems, breadcrumbs);
     setNavData(createdNavData);
-  }, [locationPathname, dbCategories, dbItems]);
-
-  /**
-   * JSX Variables
-   */
-  const isItem = (route: string) => route.includes("item");
-
-  const getItemClass = (route: string, routeData: RouteData) => {
-    const routeParts = route.split("/");
-    const cid = routeParts.includes("category")
-      ? parseInt(routeParts[routeParts.indexOf("category") + 1], 10)
-      : null;
-    const iid = routeParts.includes("item")
-      ? parseInt(routeParts[routeParts.indexOf("item") + 1], 10)
-      : null;
-
-    if (routeData.cid === cid && routeData.iid === iid) {
-      return "text-yellow-500";
-    } else {
-      return isItem(route) ? "text-green-500" : "text-blue-500";
-    }
-  };
+  }, [routeData, dbCategories, dbItems]);
 
   return (
     <div>
-      {loading ? (
-        <p>Loading Navigation Data...</p>
-      ) : (
-        <ul className="text-gray-700">
-          {navData.map((navElement: NavElement) => {
-            const renderNav = (items: NavElement[]) => {
-              return items.map((item) => (
-                <li key={item.element.id} className="my-2">
-                  <Link
-                    to={item.route}
-                    className={`text-lg font-semibold hover:text-blue-500 ${getItemClass(
-                      item.route,
-                      routeData,
-                    )}`}
-                  >
-                    {item.element.name}
-                    {!isItem(item.route) && item.childElement.length === 0 && (
-                      <span className="ml-2">{"+"}</span>
-                    )}
-                    {!isItem(item.route) && item.childElement.length > 0 && (
-                      <span className="ml-2">{"-"}</span>
-                    )}
-                  </Link>
-                  {item.childElement.length > 0 && (
-                    <ul className="ml-4">{renderNav(item.childElement)}</ul>
-                  )}
-                </li>
-              ));
-            };
-            return renderNav([navElement]);
-          })}
-        </ul>
-      )}
+      <ul className="flex flex-col gap-2.5">
+        {/* Navigation Root Elements */}
+        {navData.map((navElement) => (
+          <NavigationElement
+            key={navElement.element.id}
+            navElement={navElement}
+            routeData={routeData}
+          />
+        ))}
+      </ul>
     </div>
   );
 };
 
+/**
+ * Navigation Element Function Component
+ */
+type NavigationElementProps = {
+  navElement: NavElement;
+  routeData: RouteData;
+};
+
+const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, routeData }) => {
+  return (
+    <>
+      {/* Navigation Elements */}
+      <Link to={navElement.route}>
+        <li className={`flex items-center justify-between font-semibold text-indigo-500`}>
+          {navElement.element.name}
+          {isThisElementACategory(navElement) &&
+            /**
+             *  ->>> Needed Feature : isCategoryInBreadcrumbs? then arrow_down
+             */
+            (isThisCategoryElementSelected(navElement, routeData) ? (
+              <img src={arrow_down} alt="arrow_down" className="mr-2" />
+            ) : (
+              <img src={arrow_right} alt="arrow_right" className="mr-2" />
+            ))}
+        </li>
+      </Link>
+      {/* Navigation Child Elements */}
+      {isThisElementHasChildElement(navElement) && (
+        <ul className="flex flex-col gap-2.5 pl-2.5">
+          {navElement.childElement.map((child) => (
+            <NavigationElement key={child.element.id} navElement={child} routeData={routeData} />
+          ))}
+        </ul>
+      )}
+    </>
+  );
+};
+
 export default Navigation;
+
+// const isItem = (route: string) => route.includes("item");
+
+// const getItemClass = (route: string, routeData: RouteData) => {
+//   const routeParts = route.split("/");
+//   const cid = routeParts.includes("category")
+//     ? parseInt(routeParts[routeParts.indexOf("category") + 1], 10)
+//     : null;
+//   const iid = routeParts.includes("item")
+//     ? parseInt(routeParts[routeParts.indexOf("item") + 1], 10)
+//     : null;
+
+//   if (routeData.cid === cid && routeData.iid === iid) {
+//     return "text-yellow-500";
+//   } else {
+//     return isItem(route) ? "text-green-500" : "text-blue-500";
+//   }
+// };
+
+// return (
+//   <div>
+//     {loading ? (
+//       <p>Loading Navigation Data...</p>
+//     ) : (
+//       <ul className="text-gray-700">
+//         {navData.map((navElement: NavElement) => {
+//           const renderNav = (items: NavElement[]) => {
+//             return items.map((item) => (
+//               <li key={item.element.id} className="my-2">
+//                 <Link
+//                   to={item.route}
+//                   className={`text-lg font-semibold hover:text-blue-500 ${getItemClass(
+//                     item.route,
+//                     routeData,
+//                   )}`}
+//                 >
+//                   {item.element.name}
+//                   {!isItem(item.route) && item.childElement.length === 0 && (
+//                     <span className="ml-2">{"+"}</span>
+//                   )}
+//                   {!isItem(item.route) && item.childElement.length > 0 && (
+//                     <span className="ml-2">{"-"}</span>
+//                   )}
+//                 </Link>
+//                 {item.childElement.length > 0 && (
+//                   <ul className="ml-4">{renderNav(item.childElement)}</ul>
+//                 )}
+//               </li>
+//             ));
+//           };
+//           return renderNav([navElement]);
+//         })}
+//       </ul>
+//     )}
+//   </div>
+// );

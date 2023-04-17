@@ -1,5 +1,5 @@
 import { Category, Item } from "./src/api/interfaces";
-import { NavElement } from "./src/pages";
+import { NavElement, RouteData } from "./src/pages";
 
 /**
  * Get Category by name
@@ -95,4 +95,44 @@ export const getBreadcrumbs = (
  */
 export const isCategory = (object: unknown) => {
   return (object as Category).parentCategory !== undefined;
+};
+
+/**
+ * Check the navElement's route if it is a Category
+ * @param navElement NavElement
+ * @returns boolean
+ */
+export const isThisElementACategory = (navElement: NavElement) => {
+  return navElement.route.includes("category") && !navElement.route.includes("item");
+};
+
+/**
+ * Check the navElement's route if it is a Item
+ * @param navElement NavElement
+ * @returns boolean
+ */
+export const isThisElementAnItem = (navElement: NavElement) => {
+  return (
+    (navElement.route.includes("category") && navElement.route.includes("item")) ||
+    (!navElement.route.includes("category") && navElement.route.includes("item"))
+  );
+};
+
+/**
+ * Check the navElement if it has child element
+ * @param navElement NavElement
+ * @returns boolean
+ */
+export const isThisElementHasChildElement = (navElement: NavElement) => {
+  return navElement.childElement.length > 0;
+};
+
+/**
+ * Check if selected category element is in the route
+ * @param navElement NavElement
+ * @param routeData RouteData
+ * @returns boolean
+ */
+export const isThisCategoryElementSelected = (navElement: NavElement, routeData: RouteData) => {
+  return routeData && routeData.cid === navElement.element.id;
 };
