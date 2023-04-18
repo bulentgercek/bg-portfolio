@@ -64,18 +64,13 @@ export const sortDbArray = <T extends Sort>(array: T[] | null, by: "name" | "id"
  * @param rootCategory Category
  * @returns Category[]
  */
-export const getBreadcrumbs = (
-  categories: Category[],
-  currentCategory: Category | null,
-): Category[] => {
+export const getBreadcrumbs = (categories: Category[], currentCategory: Category | null): Category[] => {
   const parentTree: Category[] = [];
 
   if (currentCategory) parentTree.push(currentCategory);
 
   while (currentCategory) {
-    const upperLevelParent = categories.find(
-      (category) => currentCategory?.parentCategory?.id === category.id,
-    );
+    const upperLevelParent = categories.find((category) => currentCategory?.parentCategory?.id === category.id);
 
     // Add it to array
     if (upperLevelParent) {
@@ -93,29 +88,17 @@ export const getBreadcrumbs = (
  * @param object any
  * @returns boolean
  */
-export const isCategory = (object: unknown) => {
+export const isCategory = (object: unknown): object is Category => {
   return (object as Category).parentCategory !== undefined;
 };
 
 /**
- * Check the navElement's route if it is a Category
- * @param navElement NavElement
+ * Check the object is a type of Category
+ * @param object any
  * @returns boolean
  */
-export const isThisElementACategory = (navElement: NavElement) => {
-  return navElement.route.includes("category") && !navElement.route.includes("item");
-};
-
-/**
- * Check the navElement's route if it is a Item
- * @param navElement NavElement
- * @returns boolean
- */
-export const isThisElementAnItem = (navElement: NavElement) => {
-  return (
-    (navElement.route.includes("category") && navElement.route.includes("item")) ||
-    (!navElement.route.includes("category") && navElement.route.includes("item"))
-  );
+export const isItem = (object: unknown): object is Item => {
+  return (object as Item).contents !== undefined;
 };
 
 /**
@@ -123,16 +106,50 @@ export const isThisElementAnItem = (navElement: NavElement) => {
  * @param navElement NavElement
  * @returns boolean
  */
-export const isThisElementHasChildElement = (navElement: NavElement) => {
+export const isThisNavElementHasChildElement = (navElement: NavElement) => {
   return navElement.childElement.length > 0;
 };
 
 /**
- * Check if selected category element is in the route
+ * Check the selected navElement is a Category
  * @param navElement NavElement
  * @param routeData RouteData
  * @returns boolean
  */
-export const isThisCategoryElementSelected = (navElement: NavElement, routeData: RouteData) => {
-  return routeData && routeData.cid === navElement.element.id;
+export const isSelectedNavElementACategory = (navElement: NavElement, routeData: RouteData) => {
+  return routeData && routeData.cid === navElement.element.id && routeData.iid === null;
+};
+
+/**
+ * Check the selected navElement is an Item
+ * @param navElement NavElement
+ * @param routeData RouteData
+ * @returns boolean
+ */
+export const isSelectedNavElementAnItem = (navElement: NavElement, routeData: RouteData) => {
+  return routeData && routeData.iid === navElement.element.id;
+};
+
+/**
+ * Check the breadcrumbs if it has the category
+ * @param category Category
+ * @param breadcrumbs Category[]
+ * @returns boolean | number
+ */
+export const isThisCategoryInBreadcrumbs = (
+  category: Category,
+  breadcrumbs: Category[],
+  resultType: "boolean" | "number" = "boolean",
+) => {
+  const index = breadcrumbs.findIndex((breadcrumb) => category && breadcrumb.id === category.id);
+
+  const getResult = () => {
+    if (resultType === "boolean") {
+      return index !== -1 ? true : false;
+    }
+    return index;
+  };
+
+  const result = getResult();
+  return result;
 };

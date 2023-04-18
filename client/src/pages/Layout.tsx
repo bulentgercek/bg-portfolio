@@ -10,6 +10,7 @@ import Navigation from "./Navigation";
 import { StatesData, States, RouteData } from ".";
 import { Category, Item } from "../api/interfaces";
 import { Api } from "../api";
+import { getBreadcrumbs, getCategoryById } from "../../utils";
 
 // Page Element States Data
 const statesData: StatesData = {
@@ -74,6 +75,9 @@ const Layout: React.FC = () => {
     cid: cid !== null ? parseInt(cid, 10) : null,
     iid: iid !== null ? parseInt(iid, 10) : null,
   };
+
+  const activeCategory = getCategoryById(dbCategories, routeData.cid) || null;
+  const breadcrumbs = getBreadcrumbs(dbCategories, activeCategory);
 
   /**
    * onMount: Fetch dbCategories
@@ -175,6 +179,7 @@ const Layout: React.FC = () => {
                 dbItems={dbItems}
                 loading={loading}
                 routeData={routeData}
+                breadcrumbs={breadcrumbs}
               />
             </div>
           </div>
