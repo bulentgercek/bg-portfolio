@@ -40,7 +40,7 @@ type Sort = {
   id: number;
 };
 
-export const sortDbArray = <T extends Sort>(array: T[] | null, by: "name" | "id") => {
+export const sortDbArray = <T extends Sort>(array: T[], by: "name" | "id") => {
   let result: T[] = [];
 
   if (array) {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { In } from "typeorm";
-import { number, z } from "zod";
+import { z } from "zod";
 import { ApiController as ac } from "../../apiController";
 import { Category } from "../../entities/Category";
 import { Item } from "../../entities/Item";
