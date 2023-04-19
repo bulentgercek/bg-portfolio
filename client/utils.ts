@@ -93,7 +93,7 @@ export const isCategory = (object: unknown): object is Category => {
 };
 
 /**
- * Check the object is a type of Category
+ * Check the object is a type of Item
  * @param object any
  * @returns boolean
  */
@@ -127,7 +127,7 @@ export const isSelectedNavElementACategory = (navElement: NavElement, routeData:
  * @returns boolean
  */
 export const isSelectedNavElementAnItem = (navElement: NavElement, routeData: RouteData) => {
-  return routeData && routeData.iid === navElement.element.id;
+  return routeData && routeData.iid !== null && routeData.iid === navElement.element.id;
 };
 
 /**
@@ -152,4 +152,16 @@ export const isThisCategoryInBreadcrumbs = (
 
   const result = getResult();
   return result;
+};
+
+/**
+ * Creating a unique key using the element id's
+ * @param navElement
+ * @returns string
+ */
+export const createKey = (navElement: NavElement): string => {
+  const keyData = { cid: 0, iid: 0 };
+  isCategory(navElement.element) ? (keyData.cid = navElement.element.id) : (keyData.iid = navElement.element.id);
+
+  return `c${keyData.cid}_i${keyData.iid}`;
 };

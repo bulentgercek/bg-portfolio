@@ -138,18 +138,14 @@ const Layout: React.FC = () => {
       ></div>
       <div
         id="layout"
-        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-10"
+        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-[30px] transition-all duration-500 ease-out sm:p-10"
       >
         <div
           id="logo"
-          className={`absolute left-[60px] top-[40px] flex h-[64px] flex-row items-center justify-between ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
+          className={`absolute left-[50px] top-[30px] flex h-[64px] flex-row items-center justify-between sm:left-[60px] sm:top-[40px] ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
         >
           <Link to="/">
-            <img
-              id="bg_logo"
-              className="cursor-pointer transition-transform hover:scale-105"
-              src={bg_logo}
-            ></img>
+            <img id="bg_logo" className="cursor-pointer transition-transform hover:scale-105" src={bg_logo}></img>
           </Link>
           <img
             id="nav_list_switch"
@@ -170,10 +166,7 @@ const Layout: React.FC = () => {
             id="sidebar"
             className={`${states.sidebarVisibilty} ${states.sidebarWidth} absolute z-20 flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out sm:relative`}
           >
-            <div
-              id="nav"
-              className="item-start flex w-[325px] flex-col rounded-2xl bg-indigo-50 p-5 pt-10"
-            >
+            <div id="nav" className="item-start flex w-[325px] flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
               <Navigation
                 dbCategories={dbCategories}
                 dbItems={dbItems}
@@ -184,19 +177,13 @@ const Layout: React.FC = () => {
             </div>
           </div>
 
-          <div
-            id="content"
-            className="flex-grow flex-col items-start gap-5 rounded-2xl bg-indigo-50/50 p-5 pt-10"
-          >
+          <div id="content" className="flex-grow flex-col items-start gap-5 rounded-2xl bg-indigo-50/50 p-5 pt-10">
             <Content value="home" />
           </div>
         </div>
 
         {/* Footer Area */}
-        <div
-          id="footer"
-          className="flex h-[112px] w-full flex-row items-center gap-5 rounded-2xl bg-indigo-50 p-5"
-        >
+        <div id="footer" className="flex h-[112px] w-full flex-row items-center gap-5 rounded-2xl bg-indigo-50 p-5">
           <Footer value="home" />
         </div>
       </div>
