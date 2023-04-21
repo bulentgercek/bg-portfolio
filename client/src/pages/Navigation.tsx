@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import arrow_right from "../assets/arrow_right.svg";
@@ -13,23 +13,20 @@ import {
   isSelectedNavElementACategory,
   createKey,
 } from "../../utils";
+import AppContext from "../AppContext";
 
 /**
  * Navigation Function Component
  */
-type NavigationProps = {
-  dbCategories: Category[];
-  dbItems: Item[];
-  loading: boolean;
-  routeData: RouteData;
-  breadcrumbs: Category[];
-};
-
-const Navigation: React.FC<NavigationProps> = ({ dbCategories, dbItems, loading, routeData, breadcrumbs }) => {
+const Navigation: React.FC = () => {
   const [navData, setNavData] = useState<NavElement[]>([]);
 
+  // Calling Context Values
+  const context = useContext(AppContext);
+  const { dbCategories, dbItems, loading, routeData, breadcrumbs } = context;
+
   /**
-   * onChange locationPathname: createNavData
+   * onChange routeData, dbCategories, dbItems
    */
   useEffect(() => {
     if (dbCategories.length === 0 && dbItems.length === 0) return;

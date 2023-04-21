@@ -11,6 +11,7 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL;
  */
 export type States = {
   sidebarWidth: string;
+  sidebarOverflowX: string;
   logoAreaWidth: string;
   navListSwitch: string;
   sidebarGap: string;
@@ -22,6 +23,10 @@ export type StatesData = {
   sidebarWidth: {
     w0px: string;
     w325px: string;
+  };
+  sidebarOverflowX: {
+    hidden: string;
+    visible: string;
   };
   logoAreaWidth: {
     w285px: string;

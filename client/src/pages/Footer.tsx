@@ -1,10 +1,6 @@
 import React from "react";
 
-type FooterProps = {
-  value: string;
-};
-
-const Footer: React.FC<FooterProps> = ({ value }) => {
+const Footer: React.FC = () => {
   return <h1>Footer</h1>;
 };
 

@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
+import AppContext from "../AppContext";
+import HomeContentLayout from "../layouts/Content/HomeContentLayout";
 
-type ContentProps = {
-  value: string;
-};
+const Content: React.FC = () => {
+  const context = useContext(AppContext);
+  const { breadcrumbs } = context;
 
-const Content: React.FC<ContentProps> = ({ value }) => {
-  return <h1>Contents</h1>;
+  return <>{<HomeContentLayout />}</>;
+  // return <>{breadcrumbs.length === 0 && <HomeContentLayout />}</>;
 };
 
 export default Content;
