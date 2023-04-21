@@ -30,6 +30,13 @@ export const updates: Update[] = [
           "Fixed by creating a createKey utils function to creating unique key using item's element type + id. example: c1_i15",
         status: UpdateStatus.Done,
       },
+      {
+        id: "b_2",
+        description: "Navigation: Width Problem on Sidebar",
+        result:
+          "After putting some stuff on Content area an unexpected shrinkage occured in Sidebar's width. I tried to add some overflow state for it. It worked but it also caused another problem. Now, sidebar's width is suddenly changing when you scaled the page up to 768 px.",
+        status: UpdateStatus.New,
+      },
     ],
   },
   {
