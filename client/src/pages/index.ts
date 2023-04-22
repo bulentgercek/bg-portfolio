@@ -20,12 +20,12 @@ export type States = {
 
 export type StatesData = {
   sidebarWidth: {
-    w0px: string;
-    w325px: string;
+    w0: string;
+    wSidebar: string;
   };
   logoAreaWidth: {
-    w285px: string;
-    w124px: string;
+    open: string;
+    close: string;
   };
   navListSwitch: {
     close: string;

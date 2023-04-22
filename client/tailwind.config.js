@@ -14,6 +14,15 @@ module.exports = {
         lg: "1280px",
         xl: "1440px",
       },
+      width: {
+        "sidebar-open": "var(--sidebar-open-width)",
+        nav: "var(--nav-width)",
+        "logo-area-open": "var(--logo-area-open-width)",
+        "logo-area-close": "var(--logo-area-close-width)",
+      },
+      height: {
+        footer: "var(--footer-height)",
+      },
     },
   },
   plugins: [],

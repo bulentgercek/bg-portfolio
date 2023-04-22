@@ -12,27 +12,27 @@ import Navigation from "../pages/Navigation";
 // Page Element States Data
 const statesData: StatesData = {
   sidebarWidth: {
-    w0px: "w-0",
-    w325px: "w-[325px]",
+    w0: "w-0",
+    wSidebar: "w-sidebar-open",
   },
   logoAreaWidth: {
-    w285px: "w-[285px]",
-    w124px: "w-[124px]",
+    open: "w-logo-area-open",
+    close: "w-logo-area-close",
   },
   navListSwitch: {
     close: nav_list_switch_close,
     open: nav_list_switch_open,
   },
   sidebarGap: {
-    gap20px: "gap-x-[20px]",
-    gap0px: "gap-x-[0px]",
+    gap20px: "gap-x-5",
+    gap0px: "gap-x-0",
   },
   backgroundFill: {
     bgColorOpacity25: "bg-indigo-500/25",
     bgColorOpacity0: "bg-indigo-500/0",
   },
   contentAreaWidth: {
-    wPercentMinusSidebar: "w-[calc(100%-325px)]",
+    wPercentMinusSidebar: `w-[calc(100%-var(--sidebar-open-width))]`,
     wFull: "w-full",
   },
 };
@@ -40,16 +40,16 @@ const statesData: StatesData = {
 // Assign Page Element Default States from States Data
 // Page Elements Open States
 const openStates: States = {
-  sidebarWidth: statesData.sidebarWidth.w325px,
-  logoAreaWidth: statesData.logoAreaWidth.w285px,
+  sidebarWidth: statesData.sidebarWidth.wSidebar,
+  logoAreaWidth: statesData.logoAreaWidth.open,
   navListSwitch: statesData.navListSwitch.close,
   sidebarGap: statesData.sidebarGap.gap20px,
   contentAreaWidth: statesData.contentAreaWidth.wPercentMinusSidebar,
 };
 // Page Elements Close States
 const closeStates: States = {
-  sidebarWidth: statesData.sidebarWidth.w0px,
-  logoAreaWidth: statesData.logoAreaWidth.w124px,
+  sidebarWidth: statesData.sidebarWidth.w0,
+  logoAreaWidth: statesData.logoAreaWidth.close,
   navListSwitch: statesData.navListSwitch.open,
   sidebarGap: statesData.sidebarGap.gap0px,
   contentAreaWidth: statesData.contentAreaWidth.wFull,
@@ -104,7 +104,7 @@ const Layout: React.FC = () => {
       ></div>
       <div
         id="layout"
-        className="relative mx-auto flex h-[calc(100vh-24px)] max-w-screen-xl flex-col items-center justify-between gap-5 border border-red-600 p-[30px] transition-all duration-500 ease-out sm:p-10"
+        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-[30px] transition-all duration-500 ease-out sm:p-10"
       >
         <div
           id="logo"
@@ -133,7 +133,7 @@ const Layout: React.FC = () => {
             className={`absolute flex ${states.sidebarWidth} z-20 flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out sm:relative`}
           >
             {/* Navigation Component */}
-            <div id="nav" className="item-start flex w-[325px] flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
+            <div id="nav" className="item-start w-nav flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
               <Navigation />
             </div>
           </div>
@@ -150,7 +150,7 @@ const Layout: React.FC = () => {
         </div>
 
         {/* Footer Area: Footer Component */}
-        <div id="footer" className="flex h-[112px] w-full flex-row items-center gap-5 rounded-2xl bg-indigo-50 p-5">
+        <div id="footer" className="h-footer flex w-full flex-row items-center gap-5 rounded-2xl bg-indigo-50 p-5">
           <Footer />
         </div>
       </div>
