@@ -15,10 +15,6 @@ const statesData: StatesData = {
     w0px: "w-0",
     w325px: "w-[325px]",
   },
-  sidebarOverflowX: {
-    hidden: "overflow-x-hidden",
-    visible: "overflow-x-visible",
-  },
   logoAreaWidth: {
     w285px: "w-[285px]",
     w124px: "w-[124px]",
@@ -31,13 +27,13 @@ const statesData: StatesData = {
     gap20px: "gap-x-[20px]",
     gap0px: "gap-x-[0px]",
   },
-  sidebarVisibilty: {
-    flex: "flex",
-    hidden: "hidden",
-  },
   backgroundFill: {
     bgColorOpacity25: "bg-indigo-500/25",
     bgColorOpacity0: "bg-indigo-500/0",
+  },
+  contentAreaWidth: {
+    wPercentMinusSidebar: "w-[calc(100%-325px)]",
+    wFull: "w-full",
   },
 };
 
@@ -45,19 +41,18 @@ const statesData: StatesData = {
 // Page Elements Open States
 const openStates: States = {
   sidebarWidth: statesData.sidebarWidth.w325px,
-  sidebarOverflowX: statesData.sidebarOverflowX.visible,
   logoAreaWidth: statesData.logoAreaWidth.w285px,
   navListSwitch: statesData.navListSwitch.close,
-  sidebarVisibilty: statesData.sidebarVisibilty.flex,
   sidebarGap: statesData.sidebarGap.gap20px,
+  contentAreaWidth: statesData.contentAreaWidth.wPercentMinusSidebar,
 };
 // Page Elements Close States
 const closeStates: States = {
   sidebarWidth: statesData.sidebarWidth.w0px,
-  sidebarOverflowX: statesData.sidebarOverflowX.hidden,
   logoAreaWidth: statesData.logoAreaWidth.w124px,
   navListSwitch: statesData.navListSwitch.open,
   sidebarGap: statesData.sidebarGap.gap0px,
+  contentAreaWidth: statesData.contentAreaWidth.wFull,
 };
 
 /**
@@ -90,6 +85,7 @@ const Layout: React.FC = () => {
       return;
     }
     setNavToggleOpen(true);
+    setBackgroundFillActive(false);
   };
 
   // EventListener Change: Media Query
@@ -108,7 +104,7 @@ const Layout: React.FC = () => {
       ></div>
       <div
         id="layout"
-        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-[30px] transition-all duration-500 ease-out sm:p-10"
+        className="relative mx-auto flex h-[calc(100vh-24px)] max-w-screen-xl flex-col items-center justify-between gap-5 border border-red-600 p-[30px] transition-all duration-500 ease-out sm:p-10"
       >
         <div
           id="logo"
@@ -134,7 +130,7 @@ const Layout: React.FC = () => {
         >
           <div
             id="sidebar"
-            className={`${states.sidebarVisibilty} ${states.sidebarWidth} ${states.sidebarOverflowX} absolute z-20 flex-col items-start rounded-2xl transition-all duration-700 ease-out sm:relative`}
+            className={`absolute flex ${states.sidebarWidth} z-20 flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out sm:relative`}
           >
             {/* Navigation Component */}
             <div id="nav" className="item-start flex w-[325px] flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
@@ -143,7 +139,12 @@ const Layout: React.FC = () => {
           </div>
 
           {/* Content Component */}
-          <div id="content" className="flex-col items-start gap-5">
+          <div
+            id="content"
+            className={`flex-col items-start gap-5 ${
+              backgroundFillActive ? statesData.contentAreaWidth.wFull : states.contentAreaWidth
+            } transition-all duration-700 ease-out`}
+          >
             <Content />
           </div>
         </div>

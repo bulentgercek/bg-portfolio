@@ -1,5 +1,14 @@
 import React from "react";
 
+/**
+ * Content Area Size Notes
+ * 1. min-width: 1200
+ * 2. min-width: 1015
+ * 3. min-width: 895
+ * 4. min-width: 560
+ * 5. < 560
+ */
+
 const LandingBanner: React.FC = () => {
   return (
     <div id="landing_banner_container" className="flex-none flex-grow-0 self-stretch rounded-2xl border bg-indigo-50">
