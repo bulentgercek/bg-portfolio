@@ -8,6 +8,7 @@ export type AppProps = {
   loading: boolean;
   routeData: RouteData;
   breadcrumbs: Category[];
+  contentSizeData?: DOMRectReadOnly;
 };
 
 // Default values for AppProps
@@ -18,4 +19,5 @@ const AppContext = createContext<AppProps>({
   routeData: { cid: null, iid: null },
   breadcrumbs: [],
 });
+
 export default AppContext;

@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import AppContext from "../AppContext";
 
 import bg_logo from "../assets/bg_logo.svg";
 import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
 import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
+import { useResizeObserver } from "../hooks/useResizeObserver";
 import { StatesData, States } from "../pages";
 import Content from "../pages/Content";
 import Footer from "../pages/Footer";
@@ -62,6 +64,7 @@ const Layout: React.FC = () => {
   const [states, setStates] = useState<States>(closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
+  const [contentRef, contentSizeData] = useResizeObserver<HTMLDivElement>();
 
   // On Change: navToggleOpen
   useEffect(() => {
@@ -96,8 +99,11 @@ const Layout: React.FC = () => {
     return () => mql.removeEventListener("change", () => mediaQueryChangeHandler(mql));
   }, []);
 
+  // Getting AppContext to add our Content resize observer custom hook
+  const context = useContext(AppContext);
+
   return (
-    <>
+    <AppContext.Provider value={{ ...context, contentSizeData }}>
       <div
         id="background_fill"
         className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} transition-all duration-500 ease-out sm:bg-indigo-500/0`}
@@ -144,6 +150,7 @@ const Layout: React.FC = () => {
             className={`flex-col items-start gap-5 ${
               backgroundFillActive ? statesData.contentAreaWidth.wFull : states.contentAreaWidth
             } transition-all duration-700 ease-out`}
+            ref={contentRef}
           >
             <Content />
           </div>
@@ -154,7 +161,7 @@ const Layout: React.FC = () => {
           <Footer />
         </div>
       </div>
-    </>
+    </AppContext.Provider>
   );
 };
 

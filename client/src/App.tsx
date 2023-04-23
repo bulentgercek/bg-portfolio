@@ -29,7 +29,7 @@ const AppData: React.FC = () => {
     };
   }, [cid, iid]);
 
-  const activeCategory = getCategoryById(dbCategories, routeData.cid) || null;
+  const activeCategory = getCategoryById(dbCategories, routeData.cid) ?? null;
   const breadcrumbs = getBreadcrumbs(dbCategories, activeCategory);
 
   /**

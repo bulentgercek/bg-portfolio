@@ -76,7 +76,7 @@ const Navigation: React.FC = () => {
 
         // Add child items to Parent's childElement array
         if (isCategory(parentCategoryElement.element)) {
-          const childItems = parentCategoryElement.element.items || [];
+          const childItems = parentCategoryElement.element.items ?? [];
           for (const item of childItems) {
             const navChildElement: NavElement = {
               element: item,
@@ -109,7 +109,6 @@ const Navigation: React.FC = () => {
     <div id="Navigation">
       <ul className={`flex flex-col gap-2.5 text-indigo-700 transition-all duration-500 ease-out`}>
         {/* Navigation Root Elements */}
-
         {navData.map((navElement) => (
           <NavigationElement
             key={createKey(navElement)}
@@ -136,7 +135,6 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
   return (
     <>
       {/* Navigation Elements */}
-
       <Link to={navElement.route}>
         <li
           className={`flex items-center justify-between font-semibold transition-all duration-500 ease-out hover:translate-x-1 ${
@@ -167,6 +165,7 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
             ))}
         </li>
       </Link>
+
       {/* Navigation Child Elements */}
       {navElement.childElement.length > 0 && (
         <div
