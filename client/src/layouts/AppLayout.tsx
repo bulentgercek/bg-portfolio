@@ -60,7 +60,7 @@ const closeStates: States = {
 /**
  * Base Layout Function Component
  */
-const Layout: React.FC = () => {
+const AppLayout: React.FC = () => {
   const [states, setStates] = useState<States>(closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
@@ -69,15 +69,13 @@ const Layout: React.FC = () => {
   // On Change: navToggleOpen
   useEffect(() => {
     navToggleOpen ? setStates(openStates) : setStates(closeStates);
-    navToggleOpen && backgroundFillActive
-      ? setStates((prev) => ({
-          ...prev,
-          backgroundFill: statesData.backgroundFill.bgColorOpacity25,
-        }))
-      : setStates((prev) => ({
-          ...prev,
-          backgroundFill: statesData.backgroundFill.bgColorOpacity0,
-        }));
+    setStates((prev) => ({
+      ...prev,
+      backgroundFill:
+        navToggleOpen && backgroundFillActive
+          ? statesData.backgroundFill.bgColorOpacity25
+          : statesData.backgroundFill.bgColorOpacity0,
+    }));
   }, [navToggleOpen]);
 
   // Media query function and hook for controlling window resize
@@ -117,7 +115,12 @@ const Layout: React.FC = () => {
           className={`absolute left-[50px] top-[30px] flex h-[64px] flex-row items-center justify-between md:left-[60px] md:top-[40px] ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
         >
           <Link to="/">
-            <img id="bg_logo" className="cursor-pointer transition-transform hover:scale-105" src={bg_logo}></img>
+            <img
+              id="bg_logo"
+              className="cursor-pointer transition-transform hover:scale-105"
+              src={bg_logo}
+              alt="bg_logo"
+            ></img>
           </Link>
           <img
             id="nav_list_switch"
@@ -126,6 +129,7 @@ const Layout: React.FC = () => {
             onClick={() => {
               setNavToggleOpen(!navToggleOpen);
             }}
+            alt="nav_list_switch"
           />
         </div>
 
@@ -165,4 +169,4 @@ const Layout: React.FC = () => {
   );
 };
 
-export default Layout;
+export default AppLayout;
