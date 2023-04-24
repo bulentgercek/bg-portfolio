@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Navigation Variables */
     --sidebar-open-width: 325px;
     --nav-width: 325px;
     --logo-area-open-width: 285px;
