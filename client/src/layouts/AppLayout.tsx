@@ -93,7 +93,7 @@ const Layout: React.FC = () => {
 
   // EventListener Change: Media Query
   useEffect(() => {
-    const mql: MediaQueryList = window.matchMedia("(width < 768px)");
+    const mql: MediaQueryList = window.matchMedia("(width < 1024px)");
     mql.addEventListener("change", () => mediaQueryChangeHandler(mql));
     mediaQueryChangeHandler(mql); // check the current size when the page loads
     return () => mql.removeEventListener("change", () => mediaQueryChangeHandler(mql));
@@ -106,15 +106,15 @@ const Layout: React.FC = () => {
     <AppContext.Provider value={{ ...context, contentSizeData }}>
       <div
         id="background_fill"
-        className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} transition-all duration-500 ease-out sm:bg-indigo-500/0`}
+        className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} transition-all duration-500 ease-out md:bg-indigo-500/0`}
       ></div>
       <div
         id="layout"
-        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-[30px] transition-all duration-500 ease-out sm:p-10"
+        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-[30px] transition-all duration-500 ease-out md:p-10"
       >
         <div
           id="logo"
-          className={`absolute left-[50px] top-[30px] flex h-[64px] flex-row items-center justify-between sm:left-[60px] sm:top-[40px] ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
+          className={`absolute left-[50px] top-[30px] flex h-[64px] flex-row items-center justify-between md:left-[60px] md:top-[40px] ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
         >
           <Link to="/">
             <img id="bg_logo" className="cursor-pointer transition-transform hover:scale-105" src={bg_logo}></img>
@@ -136,7 +136,7 @@ const Layout: React.FC = () => {
         >
           <div
             id="sidebar"
-            className={`absolute flex ${states.sidebarWidth} z-20 flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out sm:relative`}
+            className={`absolute flex ${states.sidebarWidth} z-20 flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out md:relative`}
           >
             {/* Navigation Component */}
             <div id="nav" className="item-start w-nav flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
