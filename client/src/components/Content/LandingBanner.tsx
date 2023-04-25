@@ -17,7 +17,6 @@ const LandingBanner: React.FC = () => {
   useEffect(() => {
     console.clear();
     const contentCSSVariables = getCustomCSSVariables("--content");
-    console.log(contentCSSVariables);
 
     setIsSmall(contentSizeData ? contentSizeData.width < contentCSSVariables["--content-sm"] : false);
   }, [contentSizeData]);

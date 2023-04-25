@@ -7,6 +7,7 @@ import { Api } from "./api";
 import { RouteData } from "./pages";
 import { Category, Item } from "./api/interfaces";
 import { getCategoryById, getBreadcrumbs } from "../utils";
+import StateWork from "./components/StateWork";
 
 /**
  * App DAL Function Component for React Context
@@ -81,6 +82,10 @@ const App: React.FC = () => {
     {
       path: "/item/:iid",
       element: <AppData />,
+    },
+    {
+      path: "/state-work",
+      element: <StateWork />,
     },
     {
       path: "*",
