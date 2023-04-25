@@ -155,6 +155,17 @@ export const isThisCategoryInBreadcrumbs = (
 };
 
 /**
+ * Check the item selected or not
+ * @param item Item
+ * @param routeData RouteData
+ * @returns boolean
+ */
+export const isItemSelected = (item: Item, routeData: RouteData) => {
+  if (!isItem(item)) return false;
+  return item.id === routeData.iid;
+};
+
+/**
  * Creating a unique key using the element id's
  * @param navElement
  * @returns string
@@ -164,4 +175,40 @@ export const createKey = (navElement: NavElement): string => {
   isCategory(navElement.element) ? (keyData.cid = navElement.element.id) : (keyData.iid = navElement.element.id);
 
   return `c${keyData.cid}_i${keyData.iid}`;
+};
+
+/**
+ * Get Custom CSS Variables
+ * Author: ChatGPT 4.0
+ * @param startingString string
+ * @returns object CSSVar
+ */
+
+type CSSVar = { [key: string]: number };
+
+export const getCustomCSSVariables = (startingString: string): CSSVar => {
+  const cssVars: CSSVar = {};
+
+  for (const styleSheet of Array.from(document.styleSheets)) {
+    const cssRules = (styleSheet as CSSStyleSheet).cssRules;
+
+    for (const cssRule of Array.from(cssRules)) {
+      if (cssRule instanceof CSSStyleRule) {
+        const styleRule = cssRule as CSSStyleRule;
+
+        if (styleRule.selectorText === ":root") {
+          for (const propertyName of Array.from(styleRule.style)) {
+            if (propertyName.startsWith(startingString)) {
+              const value = styleRule.style.getPropertyValue(propertyName).trim().split("px")[0];
+              cssVars[propertyName] = parseInt(value, 10);
+              // Alternatively, you can use the unary + operator:
+              // cssVars[propertyName] = +value;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return cssVars;
 };
