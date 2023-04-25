@@ -12,6 +12,8 @@ import {
   isSelectedNavElementAnItem,
   isSelectedNavElementACategory,
   createKey,
+  isItem,
+  isItemSelected,
 } from "../../utils";
 import AppContext from "../AppContext";
 
@@ -135,25 +137,32 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
   return (
     <>
       {/* Navigation Elements */}
+      {console.log(navElement.element)}
       <Link to={navElement.route}>
         <li
-          className={`flex items-center justify-between font-semibold transition-all duration-500 ease-out hover:translate-x-1 ${
+          className={`flex items-center justify-between font-semibold
+          ${
             isCategory(navElement.element) &&
             (isThisCategoryInBreadcrumbs(navElement.element, breadcrumbs, "number") as number) % 2 === 0
-              ? `rounded-2xl bg-blue-100 p-4 text-indigo-700`
+              ? `trans-d500 rounded-2xl bg-blue-100 p-4 text-indigo-700 hover:pl-6`
               : isCategory(navElement.element) &&
                 (isThisCategoryInBreadcrumbs(navElement.element, breadcrumbs, "number") as number) % 2 === 1
-              ? `rounded-2xl bg-blue-200 p-4 text-indigo-900`
-              : ``
+              ? `trans-d500 rounded-2xl bg-blue-200 p-4 text-indigo-900 hover:pl-6`
+              : `trans-d500 hover:pl-2`
           } 
           ${
-            isSelectedNavElementACategory(navElement, routeData) && isCategory(navElement.element)
+            isSelectedNavElementACategory(navElement, routeData)
               ? `text-indigo-900 ${routeData.cid} ${navElement.element.id}`
               : ``
           } ${
             isSelectedNavElementAnItem(navElement, routeData) && !isCategory(navElement.element)
-              ? `rounded-2xl bg-gradient-to-r from-blue-200/30 p-2.5 pl-4 text-blue-600`
+              ? `trans-d500 rounded-2xl bg-gradient-to-r from-blue-200/30 p-2.5 pl-4 text-blue-600 hover:pl-6`
               : ``
+          }
+          ${
+            isItem(navElement.element) &&
+            !isItemSelected(navElement.element, routeData) &&
+            `trans-d500 text-indigo-900 hover:pl-2`
           }`}
         >
           {navElement.element.name}
