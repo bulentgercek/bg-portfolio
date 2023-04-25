@@ -104,27 +104,22 @@ const AppLayout: React.FC = () => {
     <AppContext.Provider value={{ ...context, contentSizeData }}>
       <div
         id="background_fill"
-        className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} transition-all duration-500 ease-out md:bg-indigo-500/0`}
+        className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} trans-d500 md:bg-indigo-500/0`}
       ></div>
       <div
         id="layout"
-        className="relative mx-auto flex min-h-screen max-w-screen-xl flex-col items-center justify-between gap-5 p-[30px] transition-all duration-500 ease-out md:p-10"
+        className="trans-d500 p-sm md:p-md relative mx-auto flex min-h-screen max-w-screen-xl flex-col justify-between gap-5"
       >
         <div
           id="logo"
-          className={`absolute left-[50px] top-[30px] flex h-[64px] flex-row items-center justify-between md:left-[60px] md:top-[40px] ${states.logoAreaWidth} z-30 transition-all duration-500 ease-out`}
+          className={`left-logo-left-sm md:left-logo-left-md top-logo-top-sm md:top-logo-top-md h-logo absolute flex flex-row items-center justify-between ${states.logoAreaWidth} trans-d500 z-30`}
         >
           <Link to="/">
-            <img
-              id="bg_logo"
-              className="cursor-pointer transition-transform hover:scale-105"
-              src={bg_logo}
-              alt="bg_logo"
-            ></img>
+            <img id="bg_logo" className="trans-d250 cursor-pointer hover:scale-105" src={bg_logo} alt="bg_logo"></img>
           </Link>
           <img
             id="nav_list_switch"
-            className="duration-250 cursor-pointer transition-all ease-out hover:scale-110"
+            className="trans-d700 cursor-pointer hover:scale-110"
             src={states.navListSwitch}
             onClick={() => {
               setNavToggleOpen(!navToggleOpen);
@@ -134,16 +129,13 @@ const AppLayout: React.FC = () => {
         </div>
 
         {/* Main Area: Sidebar, Navigation Component, Content Component */}
-        <div
-          id="main"
-          className={`relative flex w-full flex-row items-start ${states.sidebarGap} pt-10 transition-all duration-700 ease-out`}
-        >
+        <div id="main" className={`relative flex flex-row ${states.sidebarGap} pt-10`}>
           <div
             id="sidebar"
-            className={`absolute flex ${states.sidebarWidth} z-20 flex-col items-start overflow-x-hidden rounded-2xl transition-all duration-700 ease-out md:relative`}
+            className={`absolute flex ${states.sidebarWidth} trans-d700 z-20 flex-col overflow-x-hidden md:relative`}
           >
             {/* Navigation Component */}
-            <div id="nav" className="item-start w-nav flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
+            <div id="nav" className="w-nav flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
               <Navigation />
             </div>
           </div>
@@ -151,9 +143,9 @@ const AppLayout: React.FC = () => {
           {/* Content Component */}
           <div
             id="content"
-            className={`flex-col items-start gap-5 ${
+            className={`flex-col gap-5 ${
               backgroundFillActive ? statesData.contentAreaWidth.wFull : states.contentAreaWidth
-            } transition-all duration-700 ease-out`}
+            } trans-d250`}
             ref={contentRef}
           >
             <Content />

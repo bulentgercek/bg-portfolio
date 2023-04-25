@@ -4,11 +4,36 @@
 
 @layer base {
   :root {
+    /* General Paddings */
+    --padding-md: 40px;
+    --padding-sm: 30px;
     /* Navigation Variables */
     --sidebar-open-width: 325px;
-    --nav-width: 325px;
-    --logo-area-open-width: 285px;
+    --nav-width: calc(var(--sidebar-open-width)-7px);
+    --logo-area-open-width: calc(var(--sidebar-open-width) - 42px);
     --logo-area-close-width: 124px;
+    --logo-area-left-md: 60px;
+    --logo-area-left-sm: 50px;
+    --logo-area-top-md: 48px;
+    --logo-area-top-sm: 40px;
+    --logo-area-height: 60px;
     --footer-height: 112px;
+    /* Content Size Variables */
+    --content-xl: 1200;
+    --content-lg: 1015;
+    --content-md: 895px;
+    --content-sm: 560px;
+  }
+}
+
+@layer components {
+  .trans-d500 {
+    @apply transition-all duration-500 ease-out;
+  }
+  .trans-d250 {
+    @apply transition-all duration-500 ease-out;
+  }
+  .trans-d700 {
+    @apply transition-all duration-500 ease-out;
   }
 }
