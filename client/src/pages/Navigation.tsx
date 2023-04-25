@@ -137,7 +137,6 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
   return (
     <>
       {/* Navigation Elements */}
-      {console.log(navElement.element)}
       <Link to={navElement.route}>
         <li
           className={`flex items-center justify-between font-semibold
