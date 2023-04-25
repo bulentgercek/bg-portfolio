@@ -14,10 +14,6 @@ router.get("/", async (req, res) => {
   const dbCategories = await ac
     .findAll(Category, validateResults, {
       select: {
-        items: {
-          id: true,
-          name: true,
-        },
         parentCategory: {
           id: true,
           name: true,
@@ -28,7 +24,10 @@ router.get("/", async (req, res) => {
         },
       },
       relations: {
-        items: true,
+        items: {
+          contents: true,
+          categories: true,
+        },
         parentCategory: true,
         childCategories: true,
       },
@@ -60,10 +59,6 @@ router.get("/:id", async (req, res) => {
   const dbCategory = await ac
     .findOne(Category, validateResults, {
       select: {
-        items: {
-          id: true,
-          name: true,
-        },
         parentCategory: {
           id: true,
           name: true,
@@ -81,6 +76,7 @@ router.get("/:id", async (req, res) => {
           contents: {
             assets: true,
           },
+          categories: true,
         },
         parentCategory: true,
         childCategories: true,
@@ -112,16 +108,10 @@ router.post("/", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Guard clause
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create
-  const filteredBody = filterObject(
-    validateResults.result.body,
-    "items",
-    "parentCategory",
-    "childCategories",
-  );
+  const filteredBody = filterObject(validateResults.result.body, "items", "parentCategory", "childCategories");
 
   // Create new Category
   const createdCategory = ac.create(Category, filteredBody);
@@ -212,8 +202,7 @@ router.put("/:id", async (req, res) => {
   if (!(dbCategory instanceof Category)) return res.status(400).json(validateResults);
 
   // Guard clause before filtering Body
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create
   const filteredBody: Partial<Category> = filterObject(
