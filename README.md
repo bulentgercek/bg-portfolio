@@ -8,11 +8,10 @@
 
 ## 1. Overview<a name="1"></a>
 
-This is my personal website Node.js development repository. The purpose of this
-website was not basically to have a portfolio site. The aim was to develop my
-programming culture by trying many techniques while learning and to create a
-full study by bringing together the methods that you find closest to my vision.
-In this sense, it is a very educational and developmental study.
+This is my personal website Node.js development repository. The purpose of this website was not basically to have a
+portfolio site. The aim was to develop my programming culture by trying many techniques while learning and to create a
+full study by bringing together the methods that you find closest to my vision. In this sense, it is a very educational
+and developmental study.
 
 **Website URL** : [https://bulentgercek.com](https://bulentgercek.com)
 
@@ -20,10 +19,9 @@ In this sense, it is a very educational and developmental study.
 
 ## 2. Infrastructure<a name="2"></a>
 
-The entire infrastructure of this site runs on a Cloud VPS Server built on
-Hetzner and an Ubuntu Linux installed on it. The entire setup has been installed
-and managed by myself, and the following applications form the building blocks
-of the system.
+The entire infrastructure of this site runs on a Cloud VPS Server built on Hetzner and an Ubuntu Linux installed on it.
+The entire setup has been installed and managed by myself, and the following applications form the building blocks of
+the system.
 
 - Nginx HTTP Server
 - Firewall Security with Firewalld
@@ -34,11 +32,10 @@ of the system.
 
 ### 2.1. Backend / Server<a name="2.1"></a>
 
-The modules of the project were chosen in connection with the requirements of
-Node 14.20, as the work on Shared Web Hosting was started first. Although it was
-switched to VPS after a while, as it became insufficient, it was still basically
-left the same both in terms of performance and for learning purposes. The
-notable node nodules list is as follows.
+The modules of the project were chosen in connection with the requirements of Node 14.20, as the work on Shared Web
+Hosting was started first. Although it was switched to VPS after a while, as it became insufficient, it was still
+basically left the same both in terms of performance and for learning purposes. The notable node nodules list is as
+follows.
 
 - Typescript
 - Express / Cors / Helmet / Dotenv
@@ -48,8 +45,8 @@ notable node nodules list is as follows.
 
 ### 2.2. Frontend / Client<a name="2.2"></a>
 
-As the backend, Client side has been developed without using a ready-made
-template. The notable node nodules list is as follows.
+As the backend, Client side has been developed without using a ready-made template. The notable node nodules list is as
+follows.
 
 - Typescript
 - Vite
@@ -61,9 +58,8 @@ template. The notable node nodules list is as follows.
 
 ## 3. Api Documentation<a name="3"></a>
 
-This Api documentation was written both for my own use and for the basic need of
-a backend with REST API infrastructure. As you can guess, it provides access
-through a specific port.
+This Api documentation was written both for my own use and for the basic need of a backend with REST API infrastructure.
+As you can guess, it provides access through a specific port.
 
 1. [Assets](#3.1)
 2. [Contents](#3.2)
@@ -75,9 +71,8 @@ through a specific port.
 
 ### 3.1. Assets<a name="3.1"></a>
 
-Assets is designed to reach the basic needs of the website, such as text and
-images. **Asset** type objects are only related with **Content** type objects by
-**relation** bond.
+Assets is designed to reach the basic needs of the website, such as text and images. **Asset** type objects are only
+related with **Content** type objects by **relation** bond.
 
 **Custom Types**
 
@@ -227,9 +222,8 @@ _**Request Params** `Object`_
 
 ### 3.2. Contents<a name="3.2"></a>
 
-Contents are designed as page modules that contain Assets. Since **Content**
-type objects are used inside **Item** type objects, they have a relation with
-them. However, a **Content** can only be associated with an **Item**.
+Contents are designed as page modules that contain Assets. Since **Content** type objects are used inside **Item** type
+objects, they have a relation with them. However, a **Content** can only be associated with an **Item**.
 
 **Custom Types**
 
@@ -384,8 +378,7 @@ _**Response Body** `Object`_
 
 #### 3.2.6. `DELETE` Remove Asset from Content<a name="3.2.6"></a>
 
-This endpoint will remove the spesific Asset with id from Content without
-deleting it from the database.
+This endpoint will remove the spesific Asset with id from Content without deleting it from the database.
 
 ```
 .../api/contents/:id/assets/:aid
@@ -427,8 +420,7 @@ _**Request Params** `Object`_
 
 ### 3.3. Items<a name="3.3"></a>
 
-Items was designed as portfolio object. An **Item** can have array of
-**Content** and **Category**.
+Items was designed as portfolio object. An **Item** can have array of **Content** and **Category**.
 
 **Endpoints**
 
@@ -575,9 +567,8 @@ _**Response Body** `Object`_
 
 #### 3.3.6. `PUT` Update Item<a name="3.3.6"></a>
 
-Another point to be noted is; we do not add content here. Because Content will
-be just like "Add Item" (because Content without Item relation cannot be
-created), it is pointless to update it.
+Another point to be noted is; we do not add content here. Because Content will be just like "Add Item" (because Content
+without Item relation cannot be created), it is pointless to update it.
 
 ```
 .../api/items/:id
@@ -631,10 +622,8 @@ _**Request Params** `Number`_
 
 ### 3.4. Categories<a name="3.4"></a>
 
-**Categories** are designed for grouping Item objects. Categories are in a
-Parent-Child relationship with each other. In order to offer the possibility of
-usage; a **Category** can be added to more than one **Category** as child if
-desired.
+**Categories** are designed for grouping Item objects. Categories are in a Parent-Child relationship with each other. In
+order to offer the possibility of usage; a **Category** can be added to more than one **Category** as child if desired.
 
 **Endpoints**
 
@@ -654,17 +643,17 @@ desired.
 
 _**Response Body** `Array`_
 
-| Field                | Type       | Description                                                          |
-| -------------------- | ---------- | -------------------------------------------------------------------- |
-| id                   | Number     |                                                                      |
-| name                 | String     |                                                                      |
-| description          | Text       |                                                                      |
-| items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
-| parentCategories     | Category[] | { id, name }                                                         |
-| childCategories      | Category[] | { id, name }                                                         |
-| childCategoriesOrder | Number[]   | Not implemented                                                      |
-| itemsOrder           | Number[]   | Not implemented                                                      |
-| updatedDate          | Date       |                                                                      |
+| Field                | Type       | Description                                                                  |
+| -------------------- | ---------- | ---------------------------------------------------------------------------- |
+| id                   | Number     |                                                                              |
+| name                 | String     |                                                                              |
+| description          | Text       |                                                                              |
+| items                | Item[]     | { id, name, description, link, featured, categories, contents, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                                                 |
+| childCategories      | Category[] | { id, name }                                                                 |
+| childCategoriesOrder | Number[]   | Not implemented                                                              |
+| itemsOrder           | Number[]   | Not implemented                                                              |
+| updatedDate          | Date       |                                                                              |
 
 [⬆Categories](#3.4)
 
@@ -682,17 +671,17 @@ _**Request Params** `Number`_
 
 _**Response Body** `Array`_
 
-| Field                | Type       | Description                                                          |
-| -------------------- | ---------- | -------------------------------------------------------------------- |
-| id                   | Number     |                                                                      |
-| name                 | String     |                                                                      |
-| description          | Text       |                                                                      |
-| items                | Item[]     | { id, name, description, featured, featuredImageAsset, updatedDate } |
-| parentCategories     | Category[] | { id, name }                                                         |
-| childCategories      | Category[] | { id, name }                                                         |
-| childCategoriesOrder | Number[]   | Not implemented                                                      |
-| itemsOrder           | Number[]   | Not implemented                                                      |
-| updatedDate          | Date       |                                                                      |
+| Field                | Type       | Description                                                                  |
+| -------------------- | ---------- | ---------------------------------------------------------------------------- |
+| id                   | Number     |                                                                              |
+| name                 | String     |                                                                              |
+| description          | Text       |                                                                              |
+| items                | Item[]     | { id, name, description, link, featured, categories, contents, updatedDate } |
+| parentCategories     | Category[] | { id, name }                                                                 |
+| childCategories      | Category[] | { id, name }                                                                 |
+| childCategoriesOrder | Number[]   | Not implemented                                                              |
+| itemsOrder           | Number[]   | Not implemented                                                              |
+| updatedDate          | Date       |                                                                              |
 
 [⬆Categories](#3.4)
 
