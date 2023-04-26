@@ -72,6 +72,8 @@ const openLogoAreaWidth = getActualStateValue(stateLibrary, "openStates", "logoA
 const closeLogoAreaWidth = getActualStateValue(stateLibrary, "closeStates", "logoAreaWidth");
 
 const StateWork: React.FC = () => {
+  const sidebarWidthState = stateLibrary.states.openStates.sidebarWidth;
+  console.log(stateLibrary.statesData.sidebarWidth[sidebarWidthState]);
   return (
     <div>
       <div>{openSidebarWidth}</div>
