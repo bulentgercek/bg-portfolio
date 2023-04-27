@@ -6,7 +6,7 @@ import icon_github from "../../assets/icon_github.svg";
 import icon_twitter from "../../assets/icon_twitter.svg";
 import { getCustomCSSVariables } from "../../../utils";
 import AppContext from "../../AppContext";
-import { createStateData, StateCollection } from ".";
+import { createStateCollection, createStateData } from ".";
 
 // State Consts
 const stateData = createStateData({
@@ -20,7 +20,7 @@ const stateData = createStateData({
   },
 });
 
-const stateCollection: StateCollection<typeof stateData, { openStates: Object; closeStates: Object }> = {
+const stateCollection = createStateCollection(stateData, (stateData) => ({
   openStates: {
     linksDirection: stateData.linksDirection.row,
     buttonsDirection: stateData.buttonsDirection.row,
@@ -29,7 +29,7 @@ const stateCollection: StateCollection<typeof stateData, { openStates: Object; c
     linksDirection: stateData.linksDirection.col,
     buttonsDirection: stateData.buttonsDirection.col,
   },
-};
+}));
 
 /**
  * Landing Banner Component
@@ -46,6 +46,7 @@ const LandingBanner: React.FC = () => {
   }, [contentSizeData]);
 
   useEffect(() => {
+    console.clear();
     console.log("activeStates:", JSON.stringify(activeStates, null, 2));
   }, [activeStates]);
 
