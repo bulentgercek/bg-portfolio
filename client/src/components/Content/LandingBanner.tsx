@@ -6,20 +6,48 @@ import icon_github from "../../assets/icon_github.svg";
 import icon_twitter from "../../assets/icon_twitter.svg";
 import { getCustomCSSVariables } from "../../../utils";
 import AppContext from "../../AppContext";
+import { createStateData, StateCollection } from ".";
+
+// State Consts
+const stateData = createStateData({
+  linksDirection: {
+    row: "flex-row",
+    col: "flex-col",
+  },
+  buttonsDirection: {
+    row: "flex-row",
+    col: "flex-col",
+  },
+});
+
+const stateCollection: StateCollection<typeof stateData, { openStates: Object; closeStates: Object }> = {
+  openStates: {
+    linksDirection: stateData.linksDirection.row,
+    buttonsDirection: stateData.buttonsDirection.row,
+  },
+  closeStates: {
+    linksDirection: stateData.linksDirection.col,
+    buttonsDirection: stateData.buttonsDirection.col,
+  },
+};
 
 /**
  * Landing Banner Component
  */
 const LandingBanner: React.FC = () => {
   const { contentSizeData } = useContext(AppContext);
+  const [activeStates, setActiveStates] = useState(stateCollection.openStates);
   const [isSmall, setIsSmall] = useState<boolean>(false);
 
   useEffect(() => {
-    console.clear();
     const contentCSSVariables = getCustomCSSVariables("--content");
 
     setIsSmall(contentSizeData ? contentSizeData.width < contentCSSVariables["--content-sm"] : false);
   }, [contentSizeData]);
+
+  useEffect(() => {
+    console.log("activeStates:", JSON.stringify(activeStates, null, 2));
+  }, [activeStates]);
 
   return (
     <div id="landing_banner_container" className="flex-none flex-grow-0 self-stretch rounded-2xl border bg-indigo-50">
