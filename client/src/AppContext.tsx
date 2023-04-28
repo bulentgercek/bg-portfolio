@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { Category, Item } from "./api/interfaces";
-import { RouteData } from "./pages";
+import { NavElement, RouteData } from "./pages";
 
 export type AppProps = {
   dbCategories: Category[];
@@ -9,6 +9,8 @@ export type AppProps = {
   routeData: RouteData;
   breadcrumbs: Category[];
   contentSizeData?: DOMRectReadOnly;
+  navData: NavElement[]; // for useState
+  setNavData: (data: NavElement[]) => void; // for useState
 };
 
 // Default values for AppProps
@@ -18,6 +20,8 @@ const AppContext = createContext<AppProps>({
   loading: true,
   routeData: { cid: null, iid: null },
   breadcrumbs: [],
+  navData: [],
+  setNavData: () => {},
 });
 
 export default AppContext;

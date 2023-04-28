@@ -6,7 +6,7 @@ import bg_logo from "../assets/bg_logo.svg";
 import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
 import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import { useResizeObserver } from "../hooks/useResizeObserver";
-import { StatesData, States } from "../pages";
+import { StatesData, States, NavElement } from "../pages";
 import Content from "../pages/Content";
 import Footer from "../pages/Footer";
 import Navigation from "../pages/Navigation";
@@ -30,8 +30,8 @@ const statesData: StatesData = {
     gap0px: "gap-x-0",
   },
   backgroundFill: {
-    bgColorOpacity25: "bg-indigo-500/25",
-    bgColorOpacity0: "bg-indigo-500/0",
+    bgColorOpacity25: "bg-indigo-500/25 pointer-events-auto",
+    bgColorOpacity0: "bg-indigo-500/0 pointer-events-none",
   },
   contentAreaWidth: {
     wPercentMinusSidebar: `w-[calc(100%-var(--sidebar-open-width))]`,
@@ -65,6 +65,7 @@ const AppLayout: React.FC = () => {
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
   const [contentRef, contentSizeData] = useResizeObserver<HTMLDivElement>();
+  const [navData, setNavData] = useState<NavElement[]>([]);
 
   // On Change: navToggleOpen
   useEffect(() => {
@@ -101,7 +102,7 @@ const AppLayout: React.FC = () => {
   const context = useContext(AppContext);
 
   return (
-    <AppContext.Provider value={{ ...context, contentSizeData }}>
+    <AppContext.Provider value={{ ...context, contentSizeData, navData, setNavData }}>
       <div
         id="background_fill"
         className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} trans-d500 md:bg-indigo-500/0`}
@@ -115,7 +116,7 @@ const AppLayout: React.FC = () => {
           className={`left-logo-left-sm md:left-logo-left-md top-logo-top-sm md:top-logo-top-md h-logo absolute flex flex-row items-center justify-between ${states.logoAreaWidth} trans-d500 z-30`}
         >
           <Link to="/">
-            <img id="bg_logo" className="trans-d250 cursor-pointer hover:scale-105" src={bg_logo} alt="bg_logo"></img>
+            <img id="bg_logo" className="trans-d200 cursor-pointer hover:scale-105" src={bg_logo} alt="bg_logo"></img>
           </Link>
           <img
             id="nav_list_switch"
@@ -145,7 +146,7 @@ const AppLayout: React.FC = () => {
             id="content"
             className={`flex-col gap-5 ${
               backgroundFillActive ? statesData.contentAreaWidth.wFull : states.contentAreaWidth
-            } trans-d250`}
+            } trans-d500`}
             ref={contentRef}
           >
             <Content />

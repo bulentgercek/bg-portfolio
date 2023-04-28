@@ -8,8 +8,8 @@
     --padding-md: 40px;
     --padding-sm: 30px;
     /* Navigation Variables */
-    --sidebar-open-width: 325px;
-    --nav-width: calc(var(--sidebar-open-width)-7px);
+    --sidebar-open-width: calc(var(--nav-width) + 7px);
+    --nav-width: 325px;
     --logo-area-open-width: calc(var(--sidebar-open-width) - 42px);
     --logo-area-close-width: 124px;
     --logo-area-left-md: 60px;
@@ -27,13 +27,13 @@
 }
 
 @layer components {
+  .trans-d200 {
+    @apply transition-all duration-200 ease-out;
+  }
   .trans-d500 {
     @apply transition-all duration-500 ease-out;
   }
-  .trans-d250 {
-    @apply transition-all duration-500 ease-out;
-  }
   .trans-d700 {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-all duration-700 ease-out;
   }
 }

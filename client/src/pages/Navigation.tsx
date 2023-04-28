@@ -21,11 +21,11 @@ import AppContext from "../AppContext";
  * Navigation Function Component
  */
 const Navigation: React.FC = () => {
-  const [navData, setNavData] = useState<NavElement[]>([]);
+  // const [navData, setNavData] = useState<NavElement[]>([]);
 
   // Calling Context Values
   const context = useContext(AppContext);
-  const { dbCategories, dbItems, loading, routeData, breadcrumbs } = context;
+  const { dbCategories, dbItems, loading, routeData, breadcrumbs, navData, setNavData } = context;
 
   /**
    * onChange routeData, dbCategories, dbItems

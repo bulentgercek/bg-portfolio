@@ -7,77 +7,166 @@ import icon_twitter from "../../assets/icon_twitter.svg";
 import { getCustomCSSVariables } from "../../../utils";
 import AppContext from "../../AppContext";
 import { createStateCollection, createStateData } from ".";
+import { Link } from "react-router-dom";
 
-// State Consts
+// Create State
 const stateData = createStateData({
-  linksDirection: {
+  landingBannerDirection: {
+    rowNAlignCenter: "flex-row items-center",
+    colNAlignStart: "flex-col items-start",
+  },
+  textNButtonsOrder: {
+    order1: "order-1",
+    order2: "order-2",
+  },
+  photoNLinksOrder: {
+    order1: "order-1",
+    order2: "order-2",
+  },
+  photoNLinksDirection: {
     row: "flex-row",
     col: "flex-col",
   },
-  buttonsDirection: {
+  photoNLinksWidth: {
+    wMaxSm: "w-full",
+    wMinSm: "w-[200px]",
+    wMinMd: "w-[250px]",
+    wMinLg: "w-[250px]",
+    wMinXl: "w-[350px]",
+  },
+  linksDirection: {
     row: "flex-row",
     col: "flex-col",
   },
 });
 
-const stateCollection = createStateCollection(stateData, (stateData) => ({
-  openStates: {
+const stateCollection = createStateCollection(stateData, {
+  minXl: {
+    landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
+    textNButtonsOrder: stateData.textNButtonsOrder.order1,
+    photoNLinksOrder: stateData.photoNLinksOrder.order2,
+    photoNLinksDirection: stateData.photoNLinksDirection.row,
+    photoNLinksWidth: stateData.photoNLinksWidth.wMinXl,
     linksDirection: stateData.linksDirection.row,
-    buttonsDirection: stateData.buttonsDirection.row,
   },
-  closeStates: {
+  minLg: {
+    landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
+    textNButtonsOrder: stateData.textNButtonsOrder.order1,
+    photoNLinksOrder: stateData.photoNLinksOrder.order2,
+    photoNLinksDirection: stateData.photoNLinksDirection.row,
+    photoNLinksWidth: stateData.photoNLinksWidth.wMinLg,
     linksDirection: stateData.linksDirection.col,
-    buttonsDirection: stateData.buttonsDirection.col,
   },
-}));
+  minMd: {
+    landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
+    textNButtonsOrder: stateData.textNButtonsOrder.order1,
+    photoNLinksOrder: stateData.photoNLinksOrder.order2,
+    photoNLinksDirection: stateData.photoNLinksDirection.row,
+    photoNLinksWidth: stateData.photoNLinksWidth.wMinMd,
+    linksDirection: stateData.linksDirection.col,
+  },
+  minSm: {
+    landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
+    textNButtonsOrder: stateData.textNButtonsOrder.order1,
+    photoNLinksOrder: stateData.photoNLinksOrder.order2,
+    photoNLinksDirection: stateData.photoNLinksDirection.col,
+    photoNLinksWidth: stateData.photoNLinksWidth.wMinSm,
+    linksDirection: stateData.linksDirection.row,
+  },
+  maxSm: {
+    landingBannerDirection: stateData.landingBannerDirection.colNAlignStart,
+    textNButtonsOrder: stateData.textNButtonsOrder.order2,
+    photoNLinksOrder: stateData.photoNLinksOrder.order1,
+    photoNLinksDirection: stateData.photoNLinksDirection.row,
+    photoNLinksWidth: stateData.photoNLinksWidth.wMaxSm,
+    linksDirection: stateData.linksDirection.col,
+  },
+});
 
+// Default values for buttons
+const buttonTexts = {
+  about: {
+    name: "...",
+    route: "",
+  },
+  works: {
+    name: "...",
+    route: "",
+  },
+};
 /**
  * Landing Banner Component
  */
 const LandingBanner: React.FC = () => {
-  const { contentSizeData } = useContext(AppContext);
-  const [activeStates, setActiveStates] = useState(stateCollection.openStates);
-  const [isSmall, setIsSmall] = useState<boolean>(false);
+  const { contentSizeData, navData } = useContext(AppContext);
+  const [activeStates, setActiveStates] = useState(stateCollection.maxSm);
 
   useEffect(() => {
     const contentCSSVariables = getCustomCSSVariables("--content");
 
-    setIsSmall(contentSizeData ? contentSizeData.width < contentCSSVariables["--content-sm"] : false);
+    if (!contentSizeData) return;
+
+    const determineActiveState = (width: number) => {
+      if (width < contentCSSVariables["--content-sm"]) return stateCollection.maxSm;
+      if (width < contentCSSVariables["--content-md"]) return stateCollection.minSm;
+      if (width < contentCSSVariables["--content-lg"]) return stateCollection.minMd;
+      if (width < contentCSSVariables["--content-xl"]) return stateCollection.minLg;
+      return stateCollection.minXl;
+    };
+
+    setActiveStates(determineActiveState(contentSizeData.width));
   }, [contentSizeData]);
 
   useEffect(() => {
-    console.clear();
-    console.log("activeStates:", JSON.stringify(activeStates, null, 2));
-  }, [activeStates]);
+    if (navData[1] !== undefined) {
+      buttonTexts.about.name = navData[1].element.name;
+      buttonTexts.about.route = navData[1].route;
+      buttonTexts.works.name = navData[0].element.name;
+      buttonTexts.works.route = navData[0].route;
+    }
+  }, [navData]);
 
   return (
-    <div id="landing_banner_container" className="flex-none flex-grow-0 self-stretch rounded-2xl border bg-indigo-50">
+    <div id="landing_banner_container" className="flex w-full rounded-2xl border bg-indigo-50">
       <div
         id="landing_banner"
-        className={`flex ${
-          isSmall ? `flex-col items-start` : `flex-row items-center`
-        }  gap-5 p-10 pl-7 text-xl text-indigo-900`}
+        className={`flex w-full gap-5 p-10 pl-7 text-xl text-indigo-900 ${activeStates.landingBannerDirection}`}
       >
-        <div id="text_n_buttons" className={`flex flex-col gap-5  ${isSmall ? `order-2` : `order-1`}`}>
+        <div
+          id="text_n_buttons"
+          className={`flex h-full flex-1 flex-col justify-between gap-5 ${activeStates.textNButtonsOrder}`}
+        >
           <div id="text">
             <p>
               <span className="font-bold">Hello! My name is Bulent Gercek.</span> You can find my past and current
               notable works on this personal website. I wish to meet you one day. Happy surfing 🤗
-              <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span>
+              {/* <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span> */}
             </p>
           </div>
-          <div>Buttons</div>
+          <div className=" flex flex-row gap-3">
+            <Link to={`${buttonTexts.about.route}`}>
+              <button
+                className="trans-d200 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base 
+              font-bold text-indigo-50 hover:px-6"
+              >
+                {`${buttonTexts.about.name}`}
+              </button>
+            </Link>
+            <Link to={`${buttonTexts.works.route}`}>
+              <button className="trans-d200 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
+                {`${buttonTexts.about.name}`}
+              </button>
+            </Link>
+          </div>
         </div>
         <div
           id="photo_n_links"
-          className={`flex w-full flex-row justify-between gap-[10px] border-0 border-red-400 ${
-            isSmall ? `order-1` : `order-2`
-          }`}
+          className={`flex items-center justify-between gap-[10px] ${activeStates.photoNLinksWidth} ${activeStates.photoNLinksDirection} ${activeStates.photoNLinksOrder}`}
         >
           <div>
-            <img id="photo" src={bg_photo} alt="bg_logo"></img>
+            <img id="photo" className="w-[175px]" src={bg_photo} alt="bg_logo"></img>
           </div>
-          <div id="links" className="flex flex-col items-center justify-center gap-[10px] border-0 border-red-400">
+          <div id="links" className={`flex items-center justify-center gap-[10px] ${activeStates.linksDirection}`}>
             <img src={icon_linkedin} alt="icon_linkedin" />
             <img src={icon_github} alt="icon_github" />
             <img src={icon_twitter} alt="icon_twitter" />

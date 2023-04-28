@@ -16,7 +16,7 @@ export type StateData<T> = {
  */
 export type StateCollection<T extends StateData<T>, K> = {
   [stateCollectionKey in keyof K]: {
-    [stateKey in keyof T]: T[stateKey][keyof T[stateKey]];
+    [stateKey in keyof T]: string;
   };
 };
 
@@ -32,9 +32,23 @@ export const createStateData = <T>(data: StateData<T>): StateData<T> => {
 /**
  * Helper function to infer StateCollection
  * @param stateData Initilized StateData<T> Object
- * @param dataFn Returns the callback function's return result
+ * @param data StateCollection<T, K>
+ * @returns StateCollection<T, K>
  */
 export function createStateCollection<T extends StateData<T>, K>(
+  stateData: T,
+  data: StateCollection<typeof stateData, K>,
+): StateCollection<T, K> {
+  return data;
+}
+
+/**
+ * Helper function to infer StateCollection WIP
+ * Problem: Not truely type-safe for StateData<T>. Giving warning but not auto-completion.
+ * @param stateData Initilized StateData<T> Object
+ * @param dataFn Returns the callback function's return result
+ */
+export function createStateCollectionF<T extends StateData<T>, K>(
   stateData: T,
   dataFn: (stateData: T) => StateCollection<T, K>,
 ): StateCollection<T, K> {
