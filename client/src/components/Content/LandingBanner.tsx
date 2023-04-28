@@ -154,7 +154,7 @@ const LandingBanner: React.FC = () => {
             </Link>
             <Link to={`${buttonTexts.works.route}`}>
               <button className="trans-d500 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
-                {`${buttonTexts.about.name}`}
+                {`${buttonTexts.works.name}`}
               </button>
             </Link>
           </div>
