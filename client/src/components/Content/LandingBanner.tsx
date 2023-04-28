@@ -4,10 +4,12 @@ import bg_photo from "../../assets/bg_photo.png";
 import icon_linkedin from "../../assets/icon_linkedin.svg";
 import icon_github from "../../assets/icon_github.svg";
 import icon_twitter from "../../assets/icon_twitter.svg";
-import { getCustomCSSVariables } from "../../../utils";
 import AppContext from "../../AppContext";
 import { createStateCollection, createStateData } from ".";
 import { Link } from "react-router-dom";
+import Spinner from "../Spinner";
+import { getRootElementCount, isNavDataFilled } from "../../utils/navigationUtils";
+import { getCustomCSSVariables } from "../../utils/appUtils";
 
 // Create State
 const stateData = createStateData({
@@ -83,29 +85,23 @@ const stateCollection = createStateCollection(stateData, {
   },
 });
 
-// Default values for buttons
-const buttonTexts = {
-  about: {
-    name: "...",
-    route: "",
-  },
-  works: {
-    name: "...",
-    route: "",
-  },
-};
 /**
  * Landing Banner Component
  */
 const LandingBanner: React.FC = () => {
-  const { contentSizeData, navData } = useContext(AppContext);
+  const { dbCategories, dbItems, breadcrumbs, contentSizeData, navData } = useContext(AppContext);
+  const [landingBannerLoading, setLandingBannerLoading] = useState<boolean>(true);
   const [activeStates, setActiveStates] = useState(stateCollection.maxSm);
 
   useEffect(() => {
-    const contentCSSVariables = getCustomCSSVariables("--content");
+    if (!dbCategories || !dbItems || !navData) return;
+    const rootElementCount = getRootElementCount(dbCategories, dbItems);
+    if (isNavDataFilled(navData, breadcrumbs, rootElementCount)) setLandingBannerLoading(false);
+  }, [navData]);
 
+  useEffect(() => {
     if (!contentSizeData) return;
-
+    const contentCSSVariables = getCustomCSSVariables("--content");
     const determineActiveState = (width: number) => {
       if (width < contentCSSVariables["--content-sm"]) return stateCollection.maxSm;
       if (width < contentCSSVariables["--content-md"]) return stateCollection.minSm;
@@ -116,15 +112,6 @@ const LandingBanner: React.FC = () => {
 
     setActiveStates(determineActiveState(contentSizeData.width));
   }, [contentSizeData]);
-
-  useEffect(() => {
-    if (navData[1] !== undefined) {
-      buttonTexts.about.name = navData[1].element.name;
-      buttonTexts.about.route = navData[1].route;
-      buttonTexts.works.name = navData[0].element.name;
-      buttonTexts.works.route = navData[0].route;
-    }
-  }, [navData]);
 
   return (
     <div id="landing_banner_container" className="flex w-full rounded-2xl border bg-indigo-50">
@@ -143,21 +130,28 @@ const LandingBanner: React.FC = () => {
               {/* <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span> */}
             </p>
           </div>
-          <div className=" flex flex-row gap-3">
-            <Link to={`${buttonTexts.about.route}`}>
-              <button
-                className="trans-d500 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base 
-              font-bold text-indigo-50 hover:px-6"
-              >
-                {`${buttonTexts.about.name}`}
-              </button>
-            </Link>
-            <Link to={`${buttonTexts.works.route}`}>
-              <button className="trans-d500 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
-                {`${buttonTexts.works.name}`}
-              </button>
-            </Link>
-          </div>
+          {landingBannerLoading === true ? (
+            <Spinner />
+          ) : (
+            navData &&
+            navData.length !== 0 && (
+              <div className=" flex flex-row gap-3">
+                <Link to={`${navData[1].route}`}>
+                  <button
+                    className="trans-d500 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base 
+                font-bold text-indigo-50 hover:px-6"
+                  >
+                    {`${navData[1].element.name}`}
+                  </button>
+                </Link>
+                <Link to={`${navData[0].route}`}>
+                  <button className="trans-d500 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
+                    {`${navData[0].element.name}`}
+                  </button>
+                </Link>
+              </div>
+            )
+          )}
         </div>
         <div
           id="photo_n_links"

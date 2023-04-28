@@ -6,7 +6,7 @@ import bg_logo from "../assets/bg_logo.svg";
 import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
 import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
 import { useResizeObserver } from "../hooks/useResizeObserver";
-import { StatesData, States, NavElement } from "../pages";
+import { StatesData, States } from "../pages";
 import Content from "../pages/Content";
 import Footer from "../pages/Footer";
 import Navigation from "../pages/Navigation";
@@ -65,7 +65,6 @@ const AppLayout: React.FC = () => {
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
   const [contentRef, contentSizeData] = useResizeObserver<HTMLDivElement>();
-  const [navData, setNavData] = useState<NavElement[]>([]);
 
   // On Change: navToggleOpen
   useEffect(() => {
@@ -102,7 +101,7 @@ const AppLayout: React.FC = () => {
   const context = useContext(AppContext);
 
   return (
-    <AppContext.Provider value={{ ...context, contentSizeData, navData, setNavData }}>
+    <AppContext.Provider value={{ ...context, contentSizeData }}>
       <div
         id="background_fill"
         className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} trans-d500 md:bg-indigo-500/0`}
@@ -136,7 +135,7 @@ const AppLayout: React.FC = () => {
             className={`absolute flex ${states.sidebarWidth} trans-d700 z-20 flex-col overflow-x-hidden md:relative`}
           >
             {/* Navigation Component */}
-            <div id="nav" className="w-nav flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
+            <div id="nav" className="w-nav trans-d500 flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
               <Navigation />
             </div>
           </div>

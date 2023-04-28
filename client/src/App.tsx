@@ -1,22 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { createBrowserRouter, Navigate, RouterProvider, useParams } from "react-router-dom";
 
 import AppContext from "./AppContext";
 import AppLayout from "./layouts/AppLayout";
 import { Api } from "./api";
-import { RouteData } from "./pages";
+import { NavElement, RouteData } from "./pages";
 import { Category, Item } from "./api/interfaces";
-import { getCategoryById, getBreadcrumbs } from "../utils";
+import { getCategoryById } from "./utils/categoryUtils";
+import { getBreadcrumbs } from "./utils/appUtils";
 
 /**
  * App DAL Function Component for React Context
  * Using : AppContext->AppProps
  */
 const AppData: React.FC = () => {
-  const [dbCategories, setDbCategories] = useState<Category[]>([]);
-  const [dbItems, setDbItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [dbCategories, setDbCategories] = useState<Category[] | null>(null);
+  const [dbItems, setDbItems] = useState<Item[] | null>(null);
+  const [dbLoading, setDbLoading] = useState<boolean>(true);
+  const [navData, setNavData] = useState<NavElement[] | null>(null);
 
+  const context = useContext(AppContext);
   /**
    * onRender: Set route variables
    */
@@ -29,11 +32,17 @@ const AppData: React.FC = () => {
     };
   }, [cid, iid]);
 
-  const activeCategory = getCategoryById(dbCategories, routeData.cid) ?? null;
-  const breadcrumbs = getBreadcrumbs(dbCategories, activeCategory);
+  /**
+   * onUpdate params or dbCategories: Set breadcrumbs
+   */
+  const breadcrumbs: Category[] = useMemo(() => {
+    if (dbCategories === null) return [];
+    const activeCategory = getCategoryById(dbCategories, routeData.cid) ?? null;
+    return getBreadcrumbs(dbCategories, activeCategory);
+  }, [cid, iid, dbCategories]);
 
   /**
-   * onMount: Fetch dbCategories
+   * onMount: Fetch dbCategories and dbItems
    */
   useEffect(() => {
     const fetchData = async () => {
@@ -42,18 +51,14 @@ const AppData: React.FC = () => {
 
       const fetchItems = await Api.getItems();
       setDbItems(fetchItems);
-
-      // Delay for to see loading longer
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setDbLoading(false);
     };
 
     fetchData();
   }, []);
 
   return (
-    <AppContext.Provider value={{ dbCategories, dbItems, loading, routeData, breadcrumbs }}>
+    <AppContext.Provider value={{ ...context, dbCategories, dbItems, routeData, breadcrumbs, navData, setNavData }}>
       <AppLayout />
     </AppContext.Provider>
   );

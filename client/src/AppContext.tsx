@@ -3,24 +3,22 @@ import { Category, Item } from "./api/interfaces";
 import { NavElement, RouteData } from "./pages";
 
 export type AppProps = {
-  dbCategories: Category[];
-  dbItems: Item[];
-  loading: boolean;
+  dbCategories: Category[] | null;
+  dbItems: Item[] | null;
   routeData: RouteData;
   breadcrumbs: Category[];
   contentSizeData?: DOMRectReadOnly;
-  navData: NavElement[]; // for useState
+  navData: NavElement[] | null; // for useState
   setNavData: (data: NavElement[]) => void; // for useState
 };
 
 // Default values for AppProps
 const AppContext = createContext<AppProps>({
-  dbCategories: [],
-  dbItems: [],
-  loading: true,
+  dbCategories: null,
+  dbItems: null,
   routeData: { cid: null, iid: null },
   breadcrumbs: [],
-  navData: [],
+  navData: null,
   setNavData: () => {},
 });
 
