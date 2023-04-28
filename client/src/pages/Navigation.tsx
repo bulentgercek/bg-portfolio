@@ -35,9 +35,7 @@ const Navigation: React.FC = () => {
     if (!dbCategories || !dbItems) return;
     const createdNavData = createNavData(dbCategories, dbItems, breadcrumbs);
     setNavData(createdNavData);
-    setInterval(() => {
-      setNavLoading(false);
-    }, 500);
+    setNavLoading(false);
   }, [routeData, dbCategories, dbItems]);
 
   return (
