@@ -146,14 +146,14 @@ const LandingBanner: React.FC = () => {
           <div className=" flex flex-row gap-3">
             <Link to={`${buttonTexts.about.route}`}>
               <button
-                className="trans-d200 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base 
+                className="trans-d500 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base 
               font-bold text-indigo-50 hover:px-6"
               >
                 {`${buttonTexts.about.name}`}
               </button>
             </Link>
             <Link to={`${buttonTexts.works.route}`}>
-              <button className="trans-d200 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
+              <button className="trans-d500 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
                 {`${buttonTexts.about.name}`}
               </button>
             </Link>
