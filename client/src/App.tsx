@@ -14,10 +14,9 @@ import { getBreadcrumbs } from "./utils/appUtils";
  * Using : AppContext->AppProps
  */
 const AppData: React.FC = () => {
-  const [dbCategories, setDbCategories] = useState<Category[] | null>(null);
-  const [dbItems, setDbItems] = useState<Item[] | null>(null);
-  const [dbLoading, setDbLoading] = useState<boolean>(true);
-  const [navData, setNavData] = useState<NavElement[] | null>(null);
+  const [dbCategories, setDbCategories] = useState<Category[]>();
+  const [dbItems, setDbItems] = useState<Item[]>();
+  const [navData, setNavData] = useState<NavElement[]>();
 
   const context = useContext(AppContext);
   /**
@@ -36,10 +35,10 @@ const AppData: React.FC = () => {
    * onUpdate params or dbCategories: Set breadcrumbs
    */
   const breadcrumbs: Category[] = useMemo(() => {
-    if (dbCategories === null) return [];
+    if (!dbCategories) return [];
     const activeCategory = getCategoryById(dbCategories, routeData.cid) ?? null;
     return getBreadcrumbs(dbCategories, activeCategory);
-  }, [cid, iid, dbCategories]);
+  }, [routeData, dbCategories]);
 
   /**
    * onMount: Fetch dbCategories and dbItems
@@ -48,10 +47,8 @@ const AppData: React.FC = () => {
     const fetchData = async () => {
       const fetchCategories = await Api.getCategories();
       setDbCategories(fetchCategories);
-
       const fetchItems = await Api.getItems();
       setDbItems(fetchItems);
-      setDbLoading(false);
     };
 
     fetchData();

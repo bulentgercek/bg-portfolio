@@ -4,12 +4,13 @@ import bg_photo from "../../assets/bg_photo.png";
 import icon_linkedin from "../../assets/icon_linkedin.svg";
 import icon_github from "../../assets/icon_github.svg";
 import icon_twitter from "../../assets/icon_twitter.svg";
+import landing_banner_back_circles from "../../assets/landing_banner_back_circles.svg";
 import AppContext from "../../AppContext";
 import { createStateCollection, createStateData } from ".";
 import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
-import { getRootElementCount, isNavDataFilled } from "../../utils/navigationUtils";
 import { getCustomCSSVariables } from "../../utils/appUtils";
+import { createKey } from "../../utils/navigationUtils";
 
 // Create State
 const stateData = createStateData({
@@ -40,6 +41,13 @@ const stateData = createStateData({
     row: "flex-row",
     col: "flex-col",
   },
+  landingBannerCirclesRPos: {
+    wMaxSm: "right-[420px]",
+    wMinSm: "right-[350px]",
+    wMinMd: "right-[220px]",
+    wMinLg: "right-[120px]",
+    wMinXl: "right-[100px]",
+  },
 });
 
 const stateCollection = createStateCollection(stateData, {
@@ -50,6 +58,7 @@ const stateCollection = createStateCollection(stateData, {
     photoNLinksDirection: stateData.photoNLinksDirection.row,
     photoNLinksWidth: stateData.photoNLinksWidth.wMinXl,
     linksDirection: stateData.linksDirection.row,
+    landingBannerCirclesRPos: stateData.landingBannerCirclesRPos.wMinXl,
   },
   minLg: {
     landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
@@ -58,6 +67,7 @@ const stateCollection = createStateCollection(stateData, {
     photoNLinksDirection: stateData.photoNLinksDirection.row,
     photoNLinksWidth: stateData.photoNLinksWidth.wMinLg,
     linksDirection: stateData.linksDirection.col,
+    landingBannerCirclesRPos: stateData.landingBannerCirclesRPos.wMinLg,
   },
   minMd: {
     landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
@@ -66,6 +76,7 @@ const stateCollection = createStateCollection(stateData, {
     photoNLinksDirection: stateData.photoNLinksDirection.row,
     photoNLinksWidth: stateData.photoNLinksWidth.wMinMd,
     linksDirection: stateData.linksDirection.col,
+    landingBannerCirclesRPos: stateData.landingBannerCirclesRPos.wMinMd,
   },
   minSm: {
     landingBannerDirection: stateData.landingBannerDirection.rowNAlignCenter,
@@ -74,6 +85,7 @@ const stateCollection = createStateCollection(stateData, {
     photoNLinksDirection: stateData.photoNLinksDirection.col,
     photoNLinksWidth: stateData.photoNLinksWidth.wMinSm,
     linksDirection: stateData.linksDirection.row,
+    landingBannerCirclesRPos: stateData.landingBannerCirclesRPos.wMinSm,
   },
   maxSm: {
     landingBannerDirection: stateData.landingBannerDirection.colNAlignStart,
@@ -82,6 +94,7 @@ const stateCollection = createStateCollection(stateData, {
     photoNLinksDirection: stateData.photoNLinksDirection.row,
     photoNLinksWidth: stateData.photoNLinksWidth.wMaxSm,
     linksDirection: stateData.linksDirection.col,
+    landingBannerCirclesRPos: stateData.landingBannerCirclesRPos.wMaxSm,
   },
 });
 
@@ -89,15 +102,8 @@ const stateCollection = createStateCollection(stateData, {
  * Landing Banner Component
  */
 const LandingBanner: React.FC = () => {
-  const { dbCategories, dbItems, breadcrumbs, contentSizeData, navData } = useContext(AppContext);
-  const [landingBannerLoading, setLandingBannerLoading] = useState<boolean>(true);
+  const { contentSizeData, navData } = useContext(AppContext);
   const [activeStates, setActiveStates] = useState(stateCollection.maxSm);
-
-  useEffect(() => {
-    if (!dbCategories || !dbItems || !navData) return;
-    const rootElementCount = getRootElementCount(dbCategories, dbItems);
-    if (isNavDataFilled(navData, breadcrumbs, rootElementCount)) setLandingBannerLoading(false);
-  }, [navData]);
 
   useEffect(() => {
     if (!contentSizeData) return;
@@ -114,10 +120,10 @@ const LandingBanner: React.FC = () => {
   }, [contentSizeData]);
 
   return (
-    <div id="landing_banner_container" className="flex w-full rounded-2xl border bg-indigo-50">
+    <div id="landing_banner_container" className="relative flex w-full overflow-hidden rounded-2xl border">
       <div
         id="landing_banner"
-        className={`flex w-full gap-5 p-10 pl-7 text-xl text-indigo-900 ${activeStates.landingBannerDirection}`}
+        className={`z-10 flex w-full gap-5 p-10 pl-7 text-xl text-indigo-900 ${activeStates.landingBannerDirection}`}
       >
         <div
           id="text_n_buttons"
@@ -130,28 +136,22 @@ const LandingBanner: React.FC = () => {
               {/* <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span> */}
             </p>
           </div>
-          {landingBannerLoading === true ? (
-            <Spinner />
-          ) : (
-            navData &&
-            navData.length !== 0 && (
-              <div className=" flex flex-row gap-3">
-                <Link to={`${navData[1].route}`}>
+          {(navData && navData.length >= 2 && (
+            <div className="flex flex-row flex-wrap gap-3">
+              {navData.map((rootNavElement, index) => (
+                <Link to={`${rootNavElement.route}`} key={createKey(rootNavElement)}>
                   <button
-                    className="trans-d500 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base 
-                font-bold text-indigo-50 hover:px-6"
+                    className={`trans-d500 flex h-[40px] items-center rounded-2xl ${
+                      index % 2 === 0 ? `bg-blue-600` : `bg-purple-600`
+                    } px-5 py-3 text-base 
+                font-bold text-indigo-50 hover:px-6`}
                   >
-                    {`${navData[1].element.name}`}
+                    {`${rootNavElement.element.name}`}
                   </button>
                 </Link>
-                <Link to={`${navData[0].route}`}>
-                  <button className="trans-d500 flex h-[40px] items-center rounded-2xl bg-purple-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6">
-                    {`${navData[0].element.name}`}
-                  </button>
-                </Link>
-              </div>
-            )
-          )}
+              ))}
+            </div>
+          )) ?? <Spinner />}
         </div>
         <div
           id="photo_n_links"
@@ -161,13 +161,40 @@ const LandingBanner: React.FC = () => {
             <img id="photo" className="w-[175px]" src={bg_photo} alt="bg_logo"></img>
           </div>
           <div id="links" className={`flex items-center justify-center gap-[10px] ${activeStates.linksDirection}`}>
-            <img src={icon_linkedin} alt="icon_linkedin" />
-            <img src={icon_github} alt="icon_github" />
-            <img src={icon_twitter} alt="icon_twitter" />
+            <a href="https://www.linkedin.com/in/bulentgercek/" target="_blank">
+              <img
+                className="trans-d500 hover:-translate-y-0.5 hover:brightness-200"
+                src={icon_linkedin}
+                alt="icon_linkedin"
+              />
+            </a>
+            <a href="https://github.com/bulentgercek" target="_blank">
+              <img
+                className="trans-d500 hover:-translate-y-0.5 hover:brightness-200"
+                src={icon_github}
+                alt="icon_github"
+              />
+            </a>
+            <a href="https://twitter.com/bulentgercek" target="_blank">
+              <img
+                className="trans-d500 hover:-translate-y-0.5 hover:brightness-200"
+                src={icon_twitter}
+                alt="icon_twitter"
+              />
+            </a>
           </div>
         </div>
       </div>
-      <div id="landing_banner_back" className=""></div>
+      <div
+        id="landing_banner_back"
+        className="absolute left-[calc(50%-1358px/2)] top-[calc(50%-680px/2)] z-0 h-[680px] w-[1358px] bg-indigo-50"
+      >
+        <img
+          className={`trans-d500 absolute top-[200px] opacity-[0.25] ${activeStates.landingBannerCirclesRPos}`}
+          src={landing_banner_back_circles}
+          alt="landing_banner_back"
+        ></img>
+      </div>
     </div>
   );
 };

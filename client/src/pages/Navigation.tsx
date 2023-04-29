@@ -23,7 +23,6 @@ import { isItem } from "../utils/itemUtils";
  * Navigation Function Component
  */
 const Navigation: React.FC = () => {
-  const [navLoading, setNavLoading] = useState<boolean>(true);
   // Calling Context Values
   const context = useContext(AppContext);
   const { dbCategories, dbItems, routeData, breadcrumbs, navData, setNavData } = context;
@@ -35,30 +34,22 @@ const Navigation: React.FC = () => {
     if (!dbCategories || !dbItems) return;
     const createdNavData = createNavData(dbCategories, dbItems, breadcrumbs);
     setNavData(createdNavData);
-    setNavLoading(false);
   }, [routeData, dbCategories, dbItems]);
 
   return (
-    <>
-      {navLoading === true ? (
-        <Spinner />
-      ) : (
-        <div id="Navigation">
-          <ul className={`flex flex-col gap-2.5 text-indigo-700 transition-all duration-500 ease-out`}>
-            {/* Navigation Root Elements */}
-            {navData &&
-              navData.map((navElement) => (
-                <NavigationElement
-                  key={createKey(navElement)}
-                  navElement={navElement}
-                  routeData={routeData}
-                  breadcrumbs={breadcrumbs}
-                />
-              ))}
-          </ul>
-        </div>
-      )}
-    </>
+    <div id="Navigation">
+      <ul className={`flex flex-col gap-2.5 text-indigo-700 transition-all duration-500 ease-out`}>
+        {/* Navigation Root Elements */}
+        {navData?.map((navElement) => (
+          <NavigationElement
+            key={createKey(navElement)}
+            navElement={navElement}
+            routeData={routeData}
+            breadcrumbs={breadcrumbs}
+          />
+        )) ?? <Spinner />}
+      </ul>
+    </div>
   );
 };
 /**
