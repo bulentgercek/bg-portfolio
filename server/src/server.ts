@@ -11,7 +11,7 @@ import { errorHandler, noRouteFound } from "./errorHandler";
 const server = express();
 
 server.use(helmet());
-const corsOptions = {};
+const corsOptions = { origin: ["http://localhost", "https://bulentgercek.com"] };
 console.log("Current CORS configuration:", corsOptions); // Log the current CORS configuration
 
 server.use(cors(corsOptions));
