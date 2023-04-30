@@ -5,7 +5,7 @@ import axios from "axios";
 import { Category, Item } from "./interfaces";
 
 const axiosInstance = axios.create({
-  baseURL: "https://bulentgercek.com/api",
+  baseURL: "http://localhost:3000/api",
 });
 
 export namespace Api {
