@@ -2,9 +2,9 @@ import * as dotenv from "dotenv";
 
 // Load .env file contents into process.env
 dotenv.config();
-// console.log("Current working directory:", process.cwd());
-// console.log("process.env.DATABASE_URL:", process.env.DATABASE_URL);
-// console.log("process.env.PORT:", process.env.PORT);
+console.log("Current working directory:", process.cwd());
+console.log("process.env.DATABASE_URL:", process.env.DATABASE_URL);
+console.log("process.env.PORT:", process.env.PORT);
 
 // Check if PORT environment variable ise defined or exit the process
 if (!process.env.DATABASE_URL || !process.env.PORT) {
