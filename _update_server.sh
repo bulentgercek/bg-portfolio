@@ -17,7 +17,7 @@ if pm2 show index > /dev/null; then
   echo "Server is restarted."
 else
   # If the process is not running, start it
-  pm2 start server/index.js && \
+  pm2 start server/dist/index.js && \
   pm2 save && \
   echo "Server is started."
 fi
