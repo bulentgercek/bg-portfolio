@@ -5,7 +5,7 @@ import axios from "axios";
 import { Category, Item } from "./interfaces";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "https://bulentgercek.com/api",
 });
 
 export namespace Api {
