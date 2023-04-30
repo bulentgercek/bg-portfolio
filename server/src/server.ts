@@ -11,7 +11,7 @@ import { errorHandler, noRouteFound } from "./errorHandler";
 const server = express();
 
 server.use(helmet());
-server.use(cors({ origin: "http://localhost:5173" }));
+server.use(cors({ origin: "http://localhost" }));
 server.use(express.json());
 
 server.get("/", (req, res) => {
