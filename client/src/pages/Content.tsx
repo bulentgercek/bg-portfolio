@@ -4,10 +4,9 @@ import HomeContentLayout from "../layouts/Content/HomeContentLayout";
 
 const Content: React.FC = () => {
   const context = useContext(AppContext);
-  const { breadcrumbs } = context;
+  const { routeData } = context;
 
-  return <>{<HomeContentLayout />}</>;
-  // return <>{breadcrumbs.length === 0 && <HomeContentLayout />}</>;
+  return <>{!routeData.cid && !routeData.iid && <HomeContentLayout />}</>;
 };
 
 export default Content;
