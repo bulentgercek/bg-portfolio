@@ -14,7 +14,7 @@ server.use(helmet());
 
 // Define CORS options based on the environment
 const corsOptions =
-  process.env.NODE_ENV === "production" ? { origin: "https://bulentgercek.com" } : { origin: "http://localhost" };
+  process.env.NODE_ENV === "production" ? { origin: "https://bulentgercek.com" } : { origin: "http://localhost:5173" };
 
 console.log("Current CORS configuration:", corsOptions); // Log the current CORS configuration
 
