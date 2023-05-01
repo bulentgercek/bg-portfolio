@@ -13,6 +13,9 @@ const server = express();
 
 server.use(helmet());
 
+// Increase the body size limit
+server.use(express.json({ limit: "10mb" }));
+
 // Define CORS options based on the environment
 const corsOptions =
   process.env.NODE_ENV === "production" ? { origin: "https://bulentgercek.com" } : { origin: "http://localhost:5173" };

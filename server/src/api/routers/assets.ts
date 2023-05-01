@@ -106,11 +106,11 @@ router.post("/", upload.single("image"), async (req, res) => {
   const createdAsset = ac.create(Asset, filteredBody);
 
   // Upload Image: If file given then upload image file and update url
-  if (validateResults.result.body.url && typeof validateResults.result.body.url === "object") {
+  if (req.file) {
     // Process the uploaded image file
-    const uploadedImageUrl = await processUploadedImage(validateResults.result.body.url.imageFile);
+    const uploadedImageUrl = await processUploadedImage(req.file);
     // Update the 'url' property of the Asset entity with the final image URL
-    validateResults.result.body.url = uploadedImageUrl;
+    createdAsset.url = uploadedImageUrl;
   }
 
   // Get Content
