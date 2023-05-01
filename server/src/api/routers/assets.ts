@@ -1,12 +1,29 @@
 import { Router } from "express";
 import { In } from "typeorm";
 import { z } from "zod";
-import { ApiController as ac } from "../../apiController";
+import multer from "multer";
+import path from "path";
+
+import { ApiController as ac, processUploadedImage } from "../../apiController";
 import { Asset, AssetType } from "../../entities/Asset";
 import { Content } from "../../entities/Content";
 import { filterObject } from "../../utils";
 
 const router = Router();
+
+/**
+ * Multer + Upload Setup
+ */
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, path.join("/var/www/bulentgercek.com/", "uploads"));
+  },
+  filename: (req, file, callback) => {
+    callback(null, `${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 // Get Assets
 router.get("/", async (req, res) => {
@@ -54,34 +71,47 @@ router.get("/:id", async (req, res) => {
 });
 
 // Add Asset
-router.post("/", async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
       body: z.object({
         name: z.string().optional(),
         type: z.nativeEnum(AssetType).optional(),
         text: z.string().optional(),
-        url: z.string().url().optional(),
+        url: z
+          .string()
+          .url()
+          .optional()
+          .or(
+            z.object({
+              url: z.string().optional(),
+              imageFile: z.any(),
+            }),
+          ),
         contents: z.array(z.number()).optional(),
       }),
     },
-    reqData: { body: req.body },
+    reqData: { body: req.body, file: req.file },
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before updating dbContent
-  const filteredBody: Partial<Asset> = filterObject(
-    validateResults.result.body,
-    "contents",
-  );
+  const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
 
   // Create new Asset
   const createdAsset = ac.create(Asset, filteredBody);
+
+  // Upload Image: If file given then upload image file and update url
+  if (validateResults.result.body.url && typeof validateResults.result.body.url === "object") {
+    // Process the uploaded image file
+    const uploadedImageUrl = await processUploadedImage(validateResults.result.body.url.imageFile);
+    // Update the 'url' property of the Asset entity with the final image URL
+    validateResults.result.body.url = uploadedImageUrl;
+  }
 
   // Get Content
   if (validateResults.result.body.contents) {
@@ -97,9 +127,7 @@ router.post("/", async (req, res) => {
     }
   }
 
-  const savedAsset = await ac
-    .addCreated(Asset, validateResults, createdAsset)
-    .catch((err) => console.log(err));
+  const savedAsset = await ac.addCreated(Asset, validateResults, createdAsset).catch((err) => console.log(err));
 
   res.json(savedAsset);
 });
@@ -138,14 +166,10 @@ router.put("/:id", async (req, res) => {
   if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
 
   // Guard clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create updatedAsset
-  const filteredBody: Partial<Asset> = filterObject(
-    validateResults.result.body,
-    "contents",
-  );
+  const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
 
   // Update values of dbAsset with filteredBody
   const updatedAsset: Asset = {
@@ -184,9 +208,7 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const removedAsset = await ac
-    .remove(Asset, validateResults)
-    .catch((err) => console.log(err));
+  const removedAsset = await ac.remove(Asset, validateResults).catch((err) => console.log(err));
 
   res.json(removedAsset);
 });

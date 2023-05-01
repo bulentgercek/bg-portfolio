@@ -4,6 +4,7 @@ import helmet from "helmet";
 
 import api from "./api";
 import { errorHandler, noRouteFound } from "./errorHandler";
+import path from "path";
 
 /**
  *  Server initialization and configuration
@@ -29,6 +30,9 @@ server.get("/", (req, res) => {
 
 // Api Router
 server.use("/api", api);
+
+// Static File Serving Access for Uploads
+server.use("/uploads", express.static(path.join("/var/www/bulentgercek.com/", "uploads")));
 
 // Next middlewares for error handling and no route found
 server.use(errorHandler);

@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Content } from "./Content";
-import { Item } from "./Item";
 
 export enum AssetType {
   Image = "image",

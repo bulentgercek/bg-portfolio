@@ -10,24 +10,25 @@ import {
 import { z } from "zod";
 import { dsm } from "./connections";
 
+import fs from "fs";
+import path from "path";
+import { Request } from "express";
+
 export namespace ApiController {
   /**
    * Context Object for Zod Input and Request Data (params or body) Server
    */
-  type CtxObj<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny> = {
-    zInput: { params?: TParams; body?: TBody };
-    reqData: { params?: Object; body?: Object };
+  type CtxObj<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny, TFile extends z.ZodTypeAny> = {
+    zInput: { params?: TParams; body?: TBody; file?: TFile };
+    reqData: { params?: Object; body?: Object; file?: Object };
   };
 
   /**
    * Output object for inputValidate function
    */
-  export type ValidateResults<
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-  > = {
-    success: { params?: Boolean; body?: Boolean };
-    result: { params?: z.TypeOf<TParams>; body?: z.TypeOf<TBody> };
+  export type ValidateResults<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny, TFile extends z.ZodTypeAny> = {
+    success: { params?: Boolean; body?: Boolean; file?: boolean };
+    result: { params?: z.TypeOf<TParams>; body?: z.TypeOf<TBody>; file?: z.TypeOf<TFile> };
   };
 
   /**
@@ -35,10 +36,9 @@ export namespace ApiController {
    * @param ctxObj Context Object
    * @returns CtxObj<TParams, TBody>
    */
-  export function initContext<
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-  >(ctxObj: CtxObj<TParams, TBody>) {
+  export function initContext<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny, TFile extends z.ZodTypeAny>(
+    ctxObj: CtxObj<TParams, TBody, TFile>,
+  ) {
     return ctxObj;
   }
 
@@ -50,9 +50,10 @@ export namespace ApiController {
   export async function inputValidate<
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
-  >(ctxObj?: CtxObj<TParams, TBody>) {
+    TFile extends z.ZodTypeAny,
+  >(ctxObj?: CtxObj<TParams, TBody, TFile>) {
     // Create success and result properties
-    const validatedFinal: ValidateResults<TParams, TBody> = {
+    const validatedFinal: ValidateResults<TParams, TBody, TFile> = {
       success: {},
       result: {},
     };
@@ -61,49 +62,44 @@ export namespace ApiController {
     if (!ctxObj) {
       validatedFinal.success.params = true;
       validatedFinal.result.body = true;
+      validatedFinal.result.file = true;
       return Promise.resolve(validatedFinal);
     }
 
     // Check the input vs params and input vs body for throwing error
     if (ctxObj.zInput.params && !ctxObj.reqData.params) {
-      console.error(
-        "ERROR: Params defined for Zod but no params found in reqData. Check initContext definition.",
-      );
+      console.error("ERROR: Params defined for Zod but no params found in reqData. Check initContext definition.");
       process.exit(1);
     }
     if (ctxObj.zInput.body && !ctxObj.reqData.body) {
-      console.error(
-        "ERROR: Body defined for Zod but no body found in reqData. Check initContext definition.",
-      );
+      console.error("ERROR: Body defined for Zod but no body found in reqData. Check initContext definition.");
       process.exit(1);
     }
 
     // Create and
     if (ctxObj.zInput.params) {
       type InputType = z.infer<typeof ctxObj.zInput.params>;
-      const validated: InputType = await ctxObj.zInput.params.safeParseAsync(
-        ctxObj.reqData.params,
-      );
+      const validated: InputType = await ctxObj.zInput.params.safeParseAsync(ctxObj.reqData.params);
       validatedFinal.success.params = validated.success;
-      validatedFinal.result.params = validated.success
-        ? validated.data
-        : validated.error;
+      validatedFinal.result.params = validated.success ? validated.data : validated.error;
     }
 
     if (ctxObj.zInput.body) {
       type InputType = z.infer<typeof ctxObj.zInput.body>;
-      const validated: InputType = await ctxObj.zInput.body.safeParseAsync(
-        ctxObj.reqData.body,
-      );
+      const validated: InputType = await ctxObj.zInput.body.safeParseAsync(ctxObj.reqData.body);
       validatedFinal.success.body = validated.success;
-      validatedFinal.result.body = validated.success
-        ? validated.data
-        : validated.error;
+      validatedFinal.result.body = validated.success ? validated.data : validated.error;
+    }
+
+    if (ctxObj.zInput.file) {
+      type InputType = z.infer<typeof ctxObj.zInput.file>;
+      const validated: InputType = await ctxObj.zInput.file.safeParseAsync(ctxObj.reqData.file);
+      validatedFinal.success.file = validated.success;
+      validatedFinal.result.file = validated.success ? validated.data : validated.error;
     }
 
     // check if the 'validatedFinal' object is undefined
-    if (validatedFinal === undefined)
-      console.log("We have some undefined problem in validatedFinal");
+    if (validatedFinal === undefined) console.log("We have some undefined problem in validatedFinal");
 
     return Promise.resolve(validatedFinal);
   }
@@ -114,10 +110,7 @@ export namespace ApiController {
    * @param plainObject Plain Object to be an Entity
    * @returns Entity
    */
-  export function create<Entity>(
-    entityClass: EntityTarget<Entity>,
-    plainObject?: DeepPartial<Entity>,
-  ): Entity {
+  export function create<Entity>(entityClass: EntityTarget<Entity>, plainObject?: DeepPartial<Entity>): Entity {
     return dsm.create(entityClass, plainObject);
   }
 
@@ -132,16 +125,13 @@ export namespace ApiController {
     Entity extends ObjectLiteral,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
+    TFile extends z.ZodTypeAny,
   >(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
+    validateResults: ValidateResults<TParams, TBody, TFile>,
     options?: FindManyOptions<Entity>,
   ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
 
     const dbResult = await dsm.find(entityClass, options);
 
@@ -159,15 +149,13 @@ export namespace ApiController {
     Entity extends ObjectLiteral,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
+    TFile extends z.ZodTypeAny,
   >(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
+    validateResults: ValidateResults<TParams, TBody, TFile>,
     options?: FindOneOptions<Entity>,
   ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    ) {
+    if (validateResults.success.params === false || validateResults.success.body === false) {
       return validateResults;
     }
 
@@ -180,9 +168,7 @@ export namespace ApiController {
       });
     }
 
-    const dbResult: Promise<Entity | null> = await dsm
-      .findOne(entityClass, options)
-      .catch((e) => e);
+    const dbResult: Promise<Entity | null> = await dsm.findOne(entityClass, options).catch((e) => e);
     return dbResult;
   }
 
@@ -198,17 +184,14 @@ export namespace ApiController {
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
+    TFile extends z.ZodTypeAny,
   >(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
+    validateResults: ValidateResults<TParams, TBody, TFile>,
     entity: Entity,
     options?: SaveOptions,
   ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
 
     const dbResult = dsm.save(entityClass, entity, options);
     return dbResult;
@@ -226,16 +209,9 @@ export namespace ApiController {
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
-  >(
-    entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
-    options?: SaveOptions,
-  ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
+    TFile extends z.ZodTypeAny,
+  >(entityClass: EntityTarget<Entity>, validateResults: ValidateResults<TParams, TBody, TFile>, options?: SaveOptions) {
+    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
 
     const newItem = dsm.create(entityClass, validateResults.result.body);
     const dbResult = dsm.save(entityClass, newItem, options);
@@ -253,22 +229,15 @@ export namespace ApiController {
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
+    TFile extends z.ZodTypeAny,
   >(
     targetOrEntity: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
+    validateResults: ValidateResults<TParams, TBody, TFile>,
     options?: RemoveOptions,
   ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
 
-    const dbResult = dsm.remove(
-      targetOrEntity,
-      validateResults.result.params,
-      options,
-    );
+    const dbResult = dsm.remove(targetOrEntity, validateResults.result.params, options);
 
     return dbResult;
   }
@@ -284,23 +253,12 @@ export namespace ApiController {
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
-  >(
-    entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
-    options?: SaveOptions,
-  ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
+    TFile extends z.ZodTypeAny,
+  >(entityClass: EntityTarget<Entity>, validateResults: ValidateResults<TParams, TBody, TFile>, options?: SaveOptions) {
+    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
 
     // Save needs id, so adding params to body
-    const targetEntity: Entity = Object.assign(
-      {},
-      validateResults.result.params,
-      validateResults.result.body,
-    );
+    const targetEntity: Entity = Object.assign({}, validateResults.result.params, validateResults.result.body);
 
     const dbResult = dsm.save(entityClass, targetEntity, options);
     return dbResult;
@@ -318,19 +276,44 @@ export namespace ApiController {
     Entity,
     TParams extends z.ZodTypeAny,
     TBody extends z.ZodTypeAny,
+    TFile extends z.ZodTypeAny,
   >(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
+    validateResults: ValidateResults<TParams, TBody, TFile>,
     targetEntity: DeepPartial<Entity>,
     options?: SaveOptions,
   ) {
-    if (
-      validateResults.success.params === false ||
-      validateResults.success.body === false
-    )
-      return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
 
     const dbResult = dsm.save(entityClass, targetEntity, options);
     return dbResult;
   }
+}
+
+/**
+ * Process Uploaded Image
+ * @param file Multer File
+ * @returns
+ */
+export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
+  // Define the desired location for the uploaded file
+  const uploadsDirectory = "/var/www/bulentgercek.com/uploads";
+  const uploadedFileName = Date.now() + path.extname(file.originalname);
+  const uploadedFilePath = path.join(uploadsDirectory, uploadedFileName);
+
+  // Move the uploaded file to the desired location
+  await new Promise<void>((resolve, reject) => {
+    fs.rename(file.path, uploadedFilePath, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+
+  // Construct the final URL for the image
+  const imageUrl = `https://bulentgercek.com/uploads/${uploadedFileName}`;
+
+  return imageUrl;
 }
