@@ -2,6 +2,7 @@ import { Router } from "express";
 import { In } from "typeorm";
 import { z } from "zod";
 import multer from "multer";
+import fs from "fs";
 import path from "path";
 
 import { ApiController as ac, processUploadedImage } from "../../apiController";
@@ -107,10 +108,21 @@ router.post("/", upload.single("url"), async (req, res) => {
 
   // Upload Image: If file given then upload image file and update url
   if (req.file) {
+    // Check if a file with the same name already exists in the uploads folder
+    const uploadsDirectory = process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads";
+    const targetFilePath = path.join(uploadsDirectory, req.file.originalname);
+
     // Process the uploaded image file
+    // Update the file if it has name
     const uploadedImageUrl = await processUploadedImage(req.file);
     // Update the 'url' property of the Asset entity with the final image URL
     createdAsset.url = uploadedImageUrl;
+
+    if (fs.existsSync(targetFilePath)) {
+      // If the file exists, sent updated response
+      // Dont add to db
+      return res.status(200).json({ message: "A file with the same name already exists. File updated." });
+    }
   }
 
   // Get Content
