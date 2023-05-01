@@ -13,6 +13,8 @@ portfolio site. The aim was to develop my programming culture by trying many tec
 full study by bringing together the methods that you find closest to my vision. In this sense, it is a very educational
 and developmental study.
 
+> :pushpin: This project currently on **Work In Progress** :memo:.
+
 **Website URL** : [https://bulentgercek.com](https://bulentgercek.com)
 
 [⬆Top](#0)
