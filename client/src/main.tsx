@@ -11,8 +11,11 @@ const RootComponent = () => {
       <div className={`p-12 font-medium`}>
         <h1>🚧 Under Construction 🚧</h1>
         <p>
-          Hello There! I'm currently working on developing my full-stack Node.js portfolio website. Please check back
-          soon to see the updates!
+          Hello There! I'm currently working on developing my full-stack Node.js portfolio website. You can follow this
+          project on{" "}
+          <a href="https://github.com/bulentgercek/bg-portfolio" target="_blank" rel="noopener noreferrer">
+            Github-{">"}bulentgercek/bg-portfolio.
+          </a>
         </p>
         <p>
           In the meantime, feel free to reach out to me on{" "}
