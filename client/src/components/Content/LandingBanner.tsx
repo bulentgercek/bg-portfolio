@@ -9,7 +9,6 @@ import AppContext from "../../AppContext";
 import { createStateCollection, createStateData } from ".";
 import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
-import { getCustomCSSVariables } from "../../utils/appUtils";
 import { createKey } from "../../utils/navigationUtils";
 
 // Create State
@@ -98,6 +97,14 @@ const stateCollection = createStateCollection(stateData, {
   },
 });
 
+// Content Sizes on CSS
+const contentCSSVariables = {
+  "--content-xl": 1200,
+  "--content-lg": 1015,
+  "--content-md": 895,
+  "--content-sm": 560,
+};
+
 /**
  * Landing Banner Component
  */
@@ -107,7 +114,7 @@ const LandingBanner: React.FC = () => {
 
   useEffect(() => {
     if (!contentSizeData) return;
-    const contentCSSVariables = getCustomCSSVariables("--content");
+
     const determineActiveState = (width: number) => {
       if (width < contentCSSVariables["--content-sm"]) return stateCollection.maxSm;
       if (width < contentCSSVariables["--content-md"]) return stateCollection.minSm;

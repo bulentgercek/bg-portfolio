@@ -25,39 +25,3 @@ export const getBreadcrumbs = (categories: Category[], currentCategory: Category
   }
   return parentTree;
 };
-
-/**
- * Get Custom CSS Variables
- * Author: ChatGPT 4.0
- * @param startingString string
- * @returns object CSSVar
- */
-
-type CSSVar = { [key: string]: number };
-
-export const getCustomCSSVariables = (startingString: string): CSSVar => {
-  const cssVars: CSSVar = {};
-
-  for (const styleSheet of Array.from(document.styleSheets)) {
-    const cssRules = (styleSheet as CSSStyleSheet).cssRules;
-
-    for (const cssRule of Array.from(cssRules)) {
-      if (cssRule instanceof CSSStyleRule) {
-        const styleRule = cssRule as CSSStyleRule;
-
-        if (styleRule.selectorText === ":root") {
-          for (const propertyName of Array.from(styleRule.style)) {
-            if (propertyName.startsWith(startingString)) {
-              const value = styleRule.style.getPropertyValue(propertyName).trim().split("px")[0];
-              cssVars[propertyName] = parseInt(value, 10);
-              // Alternatively, you can use the unary + operator:
-              // cssVars[propertyName] = +value;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return cssVars;
-};
