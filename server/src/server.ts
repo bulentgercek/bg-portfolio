@@ -35,10 +35,7 @@ server.get("/", (req, res) => {
 server.use("/api", api);
 
 // Static File Serving Access for Uploads
-server.use(
-  "/uploads",
-  express.static(path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/", "uploads")),
-);
+server.use("/uploads", express.static(path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads")));
 
 // Next middlewares for error handling and no route found
 server.use(errorHandler);

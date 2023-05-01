@@ -16,7 +16,7 @@ const router = Router();
  */
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/", "uploads"));
+    callback(null, path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads"));
   },
   filename: (req, file, callback) => {
     callback(null, `${file.originalname}`);

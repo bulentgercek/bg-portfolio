@@ -298,7 +298,7 @@ export namespace ApiController {
 export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
   // Define the desired location for the uploaded file
   const uploadsDirectory = process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads";
-  const uploadedFileName = Date.now() + path.extname(file.originalname);
+  const uploadedFileName = `${file.originalname.split(".")[0]}${path.extname(file.originalname)}`;
   const uploadedFilePath = path.join(uploadsDirectory, uploadedFileName);
 
   // Move the uploaded file to the desired location
