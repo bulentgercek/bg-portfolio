@@ -16,7 +16,7 @@ const router = Router();
  */
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, path.join("/var/www/bulentgercek.com/", "uploads"));
+    callback(null, path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/", "uploads"));
   },
   filename: (req, file, callback) => {
     callback(null, `${file.originalname}`);
@@ -71,7 +71,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Add Asset
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.single("url"), async (req, res) => {
   const ctxObj = ac.initContext({
     zInput: {
       body: z.object({

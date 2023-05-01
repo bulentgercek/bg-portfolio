@@ -297,7 +297,7 @@ export namespace ApiController {
  */
 export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
   // Define the desired location for the uploaded file
-  const uploadsDirectory = "/var/www/bulentgercek.com/uploads";
+  const uploadsDirectory = process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads";
   const uploadedFileName = Date.now() + path.extname(file.originalname);
   const uploadedFilePath = path.join(uploadsDirectory, uploadedFileName);
 
@@ -313,7 +313,8 @@ export async function processUploadedImage(file: Express.Multer.File): Promise<s
   });
 
   // Construct the final URL for the image
-  const imageUrl = `https://bulentgercek.com/uploads/${uploadedFileName}`;
+  const baseUrl = process.env.BASE_URL || "https://bulentgercek.com";
+  const imageUrl = `${baseUrl}/uploads/${uploadedFileName}`;
 
   return imageUrl;
 }
