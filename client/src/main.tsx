@@ -20,7 +20,7 @@ const RootComponent = () => {
             LinkedIn.
           </a>
         </p>
-        <p>Thank you for your patience!</p>
+        <p>Thank you for your visit!</p>
       </div>
     );
   } else {
