@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+
+import env from "./validEnv";
 import { Content } from "./entities/Content";
 import { Asset } from "./entities/Asset";
-import env from "./validEnv";
 import { Item } from "./entities/Item";
 import { Category } from "./entities/Category";
 import { Option } from "./entities/Option";

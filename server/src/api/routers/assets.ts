@@ -1,36 +1,24 @@
 import { Router } from "express";
 import { In } from "typeorm";
 import { z } from "zod";
-import multer from "multer";
 import fs from "fs";
 import path from "path";
 
-import { ApiController as ac, processUploadedImage } from "../../apiController";
+import env from "../../validEnv";
+import { ApiController as ac, deleteAssetFile, processUploadedImage } from "../../apiController";
 import { Asset, AssetType } from "../../entities/Asset";
 import { Content } from "../../entities/Content";
 import { filterObject } from "../../utils";
+import { consoleRouteError } from "../../errorHandler";
+import { multerUpload } from "../../multer";
 
 const router = Router();
 
-/**
- * Multer + Upload Setup
- */
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads"));
-  },
-  filename: (req, file, callback) => {
-    callback(null, `${file.originalname}`);
-  },
-});
-
-const upload = multer({ storage });
-
 // Get Assets
-router.get("/", async (req, res) => {
-  const validateResults = await ac.inputValidate();
-  const dbAssets = await ac
-    .findAll(Asset, validateResults, {
+router.get("/", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate();
+    const dbAssets = await ac.findAll(Asset, validateResults, {
       select: {
         contents: {
           id: true,
@@ -40,22 +28,25 @@ router.get("/", async (req, res) => {
       relations: {
         contents: true,
       },
-    })
-    .catch((err) => console.log(err));
+    });
 
-  res.json(dbAssets);
+    res.json(dbAssets);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
 });
 
 // Get Asset
-router.get("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
-    reqData: { params: req.params },
-  });
+router.get("/:id", async (req, res, next) => {
+  try {
+    const ctxObj = ac.initContext({
+      zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
+      reqData: { params: req.params },
+    });
 
-  const validateResults = await ac.inputValidate(ctxObj);
-  const dbAsset = await ac
-    .findOne(Asset, validateResults, {
+    const validateResults = await ac.inputValidate(ctxObj);
+    const dbAsset = await ac.findOne(Asset, validateResults, {
       select: {
         contents: {
           id: true,
@@ -65,164 +56,181 @@ router.get("/:id", async (req, res) => {
       relations: {
         contents: true,
       },
-    })
-    .catch((err) => console.log(err));
+    });
 
-  res.json(dbAsset);
+    res.json(dbAsset);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
 });
 
 // Add Asset
-router.post("/", upload.single("url"), async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      body: z.object({
-        name: z.string().optional(),
-        type: z.nativeEnum(AssetType).optional(),
-        text: z.string().optional(),
-        url: z
-          .string()
-          .url()
-          .optional()
-          .or(
-            z.object({
-              url: z.string().optional(),
-              imageFile: z.any(),
-            }),
-          ),
-        contents: z.array(z.number()).optional(),
-      }),
-    },
-    reqData: { body: req.body, file: req.file },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-
-  // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
-
-  // Filter out the relational inputs before updating dbContent
-  const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
-
-  // Create new Asset
-  const createdAsset = ac.create(Asset, filteredBody);
-
-  // Upload Image: If file given then upload image file and update url
-  if (req.file) {
-    // Check if a file with the same name already exists in the uploads folder
-    const uploadsDirectory = process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads";
-    const targetFilePath = path.join(uploadsDirectory, req.file.originalname);
-
-    // Process the uploaded image file
-    // Update the file if it has name
-    const uploadedImageUrl = await processUploadedImage(req.file);
-    // Update the 'url' property of the Asset entity with the final image URL
-    createdAsset.url = uploadedImageUrl;
-
-    if (fs.existsSync(targetFilePath)) {
-      // If the file exists, sent updated response
-      // Dont add to db
-      return res.status(200).json({ message: "A file with the same name already exists. File updated." });
-    }
-  }
-
-  // Get Content
-  if (validateResults.result.body.contents) {
-    const dbCategories = await ac.findAll(Content, validateResults, {
-      where: {
-        id: In(validateResults.result.body.contents),
+router.post("/", multerUpload.single("url"), async (req, res, next) => {
+  try {
+    const ctxObj = ac.initContext({
+      zInput: {
+        body: z.object({
+          name: z.string().optional(),
+          type: z.nativeEnum(AssetType).optional(),
+          text: z.string().optional(),
+          url: z.string().url().optional(),
+          contents: z.array(z.number()).optional(),
+        }),
       },
+      reqData: { body: req.body, file: req.file },
     });
 
-    // is validated?
-    if (Array.isArray(dbCategories)) {
-      createdAsset.contents = dbCategories;
+    const validateResults = await ac.inputValidate(ctxObj);
+
+    // Guard Clause for filtering Body
+    if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
+
+    // Filter out the relational inputs before updating dbContent
+    const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
+
+    // Create new Asset
+    const createdAsset = ac.create(Asset, filteredBody);
+
+    // Upload File
+    if (req.file) {
+      // If image already exist don't add to db
+      const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
+      const targetFilePath = path.join(uploadsDirectory, req.file.originalname);
+
+      if (fs.existsSync(targetFilePath)) {
+        return res.status(200).json({ message: "A file with the same name already exists. File updated." });
+      }
+
+      try {
+        // Process the uploaded image file and update the file if it has a name
+        const uploadedImageUrl = await processUploadedImage(req.file);
+        // Update the 'url' property of the Asset entity with the final image URL
+        createdAsset.url = uploadedImageUrl;
+      } catch (error) {
+        console.log("An error is occured while processing the image:", error);
+        return res.status(500).json({ message: "An error occured while processing the uploaded image." });
+      }
     }
+
+    // Get Content
+    if (validateResults.result.body.contents) {
+      const dbCategories = await ac.findAll(Content, validateResults, {
+        where: {
+          id: In(validateResults.result.body.contents),
+        },
+      });
+
+      // is validated?
+      if (Array.isArray(dbCategories)) {
+        createdAsset.contents = dbCategories;
+      }
+    }
+    throw Error("Database fucked up!");
+    const savedAsset = await ac.addCreated(Asset, validateResults, createdAsset).catch((err) => console.log(err));
+    res.json(savedAsset);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
   }
-
-  const savedAsset = await ac.addCreated(Asset, validateResults, createdAsset).catch((err) => console.log(err));
-
-  res.json(savedAsset);
 });
 
 // Update Asset
-router.put("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({ id: z.preprocess(Number, z.number()) }),
-      body: z.object({
-        name: z.string().optional(),
-        type: z.nativeEnum(AssetType).optional(),
-        url: z.string().url().optional(),
-        text: z.string().optional(),
-        contents: z.array(z.number()).optional(),
-      }),
-    },
-    reqData: { params: req.params, body: req.body },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-
-  // Get Asset
-  const dbAsset = await ac
-    .findOne(Asset, validateResults, {
-      where: {
-        id: validateResults.result.params?.id,
+router.put("/:id", async (req, res, next) => {
+  try {
+    const ctxObj = ac.initContext({
+      zInput: {
+        params: z.object({ id: z.preprocess(Number, z.number()) }),
+        body: z.object({
+          name: z.string().optional(),
+          type: z.nativeEnum(AssetType).optional(),
+          url: z.string().url().optional(),
+          text: z.string().optional(),
+          contents: z.array(z.number()).optional(),
+        }),
       },
-      relations: {
-        contents: true,
-      },
-    })
-    .catch((err) => console.log(err));
-
-  // Guard clause for Asset
-  if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
-
-  // Guard clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
-
-  // Filter out the relational inputs before create updatedAsset
-  const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
-
-  // Update values of dbAsset with filteredBody
-  const updatedAsset: Asset = {
-    ...dbAsset,
-    ...filteredBody,
-  };
-
-  // Add Contents
-  if (validateResults.result.body.contents) {
-    const dbContents = await ac.findAll(Content, validateResults, {
-      where: {
-        id: In(validateResults.result.body.contents),
-      },
+      reqData: { params: req.params, body: req.body },
     });
 
-    // is validated?
-    if (Array.isArray(dbContents)) updatedAsset.contents = dbContents;
+    const validateResults = await ac.inputValidate(ctxObj);
+
+    // Get Asset
+    const dbAsset = await ac
+      .findOne(Asset, validateResults, {
+        where: {
+          id: validateResults.result.params?.id,
+        },
+        relations: {
+          contents: true,
+        },
+      })
+      .catch((err) => console.log(err));
+
+    // Guard clause for Asset
+    if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
+
+    // Guard clause for filtering Body
+    if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
+
+    // Filter out the relational inputs before create updatedAsset
+    const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
+
+    // Update values of dbAsset with filteredBody
+    const updatedAsset: Asset = {
+      ...dbAsset,
+      ...filteredBody,
+    };
+
+    // Add Contents
+    if (validateResults.result.body.contents) {
+      const dbContents = await ac.findAll(Content, validateResults, {
+        where: {
+          id: In(validateResults.result.body.contents),
+        },
+      });
+
+      // is validated?
+      if (Array.isArray(dbContents)) updatedAsset.contents = dbContents;
+    }
+
+    const finalUpdatedAsset = await ac
+      .updateWithTarget(Asset, validateResults, updatedAsset)
+      .catch((err) => console.log(err));
+
+    res.json(finalUpdatedAsset);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
   }
-
-  const finalUpdatedAsset = await ac
-    .updateWithTarget(Asset, validateResults, updatedAsset)
-    .catch((err) => console.log(err));
-
-  res.json(finalUpdatedAsset);
 });
 
 // Remove Asset
-router.delete("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        id: z.preprocess(Number, z.number()),
-      }),
-    },
-    reqData: { params: req.params },
-  });
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const ctxObj = ac.initContext({
+      zInput: {
+        params: z.object({
+          id: z.preprocess(Number, z.number()),
+        }),
+      },
+      reqData: { params: req.params },
+    });
 
-  const validateResults = await ac.inputValidate(ctxObj);
-  const removedAsset = await ac.remove(Asset, validateResults).catch((err) => console.log(err));
+    const validateResults = await ac.inputValidate(ctxObj);
+    const dbAsset = await ac.findOne(Asset, validateResults);
 
-  res.json(removedAsset);
+    if (dbAsset instanceof Asset) {
+      // Delete the asset file if it exists and has the same domain name as our server
+      await deleteAssetFile(dbAsset.url, "bulentgercek.com");
+    }
+
+    const removedAsset = await ac.remove(Asset, validateResults);
+
+    res.json(removedAsset);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
 });
 
 export { router as assetRouter };

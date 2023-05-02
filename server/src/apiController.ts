@@ -8,27 +8,27 @@ import {
   DeepPartial,
 } from "typeorm";
 import { z } from "zod";
-import { dsm } from "./connections";
-
-import fs from "fs";
+import { promises as fsPromises } from "fs";
 import path from "path";
-import { Request } from "express";
+
+import env from "./validEnv";
+import { dsm } from "./connections";
 
 export namespace ApiController {
   /**
    * Context Object for Zod Input and Request Data (params or body) Server
    */
-  type CtxObj<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny, TFile extends z.ZodTypeAny> = {
-    zInput: { params?: TParams; body?: TBody; file?: TFile };
+  type CtxObj<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny> = {
+    zInput: { params?: TParams; body?: TBody };
     reqData: { params?: Object; body?: Object; file?: Object };
   };
 
   /**
    * Output object for inputValidate function
    */
-  export type ValidateResults<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny, TFile extends z.ZodTypeAny> = {
+  export type ValidateResults<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny> = {
     success: { params?: Boolean; body?: Boolean; file?: boolean };
-    result: { params?: z.TypeOf<TParams>; body?: z.TypeOf<TBody>; file?: z.TypeOf<TFile> };
+    result: { params?: z.TypeOf<TParams>; body?: z.TypeOf<TBody> };
   };
 
   /**
@@ -36,8 +36,8 @@ export namespace ApiController {
    * @param ctxObj Context Object
    * @returns CtxObj<TParams, TBody>
    */
-  export function initContext<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny, TFile extends z.ZodTypeAny>(
-    ctxObj: CtxObj<TParams, TBody, TFile>,
+  export function initContext<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+    ctxObj: CtxObj<TParams, TBody>,
   ) {
     return ctxObj;
   }
@@ -47,13 +47,11 @@ export namespace ApiController {
    * @param ctxObj Context Object
    * @returns Promise<ValidateResults<TParams, TBody>>
    */
-  export async function inputValidate<
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(ctxObj?: CtxObj<TParams, TBody, TFile>) {
+  export async function inputValidate<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+    ctxObj?: CtxObj<TParams, TBody>,
+  ) {
     // Create success and result properties
-    const validatedFinal: ValidateResults<TParams, TBody, TFile> = {
+    const validatedFinal: ValidateResults<TParams, TBody> = {
       success: {},
       result: {},
     };
@@ -62,7 +60,6 @@ export namespace ApiController {
     if (!ctxObj) {
       validatedFinal.success.params = true;
       validatedFinal.result.body = true;
-      validatedFinal.result.file = true;
       return Promise.resolve(validatedFinal);
     }
 
@@ -76,7 +73,7 @@ export namespace ApiController {
       process.exit(1);
     }
 
-    // Create and
+    // Create and ...
     if (ctxObj.zInput.params) {
       type InputType = z.infer<typeof ctxObj.zInput.params>;
       const validated: InputType = await ctxObj.zInput.params.safeParseAsync(ctxObj.reqData.params);
@@ -89,13 +86,6 @@ export namespace ApiController {
       const validated: InputType = await ctxObj.zInput.body.safeParseAsync(ctxObj.reqData.body);
       validatedFinal.success.body = validated.success;
       validatedFinal.result.body = validated.success ? validated.data : validated.error;
-    }
-
-    if (ctxObj.zInput.file) {
-      type InputType = z.infer<typeof ctxObj.zInput.file>;
-      const validated: InputType = await ctxObj.zInput.file.safeParseAsync(ctxObj.reqData.file);
-      validatedFinal.success.file = validated.success;
-      validatedFinal.result.file = validated.success ? validated.data : validated.error;
     }
 
     // check if the 'validatedFinal' object is undefined
@@ -121,21 +111,17 @@ export namespace ApiController {
    * @param options TypeORM Options (FindManyOptions)
    * @returns Promise<ValidateResults<TParams, TBody> | Entity[]
    */
-  export async function findAll<
-    Entity extends ObjectLiteral,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(
+  export async function findAll<Entity extends ObjectLiteral, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody, TFile>,
+    validateResults: ValidateResults<TParams, TBody>,
     options?: FindManyOptions<Entity>,
   ) {
-    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false)
+      return { validateResults, dbData: [] };
 
     const dbResult = await dsm.find(entityClass, options);
 
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 
   /**
@@ -145,18 +131,13 @@ export namespace ApiController {
    * @param options TypeORM Options (FindOneOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody> | null>
    */
-  export async function findOne<
-    Entity extends ObjectLiteral,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(
+  export async function findOne<Entity extends ObjectLiteral, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody, TFile>,
+    validateResults: ValidateResults<TParams, TBody>,
     options?: FindOneOptions<Entity>,
   ) {
     if (validateResults.success.params === false || validateResults.success.body === false) {
-      return validateResults;
+      return { validateResults, dbData: {} as Entity };
     }
 
     // Add id from validated results to the find options if there is nowhere
@@ -169,7 +150,7 @@ export namespace ApiController {
     }
 
     const dbResult: Promise<Entity | null> = await dsm.findOne(entityClass, options).catch((e) => e);
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 
   /**
@@ -180,21 +161,17 @@ export namespace ApiController {
    * @param options? TypeORM Options (SaveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
-  export async function addCreated<
-    Entity,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(
+  export async function addCreated<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody, TFile>,
+    validateResults: ValidateResults<TParams, TBody>,
     entity: Entity,
     options?: SaveOptions,
   ) {
-    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false)
+      return { validateResults, dbData: {} as Entity };
 
     const dbResult = dsm.save(entityClass, entity, options);
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 
   /**
@@ -205,17 +182,17 @@ export namespace ApiController {
    * @param options? TypeORM Options (SaveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
-  export async function addWithCreate<
-    Entity,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(entityClass: EntityTarget<Entity>, validateResults: ValidateResults<TParams, TBody, TFile>, options?: SaveOptions) {
-    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
+  export async function addWithCreate<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+    entityClass: EntityTarget<Entity>,
+    validateResults: ValidateResults<TParams, TBody>,
+    options?: SaveOptions,
+  ) {
+    if (validateResults.success.params === false || validateResults.success.body === false)
+      return { validateResults, dbData: {} as Entity };
 
     const newItem = dsm.create(entityClass, validateResults.result.body);
     const dbResult = dsm.save(entityClass, newItem, options);
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 
   /**
@@ -225,21 +202,17 @@ export namespace ApiController {
    * @param options? TypeORM Options (RemoveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody> | undefined>
    */
-  export async function remove<
-    Entity,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(
+  export async function remove<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     targetOrEntity: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody, TFile>,
+    validateResults: ValidateResults<TParams, TBody>,
     options?: RemoveOptions,
   ) {
-    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false)
+      return { validateResults, dbData: {} as Entity };
 
     const dbResult = dsm.remove(targetOrEntity, validateResults.result.params, options);
 
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 
   /**
@@ -249,19 +222,19 @@ export namespace ApiController {
    * @param options? TypeORM Options (SaveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
-  export async function update<
-    Entity,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(entityClass: EntityTarget<Entity>, validateResults: ValidateResults<TParams, TBody, TFile>, options?: SaveOptions) {
-    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
+  export async function update<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+    entityClass: EntityTarget<Entity>,
+    validateResults: ValidateResults<TParams, TBody>,
+    options?: SaveOptions,
+  ) {
+    if (validateResults.success.params === false || validateResults.success.body === false)
+      return { validateResults, dbData: {} as Entity };
 
     // Save needs id, so adding params to body
     const targetEntity: Entity = Object.assign({}, validateResults.result.params, validateResults.result.body);
 
     const dbResult = dsm.save(entityClass, targetEntity, options);
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 
   /**
@@ -272,49 +245,67 @@ export namespace ApiController {
    * @param options? TypeORM Options (SaveOptions)
    * @returns Promise<Entity | ValidateResults<TParams, TBody>>
    */
-  export async function updateWithTarget<
-    Entity,
-    TParams extends z.ZodTypeAny,
-    TBody extends z.ZodTypeAny,
-    TFile extends z.ZodTypeAny,
-  >(
+  export async function updateWithTarget<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody, TFile>,
+    validateResults: ValidateResults<TParams, TBody>,
     targetEntity: DeepPartial<Entity>,
     options?: SaveOptions,
   ) {
-    if (validateResults.success.params === false || validateResults.success.body === false) return validateResults;
+    if (validateResults.success.params === false || validateResults.success.body === false)
+      return { validateResults, dbData: {} as Entity };
 
     const dbResult = dsm.save(entityClass, targetEntity, options);
-    return dbResult;
+    return { validateResults, dbData: dbResult };
   }
 }
 
 /**
  * Process Uploaded Image
  * @param file Multer File
- * @returns
+ * @returns string
  */
 export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
-  // Define the desired location for the uploaded file
-  const uploadsDirectory = process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads";
-  const uploadedFileName = `${file.originalname.split(".")[0]}${path.extname(file.originalname)}`;
-  const uploadedFilePath = path.join(uploadsDirectory, uploadedFileName);
+  // Define new file path for uploaded file
+  const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
+  const uploadedFileName = file.originalname;
+  const multerFilePath = file.path;
+  const newFilePath = path.join(uploadsDirectory, uploadedFileName);
 
-  // Move the uploaded file to the desired location
-  await new Promise<void>((resolve, reject) => {
-    fs.rename(file.path, uploadedFilePath, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  // Move file to new file path
+  try {
+    await fsPromises.rename(multerFilePath, newFilePath);
+    console.log("File moved to new location successfully");
+  } catch (error) {
+    console.error({ message: error });
+    throw error;
+  }
 
   // Construct the final URL for the image
-  const baseUrl = process.env.BASE_URL || "https://bulentgercek.com";
-  const imageUrl = `${baseUrl}/uploads/${uploadedFileName}`;
+  const imageUrl = `${env.SERVER_URL}/uploads/${uploadedFileName}`;
 
   return imageUrl;
+}
+
+/**
+ * Helper function to delete the asset file
+ * @param assetUrl
+ * @param serverDomain
+ */
+export async function deleteAssetFile(assetUrl: string, serverDomain: string) {
+  const url = new URL(assetUrl);
+
+  if (url.hostname === serverDomain) {
+    const filePath = path.join(
+      process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads",
+      path.basename(url.pathname || ""),
+    );
+
+    try {
+      await fsPromises.unlink(filePath);
+      console.log(`Deleted file: ${filePath}`);
+    } catch (error) {
+      console.error(`Failed to delete file: ${filePath}`, error);
+      throw error;
+    }
+  }
 }

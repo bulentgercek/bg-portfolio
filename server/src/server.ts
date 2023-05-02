@@ -1,30 +1,30 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import path from "path";
 
+import env from "./validEnv";
 import api from "./api";
 import { errorHandler, noRouteFound } from "./errorHandler";
-import path from "path";
 
 /**
  *  Server initialization and configuration
  */
 const server = express();
 
+// Helmet for security
 server.use(helmet());
 
-// Increase the body size limit
+// Static File Serving Access for Uploads
+server.use("/uploads", express.static(path.join(env.UPLOADS_BASE_PATH, "uploads")));
+
+// Cors Origin for Client Access
+server.use(cors({ origin: env.CLIENT_URL }));
+
+// Set Body size limit for file uploads
 server.use(express.json({ limit: "10mb" }));
 
-// Define CORS options based on the environment
-const corsOptions =
-  process.env.NODE_ENV === "production" ? { origin: "https://bulentgercek.com" } : { origin: "http://localhost:5173" };
-
-console.log("Current CORS configuration:", corsOptions); // Log the current CORS configuration
-
-server.use(cors(corsOptions));
-server.use(express.json());
-
+// Base Route Response
 server.get("/", (req, res) => {
   res.json({
     message: "Welcome to the BG Portfolio Server ;)",
@@ -33,9 +33,6 @@ server.get("/", (req, res) => {
 
 // Api Router
 server.use("/api", api);
-
-// Static File Serving Access for Uploads
-server.use("/uploads", express.static(path.join(process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads")));
 
 // Next middlewares for error handling and no route found
 server.use(errorHandler);

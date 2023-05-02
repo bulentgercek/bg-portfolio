@@ -1,4 +1,5 @@
-import express, { NextFunction } from "express";
+import express from "express";
+
 import { assetRouter } from "./routers/assets";
 import { contentRouter } from "./routers/contents";
 import { categoryRouter } from "./routers/categories";

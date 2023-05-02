@@ -4,6 +4,23 @@
  * These Types/Interfaces are the identical versions of
  * Api outputs for Api endpoints
  */
+
+/**
+ * Api response object type
+ */
+export type ApiResponse<ValidateResults, TData> = {
+  validateResults: ValidateResults;
+  dbData: TData;
+};
+
+/**
+ * Output object for inputValidate function
+ */
+export type ValidateResults = {
+  success: { params?: Boolean; body?: Boolean; file?: boolean };
+  result: { params?: {}; body?: {} };
+};
+
 /**
  * Assets
  */
