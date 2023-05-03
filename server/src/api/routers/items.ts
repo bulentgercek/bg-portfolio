@@ -12,9 +12,8 @@ const router = Router();
 
 // Get Items
 router.get("/", async (req, res) => {
-  const validateResults = await ac.inputValidate();
   const dbItems = await ac
-    .findAll(Item, validateResults, {
+    .findAll(Item, {
       select: {
         featuredImageAsset: {
           id: true,
@@ -65,39 +64,37 @@ router.get("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbPortfolioItem = await ac
-    .findOne(Item, validateResults, {
-      select: {
-        featuredImageAsset: {
+  const dbPortfolioItem = await ac.findOne(Item, validateResults, {
+    select: {
+      featuredImageAsset: {
+        id: true,
+        name: true,
+        url: true,
+      },
+      categories: {
+        id: true,
+        name: true,
+        parentCategory: {
           id: true,
           name: true,
-          url: true,
         },
-        categories: {
+        childCategories: {
           id: true,
           name: true,
-          parentCategory: {
-            id: true,
-            name: true,
-          },
-          childCategories: {
-            id: true,
-            name: true,
-          },
         },
       },
-      relations: {
-        featuredImageAsset: true,
-        categories: {
-          parentCategory: true,
-          childCategories: true,
-        },
-        contents: {
-          assets: true,
-        },
+    },
+    relations: {
+      featuredImageAsset: true,
+      categories: {
+        parentCategory: true,
+        childCategories: true,
       },
-    })
-    .catch((err) => console.log(err));
+      contents: {
+        assets: true,
+      },
+    },
+  });
 
   res.json(dbPortfolioItem);
 });
@@ -110,18 +107,16 @@ router.get("/:id/contents", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbContents = await ac
-    .findAll(Content, validateResults, {
-      where: {
-        item: {
-          id: validateResults.result.params?.id,
-        },
+  const dbContents = await ac.findAll(Content, {
+    where: {
+      item: {
+        id: validateResults.result.params?.id,
       },
-      relations: {
-        assets: true,
-      },
-    })
-    .catch((err) => console.log(err));
+    },
+    relations: {
+      assets: true,
+    },
+  });
 
   res.json(dbContents);
 });
@@ -139,19 +134,17 @@ router.get("/:id/contents/:cid", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbContent = await ac
-    .findOne(Content, validateResults, {
-      where: {
-        id: validateResults.result.params?.cid,
-        item: {
-          id: validateResults.result.params?.id,
-        },
+  const dbContent = await ac.findOne(Content, validateResults, {
+    where: {
+      id: validateResults.result.params?.cid,
+      item: {
+        id: validateResults.result.params?.id,
       },
-      relations: {
-        assets: true,
-      },
-    })
-    .catch((err) => console.log(err));
+    },
+    relations: {
+      assets: true,
+    },
+  });
 
   res.json(dbContent);
 });
@@ -175,48 +168,39 @@ router.post("/", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Guard clause
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create
-  const filteredBody = filterObject(
-    validateResults.result.body,
-    "featuredImageAsset",
-    "categories",
-  );
+  const filteredBody = filterObject(validateResults.result.body, "featuredImageAsset", "categories");
 
   // Create new Item
   const createdItem = ac.create(Item, filteredBody);
 
   // Add featured image Asset
   if (validateResults.result.body.featuredImageAsset) {
-    const dbAsset = await ac
-      .findOne(Asset, validateResults, {
-        where: {
-          id: validateResults.result.body.featuredImageAsset,
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbAsset = await ac.findOne(Asset, validateResults, {
+      where: {
+        id: validateResults.result.body.featuredImageAsset,
+      },
+    });
 
     // is validated? is AssetType.Image?
-    if (dbAsset instanceof Asset && dbAsset.type === AssetType.Image) {
-      createdItem.featuredImageAsset = dbAsset;
+    if (dbAsset.dbData instanceof Asset && dbAsset.dbData.type === AssetType.Image) {
+      createdItem.featuredImageAsset = dbAsset.dbData;
     }
   }
 
   // Add Categories
   if (validateResults.result.body.categories) {
-    const dbCategories = await ac
-      .findAll(Category, validateResults, {
-        where: {
-          id: In(validateResults.result.body.categories),
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbCategories = await ac.findAll(Category, {
+      where: {
+        id: In(validateResults.result.body.categories),
+      },
+    });
 
     // is validated?
-    if (Array.isArray(dbCategories)) {
-      createdItem.categories = dbCategories;
+    if (Array.isArray(dbCategories.dbData)) {
+      createdItem.categories = dbCategories.dbData;
     }
   }
 
@@ -253,98 +237,86 @@ router.put("/:id", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Get Item
-  const dbItem = await ac
-    .findOne(Item, validateResults, {
-      select: {
-        featuredImageAsset: {
+  const dbItem = await ac.findOne(Item, validateResults, {
+    select: {
+      featuredImageAsset: {
+        id: true,
+        name: true,
+        url: true,
+      },
+      categories: {
+        id: true,
+        name: true,
+        parentCategory: {
           id: true,
           name: true,
-          url: true,
         },
-        categories: {
+        childCategories: {
           id: true,
           name: true,
-          parentCategory: {
-            id: true,
-            name: true,
-          },
-          childCategories: {
-            id: true,
-            name: true,
-          },
         },
       },
-      where: {
-        id: validateResults.result.params?.id,
+    },
+    where: {
+      id: validateResults.result.params?.id,
+    },
+    relations: {
+      featuredImageAsset: true,
+      categories: {
+        parentCategory: true,
+        childCategories: true,
       },
-      relations: {
-        featuredImageAsset: true,
-        categories: {
-          parentCategory: true,
-          childCategories: true,
-        },
-        contents: {
-          assets: true,
-        },
+      contents: {
+        assets: true,
       },
-    })
-    .catch((err) => console.log(err));
+    },
+  });
 
   // Guard clause for Item
-  if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
+  if (!(dbItem.dbData instanceof Item)) return res.status(400).json(validateResults);
 
   // Guard clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before create updatedItem
-  const filteredBody: Partial<Item> = filterObject(
-    validateResults.result.body,
-    "featuredImageAsset",
-    "categories",
-  );
+  const filteredBody: Partial<Item> = filterObject(validateResults.result.body, "featuredImageAsset", "categories");
 
   // Update values of dbItem with filteredBody
   const updatedItem: Item = {
-    ...dbItem,
+    ...dbItem.dbData,
     ...filteredBody,
   };
 
   // Add featured image Asset
   if (validateResults.result.body.featuredImageAsset) {
-    const dbAsset = await ac
-      .findOne(Asset, validateResults, {
-        where: {
-          id: validateResults.result.body.featuredImageAsset,
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbAsset = await ac.findOne(Asset, validateResults, {
+      where: {
+        id: validateResults.result.body.featuredImageAsset,
+      },
+    });
 
     // is validated? is AssetType.Image?
-    if (dbAsset instanceof Asset && dbAsset.type === AssetType.Image) {
-      updatedItem.featuredImageAsset = dbAsset;
+    if (dbAsset.dbData instanceof Asset && dbAsset.dbData.type === AssetType.Image) {
+      updatedItem.featuredImageAsset = dbAsset.dbData;
     }
   }
 
   // Is featuredImageAsset required to be null?
-  if (validateResults.result.body.featuredImageAsset === null)
-    updatedItem.featuredImageAsset = null;
+  if (validateResults.result.body.featuredImageAsset === null) updatedItem.featuredImageAsset = null;
 
   // Add Categories
   if (validateResults.result.body.categories) {
-    const dbCategories = await ac.findAll(Category, validateResults, {
+    const dbCategories = await ac.findAll(Category, {
       where: {
         id: In(validateResults.result.body.categories),
       },
     });
 
     // is validated?
-    if (Array.isArray(dbCategories)) updatedItem.categories = dbCategories;
+    if (Array.isArray(dbCategories.dbData)) updatedItem.categories = dbCategories.dbData;
   }
 
-  const finalUpdatedItem = await ac
-    .updateWithTarget(Item, validateResults, updatedItem)
-    .catch((err) => console.log(err));
+  const finalUpdatedItem = await ac.updateWithTarget(Item, validateResults, updatedItem);
 
   res.json(finalUpdatedItem);
 });
@@ -363,7 +335,7 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const removedItem = await ac.remove(Item, validateResults).catch((err) => console.log(err));
+  const removedItem = await ac.remove(Item, validateResults);
 
   res.json(removedItem);
 });

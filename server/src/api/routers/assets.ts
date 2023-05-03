@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 
 import env from "../../validEnv";
-import { ApiController as ac, deleteAssetFile, processUploadedImage } from "../../apiController";
+import { ApiController as ac } from "../../apiController";
 import { Asset, AssetType } from "../../entities/Asset";
 import { Content } from "../../entities/Content";
 import { filterObject } from "../../utils";
@@ -17,8 +17,7 @@ const router = Router();
 // Get Assets
 router.get("/", async (req, res, next) => {
   try {
-    const validateResults = await ac.inputValidate();
-    const dbAssets = await ac.findAll(Asset, validateResults, {
+    const dbAssets = await ac.findAll(Asset, {
       select: {
         contents: {
           id: true,
@@ -104,9 +103,10 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
 
       try {
         // Process the uploaded image file and update the file if it has a name
-        const uploadedImageUrl = await processUploadedImage(req.file);
+        const uploadedImageUrl = await ac.processUploadedImage(req.file);
         // Update the 'url' property of the Asset entity with the final image URL
         createdAsset.url = uploadedImageUrl;
+        validateResults.success.file = true;
       } catch (error) {
         console.log("An error is occured while processing the image:", error);
         return res.status(500).json({ message: "An error occured while processing the uploaded image." });
@@ -115,19 +115,18 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
 
     // Get Content
     if (validateResults.result.body.contents) {
-      const dbCategories = await ac.findAll(Content, validateResults, {
+      const dbCategories = await ac.findAll(Content, {
         where: {
           id: In(validateResults.result.body.contents),
         },
       });
 
       // is validated?
-      if (Array.isArray(dbCategories)) {
-        createdAsset.contents = dbCategories;
+      if (Array.isArray(dbCategories.dbData)) {
+        createdAsset.contents = dbCategories.dbData;
       }
     }
-    throw Error("Database fucked up!");
-    const savedAsset = await ac.addCreated(Asset, validateResults, createdAsset).catch((err) => console.log(err));
+    const savedAsset = await ac.addCreated(Asset, validateResults, createdAsset);
     res.json(savedAsset);
   } catch (error) {
     consoleRouteError(error, req);
@@ -155,19 +154,17 @@ router.put("/:id", async (req, res, next) => {
     const validateResults = await ac.inputValidate(ctxObj);
 
     // Get Asset
-    const dbAsset = await ac
-      .findOne(Asset, validateResults, {
-        where: {
-          id: validateResults.result.params?.id,
-        },
-        relations: {
-          contents: true,
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbAsset = await ac.findOne(Asset, validateResults, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      relations: {
+        contents: true,
+      },
+    });
 
     // Guard clause for Asset
-    if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
+    if (!(dbAsset.dbData instanceof Asset)) return res.status(400).json(dbAsset);
 
     // Guard clause for filtering Body
     if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
@@ -177,26 +174,23 @@ router.put("/:id", async (req, res, next) => {
 
     // Update values of dbAsset with filteredBody
     const updatedAsset: Asset = {
-      ...dbAsset,
+      ...dbAsset.dbData,
       ...filteredBody,
     };
 
     // Add Contents
     if (validateResults.result.body.contents) {
-      const dbContents = await ac.findAll(Content, validateResults, {
+      const dbContents = await ac.findAll(Content, {
         where: {
           id: In(validateResults.result.body.contents),
         },
       });
 
       // is validated?
-      if (Array.isArray(dbContents)) updatedAsset.contents = dbContents;
+      if (Array.isArray(dbContents.dbData)) updatedAsset.contents = dbContents.dbData;
     }
 
-    const finalUpdatedAsset = await ac
-      .updateWithTarget(Asset, validateResults, updatedAsset)
-      .catch((err) => console.log(err));
-
+    const finalUpdatedAsset = await ac.updateWithTarget(Asset, validateResults, updatedAsset);
     res.json(finalUpdatedAsset);
   } catch (error) {
     consoleRouteError(error, req);
@@ -219,13 +213,12 @@ router.delete("/:id", async (req, res, next) => {
     const validateResults = await ac.inputValidate(ctxObj);
     const dbAsset = await ac.findOne(Asset, validateResults);
 
-    if (dbAsset instanceof Asset) {
+    if (dbAsset.dbData instanceof Asset) {
       // Delete the asset file if it exists and has the same domain name as our server
-      await deleteAssetFile(dbAsset.url, "bulentgercek.com");
+      await ac.deleteAssetFile(dbAsset.dbData.url);
     }
 
     const removedAsset = await ac.remove(Asset, validateResults);
-
     res.json(removedAsset);
   } catch (error) {
     consoleRouteError(error, req);

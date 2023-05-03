@@ -13,6 +13,7 @@ import path from "path";
 
 import env from "./validEnv";
 import { dsm } from "./connections";
+import { exit } from "process";
 
 export namespace ApiController {
   /**
@@ -48,30 +49,13 @@ export namespace ApiController {
    * @returns Promise<ValidateResults<TParams, TBody>>
    */
   export async function inputValidate<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
-    ctxObj?: CtxObj<TParams, TBody>,
-  ) {
+    ctxObj: CtxObj<TParams, TBody>,
+  ): Promise<ValidateResults<TParams, TBody>> {
     // Create success and result properties
     const validatedFinal: ValidateResults<TParams, TBody> = {
       success: {},
       result: {},
     };
-
-    // if ctxObj not given so return true
-    if (!ctxObj) {
-      validatedFinal.success.params = true;
-      validatedFinal.result.body = true;
-      return Promise.resolve(validatedFinal);
-    }
-
-    // Check the input vs params and input vs body for throwing error
-    if (ctxObj.zInput.params && !ctxObj.reqData.params) {
-      console.error("ERROR: Params defined for Zod but no params found in reqData. Check initContext definition.");
-      process.exit(1);
-    }
-    if (ctxObj.zInput.body && !ctxObj.reqData.body) {
-      console.error("ERROR: Body defined for Zod but no body found in reqData. Check initContext definition.");
-      process.exit(1);
-    }
 
     // Create and ...
     if (ctxObj.zInput.params) {
@@ -113,11 +97,9 @@ export namespace ApiController {
    */
   export async function findAll<Entity extends ObjectLiteral, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
     options?: FindManyOptions<Entity>,
   ) {
-    if (validateResults.success.params === false || validateResults.success.body === false)
-      return { validateResults, dbData: [] };
+    const validateResults: ValidateResults<TParams, TBody> = { success: {}, result: {} };
 
     const dbResult = await dsm.find(entityClass, options);
 
@@ -257,55 +239,53 @@ export namespace ApiController {
     const dbResult = dsm.save(entityClass, targetEntity, options);
     return { validateResults, dbData: dbResult };
   }
-}
 
-/**
- * Process Uploaded Image
- * @param file Multer File
- * @returns string
- */
-export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
-  // Define new file path for uploaded file
-  const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
-  const uploadedFileName = file.originalname;
-  const multerFilePath = file.path;
-  const newFilePath = path.join(uploadsDirectory, uploadedFileName);
+  /**
+   * Process Uploaded Image
+   * @param file Multer File
+   * @returns string
+   */
+  export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
+    // Define new file path for uploaded file
+    const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
+    const uploadedFileName = file.originalname;
+    const multerFilePath = file.path;
+    const newFilePath = path.join(uploadsDirectory, uploadedFileName);
 
-  // Move file to new file path
-  try {
-    await fsPromises.rename(multerFilePath, newFilePath);
-    console.log("File moved to new location successfully");
-  } catch (error) {
-    console.error({ message: error });
-    throw error;
+    // Move file to new file path
+    try {
+      await fsPromises.rename(multerFilePath, newFilePath);
+      console.log("File moved to new location successfully");
+    } catch (error) {
+      console.error({ message: error });
+      throw error;
+    }
+
+    // Construct the final URL for the image
+    const imageUrl = `${env.SERVER_URL}/uploads/${uploadedFileName}`;
+
+    return imageUrl;
   }
 
-  // Construct the final URL for the image
-  const imageUrl = `${env.SERVER_URL}/uploads/${uploadedFileName}`;
+  /**
+   * Helper function to delete the asset file
+   * @param assetUrl
+   * @param serverDomain
+   */
+  export async function deleteAssetFile(assetUrl: string) {
+    const url = new URL(assetUrl);
 
-  return imageUrl;
-}
+    if (url.origin === env.SERVER_URL) {
+      const filePath = path.join(env.UPLOADS_BASE_PATH, "uploads", path.basename(url.pathname || ""));
+      console.log(filePath);
 
-/**
- * Helper function to delete the asset file
- * @param assetUrl
- * @param serverDomain
- */
-export async function deleteAssetFile(assetUrl: string, serverDomain: string) {
-  const url = new URL(assetUrl);
-
-  if (url.hostname === serverDomain) {
-    const filePath = path.join(
-      process.env.UPLOADS_BASE_PATH || "/var/www/bulentgercek.com/uploads",
-      path.basename(url.pathname || ""),
-    );
-
-    try {
-      await fsPromises.unlink(filePath);
-      console.log(`Deleted file: ${filePath}`);
-    } catch (error) {
-      console.error(`Failed to delete file: ${filePath}`, error);
-      throw error;
+      try {
+        await fsPromises.unlink(filePath);
+        console.log(`Deleted file: ${filePath}`);
+      } catch (error) {
+        console.error(`Failed to delete file: ${filePath}`, error);
+        throw error;
+      }
     }
   }
 }

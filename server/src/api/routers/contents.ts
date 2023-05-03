@@ -11,9 +11,8 @@ const router = Router();
 
 // Get Contents
 router.get("/", async (req, res) => {
-  const validateResults = await ac.inputValidate();
   const dbContents = await ac
-    .findAll(Content, validateResults, {
+    .findAll(Content, {
       select: {
         item: {
           id: true,
@@ -73,52 +72,40 @@ router.post("/", async (req, res) => {
 
   const validateResults = await ac.inputValidate(ctxObj);
 
-  const dbItem = await ac
-    .findOne(Item, validateResults, {
-      where: {
-        id: validateResults.result.body?.item,
-      },
-    })
-    .catch((err) => console.log(err));
+  const dbItem = await ac.findOne(Item, validateResults, {
+    where: {
+      id: validateResults.result.body?.item,
+    },
+  });
 
-  if (!(dbItem instanceof Item)) return res.status(400).json(validateResults);
+  if (!(dbItem.dbData instanceof Item)) return res.status(400).json(validateResults);
 
   // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before updating dbContent
-  const filteredBody = filterObject(
-    validateResults.result.body,
-    "item",
-    "assets",
-  );
+  const filteredBody = filterObject(validateResults.result.body, "item", "assets");
 
   const createdContent = ac.create(Content, filteredBody);
 
   // Add Item to Created Content
-  createdContent.item = dbItem;
+  createdContent.item = dbItem.dbData;
 
   // Add Assets to Created Content
   if (validateResults.result.body.assets) {
-    const dbAssets = await ac
-      .findAll(Asset, validateResults, {
-        where: {
-          id: In(validateResults.result.body.assets),
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbAssets = await ac.findAll(Asset, {
+      where: {
+        id: In(validateResults.result.body.assets),
+      },
+    });
 
     // is validated?
-    if (Array.isArray(dbAssets)) {
-      createdContent.assets = dbAssets;
+    if (Array.isArray(dbAssets.dbData)) {
+      createdContent.assets = dbAssets.dbData;
     }
   }
 
-  const savedContent = await ac
-    .addCreated(Content, validateResults, createdContent)
-    .catch((err) => console.log(err));
-
+  const savedContent = await ac.addCreated(Content, validateResults, createdContent);
   res.json(savedContent);
 });
 
@@ -146,65 +133,51 @@ router.put("/:id", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Get Content
-  const dbContent = await ac
-    .findOne(Content, validateResults, {
-      select: {
-        item: {
-          id: true,
-          name: true,
-        },
+  const dbContent = await ac.findOne(Content, validateResults, {
+    select: {
+      item: {
+        id: true,
+        name: true,
       },
-      relations: { item: true, assets: true },
-    })
-    .catch((err) => console.log(err));
+    },
+    relations: { item: true, assets: true },
+  });
 
-  if (!(dbContent instanceof Content))
-    return res.status(400).json(validateResults);
+  if (!(dbContent.dbData instanceof Content)) return res.status(400).json(validateResults);
 
   // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body)
-    return res.status(400).json(validateResults);
+  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
 
   // Filter out the relational inputs before updating dbContent
-  const filteredBody: Partial<Content> = filterObject(
-    validateResults.result.body,
-    "item",
-    "assets",
-  );
+  const filteredBody: Partial<Content> = filterObject(validateResults.result.body, "item", "assets");
 
   // Update values of dbContent with filteredBody by creating new Content
-  const updatedContent: Content = { ...dbContent, ...filteredBody };
+  const updatedContent: Content = { ...dbContent.dbData, ...filteredBody };
 
   // Get Item
   if (validateResults.result.body.item) {
-    const dbItem = await ac
-      .findOne(Item, validateResults, {
-        where: {
-          id: validateResults.result.body?.item,
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbItem = await ac.findOne(Item, validateResults, {
+      where: {
+        id: validateResults.result.body?.item,
+      },
+    });
 
-    if (dbItem instanceof Item) updatedContent.item = dbItem;
+    if (dbItem.dbData instanceof Item) updatedContent.item = dbItem.dbData;
   }
 
   // Get Assets
   if (validateResults.result.body.assets) {
-    const dbAssets = await ac
-      .findAll(Asset, validateResults, {
-        where: {
-          id: In(validateResults.result.body.assets),
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbAssets = await ac.findAll(Asset, {
+      where: {
+        id: In(validateResults.result.body.assets),
+      },
+    });
 
     // is validated?
-    if (Array.isArray(dbAssets)) updatedContent.assets = dbAssets;
+    if (Array.isArray(dbAssets.dbData)) updatedContent.assets = dbAssets.dbData;
   }
 
-  const finalUpdatedContent = await ac
-    .updateWithTarget(Content, validateResults, updatedContent)
-    .catch((err) => console.log(err));
+  const finalUpdatedContent = await ac.updateWithTarget(Content, validateResults, updatedContent);
 
   res.json(finalUpdatedContent);
 });
@@ -226,28 +199,23 @@ router.put("/:id/assets/:aid", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Get Content
-  const dbContent = await ac
-    .findOne(Content, validateResults, {
-      select: {
-        item: {
-          id: true,
-          name: true,
-        },
+  const dbContent = await ac.findOne(Content, validateResults, {
+    select: {
+      item: {
+        id: true,
+        name: true,
       },
-      relations: {
-        item: true,
-        assets: true,
-      },
-    })
-    .catch((err) => console.log(err));
+    },
+    relations: {
+      item: true,
+      assets: true,
+    },
+  });
 
-  if (!(dbContent instanceof Content))
-    return res.status(400).json(validateResults);
+  if (!(dbContent.dbData instanceof Content)) return res.status(400).json(validateResults);
 
   // Is Asset exist?
-  const isAssetExist = dbContent.assets.findIndex(
-    (asset) => asset.id === validateResults.result.params?.aid,
-  );
+  const isAssetExist = dbContent.dbData.assets.findIndex((asset) => asset.id === validateResults.result.params?.aid);
   // Then throw error message
   if (isAssetExist !== -1)
     return res.status(400).json({
@@ -255,20 +223,18 @@ router.put("/:id/assets/:aid", async (req, res) => {
     });
 
   // Get Asset
-  const dbAsset = await ac
-    .findOne(Asset, validateResults, {
-      where: {
-        id: validateResults.result.params?.aid,
-      },
-    })
-    .catch((err) => console.log(err));
+  const dbAsset = await ac.findOne(Asset, validateResults, {
+    where: {
+      id: validateResults.result.params?.aid,
+    },
+  });
 
-  if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
+  if (!(dbAsset.dbData instanceof Asset)) return res.status(400).json(validateResults);
 
-  dbContent.assets = [...dbContent.assets, dbAsset];
+  dbContent.dbData.assets = [...dbContent.dbData.assets, dbAsset.dbData];
 
   const updatedContent = await ac
-    .updateWithTarget(Content, validateResults, dbContent)
+    .updateWithTarget(Content, validateResults, dbContent.dbData)
     .catch((err) => console.log(err));
 
   res.json(updatedContent);
@@ -291,42 +257,31 @@ router.delete("/:id/assets/:aid", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbContent = await ac
-    .findOne(Content, validateResults, {
-      select: {
-        item: {
-          id: true,
-          name: true,
-        },
+  const dbContent = await ac.findOne(Content, validateResults, {
+    select: {
+      item: {
+        id: true,
+        name: true,
       },
-      relations: {
-        item: true,
-        assets: true,
-      },
-    })
-    .catch((err) => console.log(err));
+    },
+    relations: {
+      item: true,
+      assets: true,
+    },
+  });
 
-  if (!(dbContent instanceof Content))
-    return res.status(400).json(validateResults);
+  if (!(dbContent.dbData instanceof Content)) return res.status(400).json(validateResults);
 
-  const dbAsset = await ac
-    .findOne(Asset, validateResults, {
-      where: {
-        id: validateResults.result.params?.aid,
-      },
-    })
-    .catch((err) => console.log(err));
+  const dbAsset = await ac.findOne(Asset, validateResults, {
+    where: {
+      id: validateResults.result.params?.aid,
+    },
+  });
 
-  if (!(dbAsset instanceof Asset)) return res.status(400).json(validateResults);
-
-  dbContent.assets = dbContent.assets.filter(
-    (asset) => asset.id !== dbAsset.id,
-  );
-
-  const updatedContent = await ac
-    .updateWithTarget(Content, validateResults, dbContent)
-    .catch((err) => console.log(err));
-
+  if (!(dbAsset.dbData instanceof Asset)) return res.status(400).json(validateResults);
+  const dbAssetId = dbAsset.dbData.id;
+  dbContent.dbData.assets = dbContent.dbData.assets.filter((asset) => asset.id !== dbAssetId);
+  const updatedContent = await ac.updateWithTarget(Content, validateResults, dbContent.dbData);
   res.json(updatedContent);
 });
 
@@ -340,9 +295,7 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const removedContent = await ac
-    .remove(Content, validateResults)
-    .catch((err) => console.log(err));
+  const removedContent = await ac.remove(Content, validateResults).catch((err) => console.log(err));
 
   res.json(removedContent);
 });

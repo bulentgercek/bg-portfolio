@@ -7,10 +7,7 @@ const router = Router();
 
 // Get all Options
 router.get("/", async (req, res) => {
-  const validateResults = await ac.inputValidate();
-  const dbOptions = await ac
-    .findAll(Option, validateResults)
-    .catch((err) => console.log(err));
+  const dbOptions = await ac.findAll(Option);
 
   res.json(dbOptions);
 });
@@ -23,9 +20,7 @@ router.get("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbOption = await ac
-    .findOne(Option, validateResults)
-    .catch((err) => console.log(err));
+  const dbOption = await ac.findOne(Option, validateResults);
 
   res.json(dbOption);
 });
@@ -46,9 +41,7 @@ router.post("/", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const addedOption = await ac
-    .addWithCreate(Option, validateResults)
-    .catch((err) => console.log(err));
+  const addedOption = await ac.addWithCreate(Option, validateResults);
 
   res.json(addedOption);
 });
@@ -70,9 +63,7 @@ router.put("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const updatedOption = await ac
-    .update(Option, validateResults)
-    .catch((err) => console.log(err));
+  const updatedOption = await ac.update(Option, validateResults);
 
   res.json(updatedOption);
 });
@@ -89,9 +80,7 @@ router.delete("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const removedOption = await ac
-    .remove(Option, validateResults)
-    .catch((err) => console.log(err));
+  const removedOption = await ac.remove(Option, validateResults);
 
   res.json(removedOption);
 });

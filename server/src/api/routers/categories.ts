@@ -10,36 +10,33 @@ const router = Router();
 
 // Get Categories
 router.get("/", async (req, res) => {
-  const validateResults = await ac.inputValidate();
-  const dbCategories = await ac
-    .findAll(Category, validateResults, {
-      select: {
-        parentCategory: {
-          id: true,
-          name: true,
-        },
-        childCategories: {
-          id: true,
-          name: true,
-        },
+  const dbCategories = await ac.findAll(Category, {
+    select: {
+      parentCategory: {
+        id: true,
+        name: true,
       },
-      relations: {
-        items: {
-          contents: true,
-          categories: true,
-        },
-        parentCategory: true,
-        childCategories: true,
+      childCategories: {
+        id: true,
+        name: true,
       },
-      order: {
-        name: "ASC",
+    },
+    relations: {
+      items: {
+        contents: true,
+        categories: true,
       },
-    })
-    .catch((err) => console.log(err));
+      parentCategory: true,
+      childCategories: true,
+    },
+    order: {
+      name: "ASC",
+    },
+  });
 
   // Sort childCategories and items
-  if (Array.isArray(dbCategories)) {
-    dbCategories.forEach((category) => {
+  if (Array.isArray(dbCategories.dbData)) {
+    dbCategories.dbData.forEach((category) => {
       category.childCategories = sortDbArray(category.childCategories, "name");
       category.items = sortDbArray(category.items, "name");
     });
@@ -56,36 +53,34 @@ router.get("/:id", async (req, res) => {
   });
 
   const validateResults = await ac.inputValidate(ctxObj);
-  const dbCategory = await ac
-    .findOne(Category, validateResults, {
-      select: {
-        parentCategory: {
-          id: true,
-          name: true,
+  const dbCategory = await ac.findOne(Category, validateResults, {
+    select: {
+      parentCategory: {
+        id: true,
+        name: true,
+      },
+      childCategories: {
+        id: true,
+        name: true,
+      },
+    },
+    where: {
+      id: validateResults.result.params?.id,
+    },
+    relations: {
+      items: {
+        contents: {
+          assets: true,
         },
-        childCategories: {
-          id: true,
-          name: true,
-        },
+        categories: true,
       },
-      where: {
-        id: validateResults.result.params?.id,
-      },
-      relations: {
-        items: {
-          contents: {
-            assets: true,
-          },
-          categories: true,
-        },
-        parentCategory: true,
-        childCategories: true,
-      },
-      order: {
-        name: "ASC",
-      },
-    })
-    .catch((err) => console.log(err));
+      parentCategory: true,
+      childCategories: true,
+    },
+    order: {
+      name: "ASC",
+    },
+  });
 
   res.json(dbCategory);
 });
@@ -118,16 +113,14 @@ router.post("/", async (req, res) => {
 
   // Get Items
   if (validateResults.result.body.items) {
-    const dbItems = await ac
-      .findAll(Item, validateResults, {
-        where: {
-          id: In(validateResults.result.body?.items),
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbItems = await ac.findAll(Item, {
+      where: {
+        id: In(validateResults.result.body?.items),
+      },
+    });
 
-    if (Array.isArray(dbItems)) {
-      createdCategory.items = dbItems;
+    if (Array.isArray(dbItems.dbData)) {
+      createdCategory.items = dbItems.dbData;
     }
   }
 
@@ -140,22 +133,22 @@ router.post("/", async (req, res) => {
     });
 
     // is validated?
-    if (dbParentCategory instanceof Category) {
-      createdCategory.parentCategory = dbParentCategory;
+    if (dbParentCategory.dbData instanceof Category) {
+      createdCategory.parentCategory = dbParentCategory.dbData;
     }
   }
 
   // Add child categories
   if (validateResults.result.body.childCategories) {
-    const dbChildCategories = await ac.findAll(Category, validateResults, {
+    const dbChildCategories = await ac.findAll(Category, {
       where: {
         id: In(validateResults.result.body.childCategories),
       },
     });
 
     // is validated?
-    if (Array.isArray(dbChildCategories)) {
-      createdCategory.childCategories = dbChildCategories;
+    if (Array.isArray(dbChildCategories.dbData)) {
+      createdCategory.childCategories = dbChildCategories.dbData;
     }
   }
 
@@ -187,19 +180,17 @@ router.put("/:id", async (req, res) => {
   const validateResults = await ac.inputValidate(ctxObj);
 
   // Get Category
-  const dbCategory = await ac
-    .findOne(Category, validateResults, {
-      where: {
-        id: validateResults.result.params?.id,
-      },
-      relations: {
-        parentCategory: true,
-        childCategories: true,
-      },
-    })
-    .catch((err) => console.log(err));
+  const dbCategory = await ac.findOne(Category, validateResults, {
+    where: {
+      id: validateResults.result.params?.id,
+    },
+    relations: {
+      parentCategory: true,
+      childCategories: true,
+    },
+  });
 
-  if (!(dbCategory instanceof Category)) return res.status(400).json(validateResults);
+  if (!(dbCategory.dbData instanceof Category)) return res.status(400).json(validateResults);
 
   // Guard clause before filtering Body
   if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
@@ -213,49 +204,43 @@ router.put("/:id", async (req, res) => {
   );
 
   // Override Given Values
-  const updatedCategory: Category = { ...dbCategory, ...filteredBody };
+  const updatedCategory: Category = { ...dbCategory.dbData, ...filteredBody };
 
   // Get Items
   if (validateResults.result.body.items) {
-    const dbItems = await ac
-      .findAll(Item, validateResults, {
-        where: {
-          id: In(validateResults.result.body.items),
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbItems = await ac.findAll(Item, {
+      where: {
+        id: In(validateResults.result.body.items),
+      },
+    });
 
-    if (Array.isArray(dbItems)) {
-      updatedCategory.items = dbItems;
+    if (Array.isArray(dbItems.dbData)) {
+      updatedCategory.items = dbItems.dbData;
     }
   }
 
   // Add parent category
   if (validateResults.result.body.parentCategory) {
-    const dbParentCategory = await ac
-      .findOne(Category, validateResults, {
-        where: {
-          id: validateResults.result.body.parentCategory,
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbParentCategory = await ac.findOne(Category, validateResults, {
+      where: {
+        id: validateResults.result.body.parentCategory,
+      },
+    });
 
-    if (dbParentCategory instanceof Category) updatedCategory.parentCategory = dbParentCategory;
+    if (dbParentCategory.dbData instanceof Category) updatedCategory.parentCategory = dbParentCategory.dbData;
   } else {
     updatedCategory.parentCategory = null;
   }
 
   // Add child categories
   if (validateResults.result.body.childCategories) {
-    const dbChildCategories = await ac
-      .findAll(Category, validateResults, {
-        where: {
-          id: In(validateResults.result.body.childCategories),
-        },
-      })
-      .catch((err) => console.log(err));
+    const dbChildCategories = await ac.findAll(Category, {
+      where: {
+        id: In(validateResults.result.body.childCategories),
+      },
+    });
 
-    if (Array.isArray(dbChildCategories)) updatedCategory.childCategories = dbChildCategories;
+    if (Array.isArray(dbChildCategories.dbData)) updatedCategory.childCategories = dbChildCategories.dbData;
   }
 
   const finalUpdatedCategory = await ac
