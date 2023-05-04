@@ -5,6 +5,7 @@ export enum AssetType {
   Image = "image",
   Video = "video",
   Text = "text",
+  Pdf = "pdf",
 }
 
 @Entity({ name: "assets" })

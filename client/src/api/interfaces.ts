@@ -12,6 +12,7 @@ export enum AssetType {
   Image = "image",
   Video = "video",
   Text = "text",
+  Pdf = "pdf",
 }
 
 export type Asset = {
