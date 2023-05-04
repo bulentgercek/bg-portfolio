@@ -14,7 +14,7 @@ import path from "path";
 import env from "./validEnv";
 import { dsm } from "./connections";
 import { DatabaseError, ValidationError } from "./errorHandler";
-import { errorUtil } from "zod/lib/helpers/errorUtil";
+import { AssetType } from "./entities/Asset";
 
 export namespace ApiController {
   /**
@@ -273,10 +273,10 @@ export namespace ApiController {
    * @param file Multer File
    * @returns string
    */
-  export const processUploadedImage = async (file: Express.Multer.File): Promise<string> => {
+  export const processUploadedFile = async (file: Express.Multer.File): Promise<string> => {
     // Define new file path for uploaded file
     const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
-    const uploadedFileName = file.originalname;
+    const uploadedFileName = file.filename;
     const multerFilePath = file.path;
     const newFilePath = path.join(uploadsDirectory, uploadedFileName);
 
@@ -290,37 +290,36 @@ export namespace ApiController {
     }
 
     // Construct the final URL for the image
-    const imageUrl = `${env.SERVER_URL}/uploads/${uploadedFileName}`;
+    const fileUrl = `${env.SERVER_URL}/uploads/${uploadedFileName}`;
 
-    return imageUrl;
+    return fileUrl;
   };
 
   /**
-   * Helper function to delete the asset file
-   * @param assetUrl
-   * @param serverDomain
+   * Helper function to delete the file
+   * @param fileUrl string
    */
-  export const deleteAssetFile = async (assetUrl: string) => {
-    const url = new URL(assetUrl);
+  export const deleteFile = async (fileUrl: string) => {
+    try {
+      if (!fileUrl) return;
 
-    // Delete the asset file if it exists and has the same domain name as our server
-    if (url.origin === env.SERVER_URL) {
-      const filePath = path.join(env.UPLOADS_BASE_PATH, "uploads", path.basename(url.pathname || ""));
-      console.log(filePath);
+      const url = new URL(fileUrl);
+      // Delete the asset file if it exists and has the same domain name as our server
+      if (url.origin === env.SERVER_URL) {
+        const filePath = path.join(env.UPLOADS_BASE_PATH, "uploads", path.basename(url.pathname || ""));
 
-      try {
         await fsPromises.unlink(filePath);
-      } catch (error) {
-        const errorMessage = `Failed to delete file: ${filePath}`;
-        console.error(errorMessage, error);
-        throw Error(errorMessage);
       }
+    } catch (error) {
+      const errorMessage = `Failed to delete file: ${fileUrl}`;
+      console.error(errorMessage, error);
+      throw Error(errorMessage);
     }
   };
 
   /**
    * Checks the file if exist
-   * @param file
+   * @param file string
    * @returns boolean
    */
   export const isFileExist = async (file: Express.Multer.File) => {
@@ -332,6 +331,34 @@ export namespace ApiController {
       return true;
     } catch (error) {
       return false;
+    }
+  };
+
+  /**
+   * Get the AssetType from file extension
+   * @param file string
+   * @returns AssetType
+   */
+  export const getAssetTypeFromFile = async (fileUrl: string): Promise<AssetType | null> => {
+    try {
+      const url = new URL(fileUrl);
+      const ext = path.extname(url.pathname);
+
+      switch (ext) {
+        case ".jpg":
+        case ".png":
+          return AssetType.Image;
+        case ".txt":
+          return AssetType.Text;
+        case ".pdf":
+          return AssetType.Pdf;
+        default:
+          return null;
+      }
+    } catch (error) {
+      const errorMessage = `Failed to get AssetType: ${fileUrl}`;
+      console.error(errorMessage, error);
+      throw Error(errorMessage);
     }
   };
 }

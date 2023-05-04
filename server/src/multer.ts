@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import sanitize from "sanitize-filename";
 import env from "./validEnv";
 
 /**
@@ -10,7 +11,10 @@ const storage = multer.diskStorage({
     callback(null, path.join(env.UPLOADS_BASE_PATH, "uploads"));
   },
   filename: (req, file, callback) => {
-    callback(null, `${Date.now()}-${file.originalname}`);
+    // Remove all spaces from the filename
+    const noSpacesFilename = file.originalname.replace(/\s+/g, "_");
+    const sanitizedFilename = sanitize(noSpacesFilename);
+    callback(null, `${Date.now()}-${sanitizedFilename}`);
   },
 });
 

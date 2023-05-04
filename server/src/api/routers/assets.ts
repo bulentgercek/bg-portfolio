@@ -85,13 +85,20 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
     // Create new Asset
     const createdAsset = ac.create(Asset, filteredBody);
 
+    // Change the type if the url one of the supported types
+    if (filteredBody.url) {
+      createdAsset.type = (await ac.getAssetTypeFromFile(filteredBody.url)) ?? createdAsset.type;
+    }
+
     // Upload File
     if (req.file) {
       try {
         // Process the uploaded image file and update the file if it has a name
-        const uploadedImageUrl = await ac.processUploadedImage(req.file);
+        const uploadedFileUrl = await ac.processUploadedFile(req.file);
         // Update the 'url' property of the Asset entity with the final image URL
-        createdAsset.url = uploadedImageUrl;
+        createdAsset.url = uploadedFileUrl;
+        createdAsset.name = req.file.originalname.replace(/\s+/g, "_");
+        createdAsset.type = (await ac.getAssetTypeFromFile(uploadedFileUrl)) ?? createdAsset.type;
         validateResults.success.file = true;
       } catch (error) {
         console.error("An error is occured while processing the image:", error);
@@ -130,7 +137,7 @@ router.put("/:id", multerUpload.single("url"), async (req, res, next) => {
         body: z.object({
           name: z.string().optional(),
           type: z.nativeEnum(AssetType).optional(),
-          url: z.string().url().optional(),
+          url: z.string().url().nullable().optional(),
           text: z.string().optional(),
           contents: z.array(z.number()).optional(),
         }),
@@ -159,6 +166,26 @@ router.put("/:id", multerUpload.single("url"), async (req, res, next) => {
       ...dbAsset,
       ...filteredBody,
     };
+
+    if (updatedAsset.url) {
+      // Delete the current image file if it's in server
+      // Because foreign file url defined
+      await ac.deleteFile(dbAsset.url);
+      // Change the type if the url one of the supported types
+      updatedAsset.type = (await ac.getAssetTypeFromFile(updatedAsset.url)) ?? updatedAsset.type;
+    }
+
+    // Upload File
+    if (req.file) {
+      // Delete the previous file if it's in server
+      await ac.deleteFile(updatedAsset.url);
+      // Process the uploaded file and update the file if it has a name
+      const uploadedFileUrl = await ac.processUploadedFile(req.file);
+      // Update the 'url' property of the Asset entity with the final image URL
+      updatedAsset.url = uploadedFileUrl;
+      updatedAsset.type = (await ac.getAssetTypeFromFile(uploadedFileUrl)) ?? updatedAsset.type;
+      validateResults.success.file = true;
+    }
 
     // Add Contents
     if (validateResults.result.body.contents) {
@@ -196,9 +223,10 @@ router.delete("/:id", async (req, res, next) => {
         id: validateResults.result.params?.id,
       },
     });
+
     if (!dbAsset) throw new DatabaseError(`Asset not found: ${validateResults.result.params?.id}`);
 
-    await ac.deleteAssetFile(dbAsset.url);
+    await ac.deleteFile(dbAsset.url);
     const removedAsset = await ac.remove(Asset, validateResults);
     res.json(removedAsset);
   } catch (error) {
