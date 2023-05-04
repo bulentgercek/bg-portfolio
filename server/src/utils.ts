@@ -17,7 +17,6 @@ export function changeArrayOrder<T>(arr: T[], from: number, to: number): T[] {
  * @returns Filtered Object
  */
 export function filterObject(object: Object, ...arrayKeys: String[]) {
-  if (!object) return {};
   const asArray = Object.entries(object);
   const filtered = asArray.filter(([key, value]) => {
     const resultArray: Boolean[] = [];

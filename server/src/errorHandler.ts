@@ -1,33 +1,52 @@
 import { Request, Response, NextFunction } from "express";
+import z from "zod";
+
+import { ApiController as ac } from "./apiController";
+
+/**
+ * Validation Custom Error
+ */
+export class ValidationError<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny> extends Error {
+  public error: ac.ValidateResults<TParams, TBody>["error"];
+
+  constructor(message: string, error: ac.ValidateResults<TParams, TBody>["error"]) {
+    super(message);
+    this.name = "ValidationError";
+    this.error = error;
+  }
+}
+
+/**
+ * Database Custom Error
+ */
+export class DatabaseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "DatabaseError";
+  }
+}
 
 /**
  * Error Handler for Express
- * @param err Error
+ * @param error Error
  * @param req Request
  * @param res Response
  * @param next NextFunction
  */
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
-  // Wrap the next function call in a Promise.resolve() to handle
-  // errors that occur in asynchronous code (e.g., Promises)
-  Promise.resolve()
-    .then(() => {
-      if (err instanceof SyntaxError && "body" in err) {
-        res.status(400).json({
-          message: `Invalid request body: ${err.message}.`,
-        });
-      }
-
-      // TODO: Add more specific error handling cases here, e.g.:
-      // if (err instanceof ValidationError) {
-      //   return res.status(400).json({ message: err.message });
-      // }
-
-      res.status(500).json({
-        message: `Internal server error: ${err}.`,
-      });
-    })
-    .catch(next);
+export const errorHandler = (error: Error, req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof SyntaxError && "body" in error) {
+    res.status(400).json({
+      message: `Invalid request body: ${error.message}.`,
+    });
+  } else if (error instanceof ValidationError) {
+    res.status(400).json({ message: error.message, error: error });
+  } else if (error instanceof DatabaseError) {
+    res.status(500).json({ message: error.message });
+  } else {
+    res.status(500).json({
+      message: `Internal server error: ${error}.`,
+    });
+  }
 };
 
 /**
@@ -43,7 +62,7 @@ export const noRouteFound = (req: Request, res: Response) => {
 
 /**
  * Display formatted console route errors
- * @param err Error
+ * @param error Error
  * @param subject string
  */
 export const consoleRouteError = (error: unknown, req: Request) => {

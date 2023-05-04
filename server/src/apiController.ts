@@ -13,70 +13,88 @@ import path from "path";
 
 import env from "./validEnv";
 import { dsm } from "./connections";
-import { exit } from "process";
+import { DatabaseError, ValidationError } from "./errorHandler";
+import { errorUtil } from "zod/lib/helpers/errorUtil";
 
 export namespace ApiController {
   /**
-   * Context Object for Zod Input and Request Data (params or body) Server
+   * AtLeastOne type ensures that at least one property from the input type T is present.
+   * It combines a partially optional version of T with the union of T's properties.
+   */
+  export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> & U[keyof U];
+
+  /**
+   * Context Object for Zod Input and Request Data (params or body)
    */
   type CtxObj<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny> = {
-    zInput: { params?: TParams; body?: TBody };
-    reqData: { params?: Object; body?: Object; file?: Object };
+    zInput: AtLeastOne<{ params: TParams; body: TBody }>;
+    reqData: AtLeastOne<{ params: Object; body: Object; file?: Object }>;
   };
 
   /**
    * Output object for inputValidate function
    */
   export type ValidateResults<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny> = {
-    success: { params?: Boolean; body?: Boolean; file?: boolean };
-    result: { params?: z.TypeOf<TParams>; body?: z.TypeOf<TBody> };
+    success: AtLeastOne<{ params: Boolean; body: Boolean; file?: boolean }>;
+    result: { params: z.TypeOf<TParams>; body: z.TypeOf<TBody> };
+    error?: { params?: z.ZodError; body?: z.ZodError };
   };
-
-  /**
-   * Context Object Initializer
-   * @param ctxObj Context Object
-   * @returns CtxObj<TParams, TBody>
-   */
-  export function initContext<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
-    ctxObj: CtxObj<TParams, TBody>,
-  ) {
-    return ctxObj;
-  }
 
   /**
    * Async Validation function for Zod Input
    * @param ctxObj Context Object
    * @returns Promise<ValidateResults<TParams, TBody>>
    */
-  export async function inputValidate<TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const inputValidate = async <TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     ctxObj: CtxObj<TParams, TBody>,
-  ): Promise<ValidateResults<TParams, TBody>> {
-    // Create success and result properties
+  ) => {
+    // Define the Result type
+    type Result = ValidateResults<TParams, TBody>["result"];
+
+    // Initialize the success, result, and error objects
+    const success: ValidateResults<TParams, TBody>["success"] = {};
+    const result: Partial<Result> = {};
+    const error: ValidateResults<TParams, TBody>["error"] = {};
+
+    // If params are provided in the zInput object, validate them
+    if (ctxObj.zInput.params) {
+      // Define the InputType based on the provided params schema
+      type InputType = z.infer<typeof ctxObj.zInput.params>;
+      // Validate the input data using Zod's safeParseAsync method
+      const validated: InputType = await ctxObj.zInput.params.safeParseAsync(ctxObj.reqData.params);
+      // Update the success, result, and error objects based on the validation results
+      success.params = validated.success;
+      result.params = validated.success && validated.data;
+      error.params = !validated.success && validated.error;
+    }
+
+    // If a body is provided in the zInput object, validate it
+    if (ctxObj.zInput.body) {
+      // Define the InputType based on the provided body schema
+      type InputType = z.infer<typeof ctxObj.zInput.body>;
+      // Validate the input data using Zod's safeParseAsync method
+      const validated: InputType = await ctxObj.zInput.body.safeParseAsync(ctxObj.reqData.body);
+      // Update the success, result, and error objects based on the validation results
+      success.body = validated.success;
+      result.body = validated.success && validated.data;
+      error.body = !validated.success && validated.error;
+    }
+
+    // Create the final validated object with success, result, and error properties
     const validatedFinal: ValidateResults<TParams, TBody> = {
-      success: {},
-      result: {},
+      success: success,
+      result: result as Result,
+      error: error,
     };
 
-    // Create and ...
-    if (ctxObj.zInput.params) {
-      type InputType = z.infer<typeof ctxObj.zInput.params>;
-      const validated: InputType = await ctxObj.zInput.params.safeParseAsync(ctxObj.reqData.params);
-      validatedFinal.success.params = validated.success;
-      validatedFinal.result.params = validated.success ? validated.data : validated.error;
+    // If there is any error in params or body, throw a ValidationError with the error details
+    if (error.params || error.body) {
+      throw new ValidationError("Input validation failed.", validatedFinal.error);
     }
 
-    if (ctxObj.zInput.body) {
-      type InputType = z.infer<typeof ctxObj.zInput.body>;
-      const validated: InputType = await ctxObj.zInput.body.safeParseAsync(ctxObj.reqData.body);
-      validatedFinal.success.body = validated.success;
-      validatedFinal.result.body = validated.success ? validated.data : validated.error;
-    }
-
-    // check if the 'validatedFinal' object is undefined
-    if (validatedFinal === undefined) console.log("We have some undefined problem in validatedFinal");
-
+    // If validation is successful, return the validated final object as a resolved Promise
     return Promise.resolve(validatedFinal);
-  }
+  };
 
   /**
    * Caller for TypeORM Manager create functions
@@ -84,56 +102,53 @@ export namespace ApiController {
    * @param plainObject Plain Object to be an Entity
    * @returns Entity
    */
-  export function create<Entity>(entityClass: EntityTarget<Entity>, plainObject?: DeepPartial<Entity>): Entity {
+  export const create = <Entity>(entityClass: EntityTarget<Entity>, plainObject?: DeepPartial<Entity>): Entity => {
     return dsm.create(entityClass, plainObject);
-  }
+  };
 
   /**
    * Async Caller for TypeORM Manager find function
    * @param entityClass TypeORM Entity
-   * @param validateResults Output of inputValidate() function
    * @param options TypeORM Options (FindManyOptions)
-   * @returns Promise<ValidateResults<TParams, TBody> | Entity[]
+   * @returns Promise<Entity[]>
    */
-  export async function findAll<Entity extends ObjectLiteral, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const findAll = async <Entity extends ObjectLiteral>(
     entityClass: EntityTarget<Entity>,
     options?: FindManyOptions<Entity>,
-  ) {
-    const validateResults: ValidateResults<TParams, TBody> = { success: {}, result: {} };
-
-    const dbResult = await dsm.find(entityClass, options);
-
-    return { validateResults, dbData: dbResult };
-  }
+  ) => {
+    try {
+      const dbResult = await dsm.find(entityClass, options);
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in findAll with: ${options}`;
+      console.error(errorMessage);
+      throw new DatabaseError(errorMessage);
+    }
+  };
 
   /**
    * Async Caller for TypeORM Manager findOne function
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
    * @param options TypeORM Options (FindOneOptions)
-   * @returns Promise<Entity | ValidateResults<TParams, TBody> | null>
+   * @returns Promise<{
+    validateResults: ValidateResults<TParams, TBody>;
+    dbData: Entity;}>
    */
-  export async function findOne<Entity extends ObjectLiteral, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const findOne = async <Entity extends ObjectLiteral>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
-    options?: FindOneOptions<Entity>,
-  ) {
-    if (validateResults.success.params === false || validateResults.success.body === false) {
-      return { validateResults, dbData: {} as Entity };
+    options: FindOneOptions<Entity>,
+  ) => {
+    try {
+      const dbResult = await dsm.findOne(entityClass, options);
+      if (dbResult === null) throw Error;
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in findOne with: ${options.where}`;
+      console.error(errorMessage, error);
+      throw new DatabaseError(errorMessage);
     }
-
-    // Add id from validated results to the find options if there is nowhere
-    if (!options?.where) {
-      options = Object.assign({}, options, {
-        where: {
-          id: validateResults.result.params?.id,
-        },
-      });
-    }
-
-    const dbResult: Promise<Entity | null> = await dsm.findOne(entityClass, options).catch((e) => e);
-    return { validateResults, dbData: dbResult };
-  }
+  };
 
   /**
    * Async Caller for TypeORM Manager Save functions
@@ -141,20 +156,24 @@ export namespace ApiController {
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
    * @param options? TypeORM Options (SaveOptions)
-   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
+   * @returns Promise<{
+    validateResults: ValidateResults<TParams, TBody>;
+    dbData: Entity;}>
    */
-  export async function addCreated<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const addCreated = async <Entity>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
     entity: Entity,
     options?: SaveOptions,
-  ) {
-    if (validateResults.success.params === false || validateResults.success.body === false)
-      return { validateResults, dbData: {} as Entity };
-
-    const dbResult = dsm.save(entityClass, entity, options);
-    return { validateResults, dbData: dbResult };
-  }
+  ) => {
+    try {
+      const dbResult = await dsm.save(entityClass, entity, options);
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in addCreated with: ${entity}`;
+      console.error(errorMessage, error);
+      throw new DatabaseError(errorMessage);
+    }
+  };
 
   /**
    * Async Caller for TypeORM Manager Create and Save functions
@@ -162,90 +181,99 @@ export namespace ApiController {
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
    * @param options? TypeORM Options (SaveOptions)
-   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
+   * @returns Promise<Awaited<Entity> & Entity>
    */
-  export async function addWithCreate<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const addWithCreate = async <Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
     validateResults: ValidateResults<TParams, TBody>,
     options?: SaveOptions,
-  ) {
-    if (validateResults.success.params === false || validateResults.success.body === false)
-      return { validateResults, dbData: {} as Entity };
-
-    const newItem = dsm.create(entityClass, validateResults.result.body);
-    const dbResult = dsm.save(entityClass, newItem, options);
-    return { validateResults, dbData: dbResult };
-  }
+  ) => {
+    try {
+      const newItem = await dsm.create(entityClass, validateResults.result.body);
+      const dbResult = await dsm.save(entityClass, newItem, options);
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in addWithCreate for: ${validateResults.result.body}`;
+      console.error(errorMessage, error);
+      throw new DatabaseError(errorMessage);
+    }
+  };
 
   /**
    * Async Caller for TypeORM Manager Remove function
    * @param entity TypeORM Entity
    * @param validateResults Output of inputValidate() function
    * @param options? TypeORM Options (RemoveOptions)
-   * @returns Promise<Entity | ValidateResults<TParams, TBody> | undefined>
+   * @returns Promise<Entity>
    */
-  export async function remove<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const remove = async <Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     targetOrEntity: EntityTarget<Entity>,
     validateResults: ValidateResults<TParams, TBody>,
     options?: RemoveOptions,
-  ) {
-    if (validateResults.success.params === false || validateResults.success.body === false)
-      return { validateResults, dbData: {} as Entity };
-
-    const dbResult = dsm.remove(targetOrEntity, validateResults.result.params, options);
-
-    return { validateResults, dbData: dbResult };
-  }
+  ) => {
+    try {
+      const dbResult = await dsm.remove(targetOrEntity, validateResults.result.params, options);
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in remove with: ${validateResults.result.params}`;
+      console.error(errorMessage, error);
+      throw new DatabaseError(errorMessage);
+    }
+  };
 
   /**
    * Async Caller for TypeORM Manager Save function for Update Values
    * @param entityClass TypeORM Entity
    * @param validateResults Output of inputValidate() function
    * @param options? TypeORM Options (SaveOptions)
-   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
+   * @returns Promise<Entity>
    */
-  export async function update<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const update = async <Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
     entityClass: EntityTarget<Entity>,
     validateResults: ValidateResults<TParams, TBody>,
     options?: SaveOptions,
-  ) {
-    if (validateResults.success.params === false || validateResults.success.body === false)
-      return { validateResults, dbData: {} as Entity };
-
+  ) => {
     // Save needs id, so adding params to body
     const targetEntity: Entity = Object.assign({}, validateResults.result.params, validateResults.result.body);
 
-    const dbResult = dsm.save(entityClass, targetEntity, options);
-    return { validateResults, dbData: dbResult };
-  }
+    try {
+      const dbResult = await dsm.save(entityClass, targetEntity, options);
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in update on: ${targetEntity}`;
+      console.error(errorMessage, error);
+      throw new DatabaseError(errorMessage);
+    }
+  };
 
   /**
    * Async Caller for TypeORM Manager Save function to Update Relations
    * @param entityClass TypeORM Entity
-   * @param validateResults Output of inputValidate() function
    * @param targetEntity: TypeORM Entity with Updated Relations,
    * @param options? TypeORM Options (SaveOptions)
-   * @returns Promise<Entity | ValidateResults<TParams, TBody>>
+   * @returns Promise<T & Entity>
    */
-  export async function updateWithTarget<Entity, TParams extends z.ZodTypeAny, TBody extends z.ZodTypeAny>(
+  export const updateWithTarget = async <Entity>(
     entityClass: EntityTarget<Entity>,
-    validateResults: ValidateResults<TParams, TBody>,
     targetEntity: DeepPartial<Entity>,
     options?: SaveOptions,
-  ) {
-    if (validateResults.success.params === false || validateResults.success.body === false)
-      return { validateResults, dbData: {} as Entity };
-
-    const dbResult = dsm.save(entityClass, targetEntity, options);
-    return { validateResults, dbData: dbResult };
-  }
+  ) => {
+    try {
+      const dbResult = await dsm.save(entityClass, targetEntity, options);
+      return dbResult;
+    } catch (error) {
+      const errorMessage = `Error in updateWithTarget on: ${targetEntity}`;
+      console.error(errorMessage, error);
+      throw new DatabaseError(errorMessage);
+    }
+  };
 
   /**
    * Process Uploaded Image
    * @param file Multer File
    * @returns string
    */
-  export async function processUploadedImage(file: Express.Multer.File): Promise<string> {
+  export const processUploadedImage = async (file: Express.Multer.File): Promise<string> => {
     // Define new file path for uploaded file
     const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
     const uploadedFileName = file.originalname;
@@ -255,37 +283,55 @@ export namespace ApiController {
     // Move file to new file path
     try {
       await fsPromises.rename(multerFilePath, newFilePath);
-      console.log("File moved to new location successfully");
     } catch (error) {
-      console.error({ message: error });
-      throw error;
+      const errorMessage = `Error occured while moving the file to new file path: ${newFilePath}`;
+      console.error(errorMessage, error);
+      throw Error(errorMessage);
     }
 
     // Construct the final URL for the image
     const imageUrl = `${env.SERVER_URL}/uploads/${uploadedFileName}`;
 
     return imageUrl;
-  }
+  };
 
   /**
    * Helper function to delete the asset file
    * @param assetUrl
    * @param serverDomain
    */
-  export async function deleteAssetFile(assetUrl: string) {
+  export const deleteAssetFile = async (assetUrl: string) => {
     const url = new URL(assetUrl);
 
+    // Delete the asset file if it exists and has the same domain name as our server
     if (url.origin === env.SERVER_URL) {
       const filePath = path.join(env.UPLOADS_BASE_PATH, "uploads", path.basename(url.pathname || ""));
       console.log(filePath);
 
       try {
         await fsPromises.unlink(filePath);
-        console.log(`Deleted file: ${filePath}`);
       } catch (error) {
-        console.error(`Failed to delete file: ${filePath}`, error);
-        throw error;
+        const errorMessage = `Failed to delete file: ${filePath}`;
+        console.error(errorMessage, error);
+        throw Error(errorMessage);
       }
     }
-  }
+  };
+
+  /**
+   * Checks the file if exist
+   * @param file
+   * @returns boolean
+   */
+  export const isFileExist = async (file: Express.Multer.File) => {
+    const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
+    const targetFilePath = path.join(uploadsDirectory, file.originalname);
+
+    try {
+      await fsPromises.access(targetFilePath);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 }

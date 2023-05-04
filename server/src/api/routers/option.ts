@@ -6,14 +6,14 @@ import { Option, OptionCategory, OptionType } from "../../entities/Option";
 const router = Router();
 
 // Get all Options
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   const dbOptions = await ac.findAll(Option);
 
   res.json(dbOptions);
 });
 
 // Get spesific Option with id
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   const ctxObj = ac.initContext({
     zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
     reqData: { params: req.params },
@@ -26,7 +26,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Add an Option
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const ctxObj = ac.initContext({
     zInput: {
       body: z.object({
@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
 });
 
 // Update the Option with id
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
   const ctxObj = ac.initContext({
     zInput: {
       params: z.object({ id: z.preprocess(Number, z.number()) }),
@@ -69,7 +69,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // Remove an Option with id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   const ctxObj = ac.initContext({
     zInput: {
       params: z.object({

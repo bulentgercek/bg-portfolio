@@ -1,15 +1,12 @@
 import { Router } from "express";
 import { In } from "typeorm";
 import { z } from "zod";
-import fs from "fs";
-import path from "path";
 
-import env from "../../validEnv";
 import { ApiController as ac } from "../../apiController";
 import { Asset, AssetType } from "../../entities/Asset";
 import { Content } from "../../entities/Content";
 import { filterObject } from "../../utils";
-import { consoleRouteError } from "../../errorHandler";
+import { consoleRouteError, DatabaseError } from "../../errorHandler";
 import { multerUpload } from "../../multer";
 
 const router = Router();
@@ -39,13 +36,15 @@ router.get("/", async (req, res, next) => {
 // Get Asset
 router.get("/:id", async (req, res, next) => {
   try {
-    const ctxObj = ac.initContext({
+    const validateResults = await ac.inputValidate({
       zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
       reqData: { params: req.params },
     });
 
-    const validateResults = await ac.inputValidate(ctxObj);
-    const dbAsset = await ac.findOne(Asset, validateResults, {
+    const dbAsset = await ac.findOne(Asset, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
       select: {
         contents: {
           id: true,
@@ -67,7 +66,7 @@ router.get("/:id", async (req, res, next) => {
 // Add Asset
 router.post("/", multerUpload.single("url"), async (req, res, next) => {
   try {
-    const ctxObj = ac.initContext({
+    const validateResults = await ac.inputValidate({
       zInput: {
         body: z.object({
           name: z.string().optional(),
@@ -80,11 +79,6 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
       reqData: { body: req.body, file: req.file },
     });
 
-    const validateResults = await ac.inputValidate(ctxObj);
-
-    // Guard Clause for filtering Body
-    if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
-
     // Filter out the relational inputs before updating dbContent
     const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
 
@@ -93,14 +87,6 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
 
     // Upload File
     if (req.file) {
-      // If image already exist don't add to db
-      const uploadsDirectory = path.join(env.UPLOADS_BASE_PATH, "uploads");
-      const targetFilePath = path.join(uploadsDirectory, req.file.originalname);
-
-      if (fs.existsSync(targetFilePath)) {
-        return res.status(200).json({ message: "A file with the same name already exists. File updated." });
-      }
-
       try {
         // Process the uploaded image file and update the file if it has a name
         const uploadedImageUrl = await ac.processUploadedImage(req.file);
@@ -108,8 +94,8 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
         createdAsset.url = uploadedImageUrl;
         validateResults.success.file = true;
       } catch (error) {
-        console.log("An error is occured while processing the image:", error);
-        return res.status(500).json({ message: "An error occured while processing the uploaded image." });
+        console.error("An error is occured while processing the image:", error);
+        throw Error("An error occured while processing the uploaded image.");
       }
     }
 
@@ -122,11 +108,12 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
       });
 
       // is validated?
-      if (Array.isArray(dbCategories.dbData)) {
-        createdAsset.contents = dbCategories.dbData;
+      if (Array.isArray(dbCategories)) {
+        createdAsset.contents = dbCategories;
       }
     }
-    const savedAsset = await ac.addCreated(Asset, validateResults, createdAsset);
+
+    const savedAsset = await ac.addCreated(Asset, createdAsset);
     res.json(savedAsset);
   } catch (error) {
     consoleRouteError(error, req);
@@ -135,9 +122,9 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
 });
 
 // Update Asset
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", multerUpload.single("url"), async (req, res, next) => {
   try {
-    const ctxObj = ac.initContext({
+    const validateResults = await ac.inputValidate({
       zInput: {
         params: z.object({ id: z.preprocess(Number, z.number()) }),
         body: z.object({
@@ -148,13 +135,11 @@ router.put("/:id", async (req, res, next) => {
           contents: z.array(z.number()).optional(),
         }),
       },
-      reqData: { params: req.params, body: req.body },
+      reqData: { params: req.params, body: req.body, file: req.file },
     });
 
-    const validateResults = await ac.inputValidate(ctxObj);
-
     // Get Asset
-    const dbAsset = await ac.findOne(Asset, validateResults, {
+    const dbAsset = await ac.findOne(Asset, {
       where: {
         id: validateResults.result.params?.id,
       },
@@ -164,17 +149,14 @@ router.put("/:id", async (req, res, next) => {
     });
 
     // Guard clause for Asset
-    if (!(dbAsset.dbData instanceof Asset)) return res.status(400).json(dbAsset);
-
-    // Guard clause for filtering Body
-    if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
+    if (!dbAsset) throw new DatabaseError(`Asset not found: ${validateResults.result.params?.id}`);
 
     // Filter out the relational inputs before create updatedAsset
     const filteredBody: Partial<Asset> = filterObject(validateResults.result.body, "contents");
 
     // Update values of dbAsset with filteredBody
     const updatedAsset: Asset = {
-      ...dbAsset.dbData,
+      ...dbAsset,
       ...filteredBody,
     };
 
@@ -186,11 +168,10 @@ router.put("/:id", async (req, res, next) => {
         },
       });
 
-      // is validated?
-      if (Array.isArray(dbContents.dbData)) updatedAsset.contents = dbContents.dbData;
+      updatedAsset.contents = dbContents;
     }
 
-    const finalUpdatedAsset = await ac.updateWithTarget(Asset, validateResults, updatedAsset);
+    const finalUpdatedAsset = await ac.updateWithTarget(Asset, updatedAsset);
     res.json(finalUpdatedAsset);
   } catch (error) {
     consoleRouteError(error, req);
@@ -201,7 +182,7 @@ router.put("/:id", async (req, res, next) => {
 // Remove Asset
 router.delete("/:id", async (req, res, next) => {
   try {
-    const ctxObj = ac.initContext({
+    const validateResults = await ac.inputValidate({
       zInput: {
         params: z.object({
           id: z.preprocess(Number, z.number()),
@@ -210,14 +191,14 @@ router.delete("/:id", async (req, res, next) => {
       reqData: { params: req.params },
     });
 
-    const validateResults = await ac.inputValidate(ctxObj);
-    const dbAsset = await ac.findOne(Asset, validateResults);
+    const dbAsset = await ac.findOne(Asset, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+    });
+    if (!dbAsset) throw new DatabaseError(`Asset not found: ${validateResults.result.params?.id}`);
 
-    if (dbAsset.dbData instanceof Asset) {
-      // Delete the asset file if it exists and has the same domain name as our server
-      await ac.deleteAssetFile(dbAsset.dbData.url);
-    }
-
+    await ac.deleteAssetFile(dbAsset.url);
     const removedAsset = await ac.remove(Asset, validateResults);
     res.json(removedAsset);
   } catch (error) {

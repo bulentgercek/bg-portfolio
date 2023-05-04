@@ -5,14 +5,15 @@ import { ApiController as ac } from "../../apiController";
 import { Asset } from "../../entities/Asset";
 import { Content, ContentType } from "../../entities/Content";
 import { Item } from "../../entities/Item";
+import { consoleRouteError, DatabaseError } from "../../errorHandler";
 import { filterObject } from "../../utils";
 
 const router = Router();
 
 // Get Contents
-router.get("/", async (req, res) => {
-  const dbContents = await ac
-    .findAll(Content, {
+router.get("/", async (req, res, next) => {
+  try {
+    const dbContents = await ac.findAll(Content, {
       select: {
         item: {
           id: true,
@@ -22,282 +23,291 @@ router.get("/", async (req, res) => {
       relations: {
         item: true,
         assets: true,
-      },
-    })
-    .catch((err) => console.log(err));
-
-  res.json(dbContents);
-});
-
-// Get Content
-router.get("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
-    reqData: { params: req.params },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-  const dbContent = await ac
-    .findOne(Content, validateResults, {
-      select: {
-        item: {
-          id: true,
-          name: true,
-        },
-      },
-      relations: {
-        item: true,
-        assets: true,
-      },
-    })
-    .catch((err) => console.log(err));
-
-  res.json(dbContent);
-});
-
-// Add Content
-router.post("/", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      body: z.object({
-        name: z.string().optional(),
-        type: z.nativeEnum(ContentType).optional(),
-        columns: z.number().optional(),
-        item: z.number().optional(),
-        assets: z.array(z.number()).optional(),
-      }),
-    },
-    reqData: { body: req.body },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-
-  const dbItem = await ac.findOne(Item, validateResults, {
-    where: {
-      id: validateResults.result.body?.item,
-    },
-  });
-
-  if (!(dbItem.dbData instanceof Item)) return res.status(400).json(validateResults);
-
-  // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
-
-  // Filter out the relational inputs before updating dbContent
-  const filteredBody = filterObject(validateResults.result.body, "item", "assets");
-
-  const createdContent = ac.create(Content, filteredBody);
-
-  // Add Item to Created Content
-  createdContent.item = dbItem.dbData;
-
-  // Add Assets to Created Content
-  if (validateResults.result.body.assets) {
-    const dbAssets = await ac.findAll(Asset, {
-      where: {
-        id: In(validateResults.result.body.assets),
       },
     });
 
-    // is validated?
-    if (Array.isArray(dbAssets.dbData)) {
-      createdContent.assets = dbAssets.dbData;
-    }
+    res.json(dbContents);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
   }
-
-  const savedContent = await ac.addCreated(Content, validateResults, createdContent);
-  res.json(savedContent);
 });
 
-// Update Content
-router.put("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        id: z.preprocess(Number, z.number()),
-      }),
-      body: z.object({
-        name: z.string().optional(),
-        type: z.nativeEnum(ContentType).optional(),
-        columns: z.number().optional(),
-        item: z.number().optional(),
-        assets: z.array(z.number()).optional(),
-      }),
-    },
-    reqData: {
-      params: req.params,
-      body: req.body,
-    },
-  });
+// Get Content
+router.get("/:id", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate({
+      zInput: { params: z.object({ id: z.preprocess(Number, z.number()) }) },
+      reqData: { params: req.params },
+    });
 
-  const validateResults = await ac.inputValidate(ctxObj);
-
-  // Get Content
-  const dbContent = await ac.findOne(Content, validateResults, {
-    select: {
-      item: {
-        id: true,
-        name: true,
+    const dbContent = await ac.findOne(Content, {
+      where: {
+        id: validateResults.result.params?.id,
       },
-    },
-    relations: { item: true, assets: true },
-  });
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
+      relations: {
+        item: true,
+        assets: true,
+      },
+    });
 
-  if (!(dbContent.dbData instanceof Content)) return res.status(400).json(validateResults);
+    res.json(dbContent);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
+});
 
-  // Guard Clause for filtering Body
-  if (!validateResults.success.body || !validateResults.result.body) return res.status(400).json(validateResults);
+// Add Content
+router.post("/", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate({
+      zInput: {
+        body: z.object({
+          name: z.string().optional(),
+          type: z.nativeEnum(ContentType).optional(),
+          columns: z.number().optional(),
+          item: z.number().optional(),
+          assets: z.array(z.number()).optional(),
+        }),
+      },
+      reqData: { body: req.body },
+    });
 
-  // Filter out the relational inputs before updating dbContent
-  const filteredBody: Partial<Content> = filterObject(validateResults.result.body, "item", "assets");
-
-  // Update values of dbContent with filteredBody by creating new Content
-  const updatedContent: Content = { ...dbContent.dbData, ...filteredBody };
-
-  // Get Item
-  if (validateResults.result.body.item) {
-    const dbItem = await ac.findOne(Item, validateResults, {
+    const dbItem = await ac.findOne(Item, {
       where: {
         id: validateResults.result.body?.item,
       },
     });
 
-    if (dbItem.dbData instanceof Item) updatedContent.item = dbItem.dbData;
-  }
+    // Filter out the relational inputs before updating dbContent
+    const filteredBody = filterObject(validateResults.result.body, "item", "assets");
 
-  // Get Assets
-  if (validateResults.result.body.assets) {
-    const dbAssets = await ac.findAll(Asset, {
-      where: {
-        id: In(validateResults.result.body.assets),
+    const createdContent = ac.create(Content, filteredBody);
+
+    // Add Item to Created Content
+    createdContent.item = dbItem;
+
+    // Add Assets to Created Content
+    if (validateResults.result.body.assets) {
+      const dbAssets = await ac.findAll(Asset, {
+        where: {
+          id: In(validateResults.result.body.assets),
+        },
+      });
+
+      createdContent.assets = dbAssets;
+    }
+
+    const savedContent = await ac.addCreated(Content, createdContent);
+    res.json(savedContent);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
+});
+
+// Update Content
+router.put("/:id", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate({
+      zInput: {
+        params: z.object({
+          id: z.preprocess(Number, z.number()),
+        }),
+        body: z.object({
+          name: z.string().optional(),
+          type: z.nativeEnum(ContentType).optional(),
+          columns: z.number().optional(),
+          item: z.number().optional(),
+          assets: z.array(z.number()).optional(),
+        }),
+      },
+      reqData: {
+        params: req.params,
+        body: req.body,
       },
     });
 
-    // is validated?
-    if (Array.isArray(dbAssets.dbData)) updatedContent.assets = dbAssets.dbData;
+    // Get Content
+    const dbContent = await ac.findOne(Content, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
+      relations: { item: true, assets: true },
+    });
+
+    // Filter out the relational inputs before updating dbContent
+    const filteredBody: Partial<Content> = filterObject(validateResults.result.body, "item", "assets");
+
+    // Update values of dbContent with filteredBody by creating new Content
+    const updatedContent: Content = { ...dbContent, ...filteredBody };
+
+    // Get Item
+    if (validateResults.result.body.item) {
+      const dbItem = await ac.findOne(Item, {
+        where: {
+          id: validateResults.result.body?.item,
+        },
+      });
+
+      updatedContent.item = dbItem;
+    }
+
+    // Get Assets
+    if (validateResults.result.body.assets) {
+      const dbAssets = await ac.findAll(Asset, {
+        where: {
+          id: In(validateResults.result.body.assets),
+        },
+      });
+
+      updatedContent.assets = dbAssets;
+    }
+
+    const finalUpdatedContent = await ac.updateWithTarget(Content, updatedContent);
+    res.json(finalUpdatedContent);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
   }
-
-  const finalUpdatedContent = await ac.updateWithTarget(Content, validateResults, updatedContent);
-
-  res.json(finalUpdatedContent);
 });
 
 // Assign Asset to Content
-router.put("/:id/assets/:aid", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        id: z.preprocess(Number, z.number()),
-        aid: z.preprocess(Number, z.number()),
-      }),
-    },
-    reqData: {
-      params: req.params,
-    },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-
-  // Get Content
-  const dbContent = await ac.findOne(Content, validateResults, {
-    select: {
-      item: {
-        id: true,
-        name: true,
+router.put("/:id/assets/:aid", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate({
+      zInput: {
+        params: z.object({
+          id: z.preprocess(Number, z.number()),
+          aid: z.preprocess(Number, z.number()),
+        }),
       },
-    },
-    relations: {
-      item: true,
-      assets: true,
-    },
-  });
-
-  if (!(dbContent.dbData instanceof Content)) return res.status(400).json(validateResults);
-
-  // Is Asset exist?
-  const isAssetExist = dbContent.dbData.assets.findIndex((asset) => asset.id === validateResults.result.params?.aid);
-  // Then throw error message
-  if (isAssetExist !== -1)
-    return res.status(400).json({
-      message: `Content ${validateResults.result.params?.id} already has Asset with id ${validateResults.result.params?.aid}.`,
+      reqData: {
+        params: req.params,
+      },
     });
 
-  // Get Asset
-  const dbAsset = await ac.findOne(Asset, validateResults, {
-    where: {
-      id: validateResults.result.params?.aid,
-    },
-  });
+    // Get Content
+    const dbContent = await ac.findOne(Content, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
+      relations: {
+        item: true,
+        assets: true,
+      },
+    });
 
-  if (!(dbAsset.dbData instanceof Asset)) return res.status(400).json(validateResults);
+    const isAssetExist = dbContent.assets.findIndex((asset) => asset.id === validateResults.result.params?.aid);
 
-  dbContent.dbData.assets = [...dbContent.dbData.assets, dbAsset.dbData];
+    // Then throw error message
+    if (isAssetExist !== -1) {
+      const errorMessage = `Content ${validateResults.result.params?.id} already has Asset with id ${validateResults.result.params?.aid}.`;
+      console.error(errorMessage);
+      throw new DatabaseError(errorMessage);
+    }
 
-  const updatedContent = await ac
-    .updateWithTarget(Content, validateResults, dbContent.dbData)
-    .catch((err) => console.log(err));
+    // Get Asset
+    const dbAsset = await ac.findOne(Asset, {
+      where: {
+        id: validateResults.result.params?.aid,
+      },
+    });
 
-  res.json(updatedContent);
+    dbContent.assets = [...dbContent.assets, dbAsset];
+
+    const updatedContent = await ac.updateWithTarget(Content, dbContent);
+
+    res.json(updatedContent);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
 });
 
 // Remove Asset from Content
 // This endpoint will remove the spesific Asset with id from Content without
 // deleting it from the database.
-router.delete("/:id/assets/:aid", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({
-        id: z.preprocess(Number, z.number()),
-        aid: z.preprocess(Number, z.number()),
-      }),
-    },
-    reqData: {
-      params: req.params,
-    },
-  });
-
-  const validateResults = await ac.inputValidate(ctxObj);
-  const dbContent = await ac.findOne(Content, validateResults, {
-    select: {
-      item: {
-        id: true,
-        name: true,
+router.delete("/:id/assets/:aid", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate({
+      zInput: {
+        params: z.object({
+          id: z.preprocess(Number, z.number()),
+          aid: z.preprocess(Number, z.number()),
+        }),
       },
-    },
-    relations: {
-      item: true,
-      assets: true,
-    },
-  });
+      reqData: {
+        params: req.params,
+      },
+    });
+    const dbContent = await ac.findOne(Content, {
+      where: {
+        id: validateResults.result.params?.id,
+      },
+      select: {
+        item: {
+          id: true,
+          name: true,
+        },
+      },
+      relations: {
+        item: true,
+        assets: true,
+      },
+    });
 
-  if (!(dbContent.dbData instanceof Content)) return res.status(400).json(validateResults);
+    const dbAsset = await ac.findOne(Asset, {
+      where: {
+        id: validateResults.result.params?.aid,
+      },
+    });
 
-  const dbAsset = await ac.findOne(Asset, validateResults, {
-    where: {
-      id: validateResults.result.params?.aid,
-    },
-  });
-
-  if (!(dbAsset.dbData instanceof Asset)) return res.status(400).json(validateResults);
-  const dbAssetId = dbAsset.dbData.id;
-  dbContent.dbData.assets = dbContent.dbData.assets.filter((asset) => asset.id !== dbAssetId);
-  const updatedContent = await ac.updateWithTarget(Content, validateResults, dbContent.dbData);
-  res.json(updatedContent);
+    const dbAssetId = dbAsset.id;
+    dbContent.assets = dbContent.assets.filter((asset) => asset.id !== dbAssetId);
+    const updatedContent = await ac.updateWithTarget(Content, dbContent);
+    res.json(updatedContent);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
 });
 
 // Remove Content
-router.delete("/:id", async (req, res) => {
-  const ctxObj = ac.initContext({
-    zInput: {
-      params: z.object({ id: z.preprocess(Number, z.number()) }),
-    },
-    reqData: { params: req.params },
-  });
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const validateResults = await ac.inputValidate({
+      zInput: {
+        params: z.object({ id: z.preprocess(Number, z.number()) }),
+      },
+      reqData: { params: req.params },
+    });
 
-  const validateResults = await ac.inputValidate(ctxObj);
-  const removedContent = await ac.remove(Content, validateResults).catch((err) => console.log(err));
-
-  res.json(removedContent);
+    const removedContent = await ac.remove(Content, validateResults);
+    res.json(removedContent);
+  } catch (error) {
+    consoleRouteError(error, req);
+    next(error);
+  }
 });
 
 export { router as contentRouter };
@@ -306,7 +316,7 @@ export { router as contentRouter };
 // //  * Archive Codes
 // //  */
 // // // // Get all contents - With filtering after the query - total manuplation!
-// // // router.get("/api/contents-wf/", async (req, res) => {
+// // // router.get("/api/contents-wf/", async (req, res, next) => {
 // // //   await dsm
 // // //     .find(Content, {
 // // //       relations: {
@@ -325,7 +335,7 @@ export { router as contentRouter };
 // // // });
 
 // // // // Get all contents - with the querybuilder
-// // // router.get("/api/contents-wqb/", async (req, res) => {
+// // // router.get("/api/contents-wqb/", async (req, res, next) => {
 // // //   await dsm
 // // //     .createQueryBuilder(Content, "contents")
 // // //     .leftJoinAndSelect("contents.asset", "asset")
