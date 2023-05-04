@@ -46,9 +46,9 @@ const AppData: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const fetchCategories = await Api.getCategories();
-      setDbCategories(fetchCategories.dbData);
+      setDbCategories(fetchCategories);
       const fetchItems = await Api.getItems();
-      setDbItems(fetchItems.dbData);
+      setDbItems(fetchItems);
     };
 
     fetchData();
