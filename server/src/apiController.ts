@@ -120,8 +120,10 @@ export namespace ApiController {
       const dbResult = await dsm.find(entityClass, options);
       return dbResult;
     } catch (error) {
-      const errorMessage = `Error in findAll with: ${options}`;
-      console.error(errorMessage);
+      const whereJSON = JSON.stringify(options?.where)
+        .replace(/[{}\\"]/g, "")
+        .trim();
+      const errorMessage = `Error in findOne with ${whereJSON}`;
       throw new DatabaseError(errorMessage);
     }
   };
@@ -144,8 +146,10 @@ export namespace ApiController {
       if (dbResult === null) throw Error;
       return dbResult;
     } catch (error) {
-      const errorMessage = `Error in findOne with: ${options.where}`;
-      console.error(errorMessage, error);
+      const whereJSON = JSON.stringify(options.where)
+        .replace(/[{}\\"]/g, "")
+        .trim();
+      const errorMessage = `Error in findOne with ${whereJSON}`;
       throw new DatabaseError(errorMessage);
     }
   };
@@ -170,7 +174,6 @@ export namespace ApiController {
       return dbResult;
     } catch (error) {
       const errorMessage = `Error in addCreated with: ${entity}`;
-      console.error(errorMessage, error);
       throw new DatabaseError(errorMessage);
     }
   };
@@ -194,7 +197,6 @@ export namespace ApiController {
       return dbResult;
     } catch (error) {
       const errorMessage = `Error in addWithCreate for: ${validateResults.result.body}`;
-      console.error(errorMessage, error);
       throw new DatabaseError(errorMessage);
     }
   };
@@ -216,7 +218,6 @@ export namespace ApiController {
       return dbResult;
     } catch (error) {
       const errorMessage = `Error in remove with: ${validateResults.result.params}`;
-      console.error(errorMessage, error);
       throw new DatabaseError(errorMessage);
     }
   };
@@ -241,7 +242,6 @@ export namespace ApiController {
       return dbResult;
     } catch (error) {
       const errorMessage = `Error in update on: ${targetEntity}`;
-      console.error(errorMessage, error);
       throw new DatabaseError(errorMessage);
     }
   };
@@ -263,7 +263,6 @@ export namespace ApiController {
       return dbResult;
     } catch (error) {
       const errorMessage = `Error in updateWithTarget on: ${targetEntity}`;
-      console.error(errorMessage, error);
       throw new DatabaseError(errorMessage);
     }
   };
@@ -285,7 +284,6 @@ export namespace ApiController {
       await fsPromises.rename(multerFilePath, newFilePath);
     } catch (error) {
       const errorMessage = `Error occured while moving the file to new file path: ${newFilePath}`;
-      console.error(errorMessage, error);
       throw Error(errorMessage);
     }
 
@@ -312,7 +310,6 @@ export namespace ApiController {
       }
     } catch (error) {
       const errorMessage = `Failed to delete file: ${fileUrl}`;
-      console.error(errorMessage, error);
       throw Error(errorMessage);
     }
   };
@@ -357,7 +354,6 @@ export namespace ApiController {
       }
     } catch (error) {
       const errorMessage = `Failed to get AssetType: ${fileUrl}`;
-      console.error(errorMessage, error);
       throw Error(errorMessage);
     }
   };
