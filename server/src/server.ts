@@ -16,10 +16,25 @@ const server = express();
 server.use(helmet());
 
 // Static File Serving Access for Uploads
-server.use("/uploads", express.static(path.join(env.UPLOADS_BASE_PATH, "uploads")));
+server.use(
+  "/uploads",
+  express.static(path.join(env.UPLOADS_BASE_PATH, "uploads"), {
+    setHeaders: (res) => {
+      res.setHeader("Access-Control-Allow-Origin", env.CLIENT_URL);
+    },
+  }),
+);
 
 // Cors Origin for Client Access
-server.use(cors({ origin: env.CLIENT_URL }));
+const corsOptions = {
+  origin: env.CLIENT_URL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+server.use(cors(corsOptions));
 
 // Set Body size limit for file uploads
 server.use(express.json({ limit: "10mb" }));
