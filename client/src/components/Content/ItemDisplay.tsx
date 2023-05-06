@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Item } from "../../api/interfaces";
+import landing_banner_back from "../../assets/landing_banner_back.png";
 
 type ItemProps = {
   item: Item | null;
@@ -35,7 +36,12 @@ const ItemDisplay: React.FC<ItemProps> = ({ item }) => {
           </div>
         </div>
       )) ?? (
-        <div id="container" className="trans-d200 flex h-[500px] w-full flex-col rounded-2xl bg-indigo-50/25"></div>
+        <div
+          id="container"
+          className="trans-d200 flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-indigo-50/25"
+        >
+          <img src={landing_banner_back} className="max-w-[368px]"></img>
+        </div>
       )}
     </>
   );
