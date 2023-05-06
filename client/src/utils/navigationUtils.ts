@@ -2,6 +2,7 @@ import { Category, Item } from "../api/interfaces";
 import { NavElement, RouteData } from "../pages";
 import { isCategory } from "./categoryUtils";
 import { isItem } from "./itemUtils";
+import { v4 as uuid } from "uuid";
 
 /**
  * Get the sum of dbCategories and dbItems that has no parent category
@@ -13,6 +14,19 @@ export const getRootElementCount = (dbCategories: Category[], dbItems: Item[]): 
   const rootCategoriesCount = dbCategories.filter((category) => category.parentCategory === null).length;
   const rootItemsCount = dbItems.filter((item) => item.categories && item.categories.length === 0).length;
   return rootCategoriesCount + rootItemsCount;
+};
+
+/**
+ * Check if the obj is NavElement by looking it's properties
+ * @param obj Unknown
+ * @returns obj is NavElement
+ */
+export const isNavElement = (obj: unknown): obj is NavElement => {
+  if (typeof obj !== "object" || obj === null) return false;
+
+  const navElementObj = obj as NavElement;
+  const hasRoute = "route" in navElementObj && typeof navElementObj.route === "string";
+  return hasRoute;
 };
 
 /**
@@ -81,12 +95,12 @@ export const isItemSelected = (item: Item, routeData: RouteData) => {
 
 /**
  * Creating a unique key using the element id's
- * @param navElement
+ * @param navElement or unknown
  * @returns string
  */
-export const createKey = (navElement: NavElement): string => {
+export const createNavElementKey = (reference: NavElement): string => {
   const keyData = { cid: 0, iid: 0 };
-  isCategory(navElement.element) ? (keyData.cid = navElement.element.id) : (keyData.iid = navElement.element.id);
+  isCategory(reference.element) ? (keyData.cid = reference.element.id) : (keyData.iid = reference.element.id);
 
   return `c${keyData.cid}_i${keyData.iid}`;
 };

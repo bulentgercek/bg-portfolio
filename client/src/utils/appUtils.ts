@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 import { Category } from "../api/interfaces";
 
 /**
@@ -24,4 +26,12 @@ export const getBreadcrumbs = (categories: Category[], currentCategory: Category
     }
   }
   return parentTree;
+};
+
+/**
+ * Returns a uuidv4 string
+ * @returns uuid string
+ */
+export const createKey = (): string => {
+  return uuid();
 };

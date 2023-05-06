@@ -8,7 +8,7 @@ import { Category } from "../api/interfaces";
 import AppContext from "../AppContext";
 import Spinner from "../components/Spinner";
 import {
-  createKey,
+  createNavElementKey,
   createNavData,
   isItemSelected,
   isSelectedNavElementACategory,
@@ -42,7 +42,7 @@ const Navigation: React.FC = () => {
         {/* Navigation Root Elements */}
         {navData?.map((navElement) => (
           <NavigationElement
-            key={createKey(navElement)}
+            key={createNavElementKey(navElement)}
             navElement={navElement}
             routeData={routeData}
             breadcrumbs={breadcrumbs}
@@ -114,7 +114,7 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
           <ul className={`flex flex-col gap-2.5 pl-4 transition-all duration-500 ease-out `}>
             {navElement.childElement.map((child) => (
               <NavigationElement
-                key={createKey(child)}
+                key={createNavElementKey(child)}
                 navElement={child}
                 routeData={routeData}
                 breadcrumbs={breadcrumbs}

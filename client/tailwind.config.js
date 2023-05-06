@@ -29,10 +29,6 @@ module.exports = {
         nav: "var(--nav-width)",
         "logo-area-open": "var(--logo-area-open-width)",
         "logo-area-close": "var(--logo-area-close-width)",
-        "content-xl": "var(--content-xl)",
-        "content-lg": "var(--content-lg)",
-        "content-md": "var(--content-md)",
-        "content-sm": "var(--content-sm)",
       },
       height: {
         logo: "var(--logo-area-height)",

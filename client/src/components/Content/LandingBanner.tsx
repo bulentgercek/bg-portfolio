@@ -9,7 +9,7 @@ import AppContext from "../../AppContext";
 import { createStateCollection, createStateData } from ".";
 import { Link } from "react-router-dom";
 import Spinner from "../Spinner";
-import { createKey } from "../../utils/navigationUtils";
+import { createNavElementKey } from "../../utils/navigationUtils";
 
 // Create State
 const stateData = createStateData({
@@ -140,13 +140,13 @@ const LandingBanner: React.FC = () => {
             <p>
               <span className="font-bold">Hello! My name is Bulent Gercek.</span> You can find my past and current
               notable works on this personal website. I wish to meet you one day. Happy surfing 🤗
-              {/* <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span> */}
+              <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span>
             </p>
           </div>
           {(navData && navData.length >= 2 && (
             <div className="flex flex-row flex-wrap gap-3">
               {navData.map((rootNavElement, index) => (
-                <Link to={`${rootNavElement.route}`} key={createKey(rootNavElement)}>
+                <Link to={`${rootNavElement.route}`} key={createNavElementKey(rootNavElement)}>
                   <button
                     className={`trans-d500 flex h-[40px] items-center rounded-2xl ${
                       index % 2 === 0 ? `bg-blue-600` : `bg-purple-600`
