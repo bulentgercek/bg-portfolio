@@ -38,7 +38,7 @@ const ItemDisplay: React.FC<ItemProps> = ({ item }) => {
       )) ?? (
         <div
           id="container"
-          className="trans-d200 flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-indigo-50/25"
+          className="trans-d200 flex h-[500px] w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-blue-50/25"
         >
           <img src={landing_banner_back} className="max-w-[368px]"></img>
         </div>
