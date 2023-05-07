@@ -239,7 +239,7 @@ router.put("/:id", async (req, res, next) => {
           link: z.string().optional(),
           featured: z.boolean().optional(),
           featuredImageAsset: z.number().or(z.null()).optional(),
-          categories: z.array(z.number()).optional(),
+          categories: z.array(z.number()).or(z.null()).optional(),
         }),
       },
       reqData: {
