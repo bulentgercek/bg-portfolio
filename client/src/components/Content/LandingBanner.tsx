@@ -97,8 +97,8 @@ const stateCollection = createStateCollection(stateData, {
   },
 });
 
-// Content Sizes on CSS
-const contentCSSVariables = {
+// Content Sizes
+const contentSizeVariables = {
   "--content-xl": 1200,
   "--content-lg": 1015,
   "--content-md": 895,
@@ -116,10 +116,10 @@ const LandingBanner: React.FC = () => {
     if (!contentSizeData) return;
 
     const determineActiveState = (width: number) => {
-      if (width < contentCSSVariables["--content-sm"]) return stateCollection.maxSm;
-      if (width < contentCSSVariables["--content-md"]) return stateCollection.minSm;
-      if (width < contentCSSVariables["--content-lg"]) return stateCollection.minMd;
-      if (width < contentCSSVariables["--content-xl"]) return stateCollection.minLg;
+      if (width < contentSizeVariables["--content-sm"]) return stateCollection.maxSm;
+      if (width < contentSizeVariables["--content-md"]) return stateCollection.minSm;
+      if (width < contentSizeVariables["--content-lg"]) return stateCollection.minMd;
+      if (width < contentSizeVariables["--content-xl"]) return stateCollection.minLg;
       return stateCollection.minXl;
     };
 
@@ -140,7 +140,7 @@ const LandingBanner: React.FC = () => {
             <p>
               <span className="font-bold">Hello! My name is Bulent Gercek.</span> You can find my past and current
               notable works on this personal website. I wish to meet you one day. Happy surfing 🤗
-              {/* <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span> */}
+              <span className="text-gray-400">{Math.round(window?.innerWidth ?? 0)}</span>
             </p>
           </div>
           {(navData && navData.length >= 2 && (
