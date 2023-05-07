@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Item } from "../../api/interfaces";
 import landing_banner_back from "../../assets/landing_banner_back.png";
@@ -7,6 +8,19 @@ type ItemProps = {
 };
 
 const ItemDisplay: React.FC<ItemProps> = ({ item }) => {
+  const [linkTo, setLinkTo] = useState("/");
+
+  const createLinkTo = (item: Item) => {
+    if (!item.categories || item.categories.length === 0) return `/item/${item.id}`;
+    return `/category/${item.categories[0].id}/item/${item.id}`;
+  };
+
+  useEffect(() => {
+    if (!item) return;
+    const linkTo = createLinkTo(item);
+    setLinkTo(linkTo);
+  }, []);
+
   return (
     <>
       {(item && (
@@ -25,7 +39,7 @@ const ItemDisplay: React.FC<ItemProps> = ({ item }) => {
             </div>
             <div id="description_n_button" className="flex h-full flex-col justify-between">
               <div id="description">{item.description}</div>
-              <Link to={`/category/${item.categories && item.categories[0].id}/item/${item.id}`} key={item.id}>
+              <Link to={linkTo} key={item.id}>
                 <button
                   className={`trans-d500 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6`}
                 >

@@ -64,9 +64,9 @@ export type Item = {
   name: string;
   description?: string | null;
   link?: string | null;
-  featured?: boolean;
-  featuredImageAsset?: Asset | null;
-  categories?: Category[] | null;
+  featured: boolean;
+  featuredImageAsset: Asset | null;
+  categories: Category[] | null;
   contents?: Content[] | null;
   updatedDate?: Date;
 };

@@ -36,7 +36,11 @@ const stateCollection = createStateCollection(stateData, {
   },
 });
 
-const ItemGrid = () => {
+type ItemGridProps = {
+  filterFunction: (item: Item) => boolean | null;
+};
+
+const ItemGrid: React.FC<ItemGridProps> = ({ filterFunction }) => {
   const { dbItems, contentSizeData } = useContext(AppContext);
   const [activeStates, setActiveStates] = useState(stateCollection.maxSm);
   const [itemList, setItemList] = useState<(Item | null)[]>([]);
@@ -57,12 +61,12 @@ const ItemGrid = () => {
   useEffect(() => {
     if (!dbItems) return;
 
-    // Get featured items
-    const featuredItems = dbItems.filter((item) => item.featured);
+    // Get filtrered items
+    const filteredItems = dbItems.filter(filterFunction);
 
     // Get the total count of the itemDisplay
-    const getItemDisplayValues = (featuredItems: Item[]) => {
-      const itemCount = featuredItems.length;
+    const getItemDisplayValues = (filteredItems: Item[]) => {
+      const itemCount = filteredItems.length;
       const columnCount = parseInt(activeStates.gridCol.split("-")[2]);
       const rowCount = Math.ceil(itemCount / columnCount);
       const emptyCount = columnCount * rowCount - itemCount;
@@ -70,20 +74,20 @@ const ItemGrid = () => {
       return { itemCount, columnCount, rowCount, emptyCount, totalCount };
     };
 
-    const itemDisplayValues = getItemDisplayValues(featuredItems);
+    const itemDisplayValues = getItemDisplayValues(filteredItems);
 
     // Create and assign a new item[] and add null for the rest
     const createItemsList = <T extends typeof itemDisplayValues>(
       itemDisplayValues: T,
-      featuredItems: Item[],
+      filteredItems: Item[],
     ): (Item | null)[] => {
-      if (!featuredItems) return [];
+      if (!filteredItems) return [];
       const itemList: (Item | null)[] = [];
       let loopCount = 0;
 
       while (loopCount < itemDisplayValues.totalCount) {
-        if (featuredItems[loopCount] !== undefined) {
-          itemList.push(featuredItems[loopCount]);
+        if (filteredItems[loopCount] !== undefined) {
+          itemList.push(filteredItems[loopCount]);
         } else {
           itemList.push(null);
         }
@@ -92,10 +96,10 @@ const ItemGrid = () => {
       return itemList;
     };
 
-    const itemList = createItemsList(itemDisplayValues, featuredItems);
+    const itemList = createItemsList(itemDisplayValues, filteredItems);
 
     setItemList(itemList);
-  }, [activeStates]);
+  }, [activeStates, dbItems]);
 
   return (
     <div className={`grid w-full ${activeStates.gridCol} gap-5`}>
