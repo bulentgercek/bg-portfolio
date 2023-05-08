@@ -21,13 +21,14 @@ const Breadcrumbs: React.FC<BcPageProps> = ({ pageType }) => {
       const newBcNavigation: BcNavRoute[] = [];
       newBcNavigation.push({ name: "Home", route: "/" });
 
-      for (let i = 0; i < breadcrumbs.length; i++) {
-        const bcRoute = navData?.find((navElement) => navElement.element.name === breadcrumbs[i].name)?.route ?? "";
-        if (pageType === "Category" && i === breadcrumbs.length - 1) break;
+      console.log(JSON.stringify(breadcrumbs, null, 2));
 
+      for (let i = 0; i < breadcrumbs.length; i++) {
+        const bcRoute = `/category/${breadcrumbs[i].id}`;
+        if (pageType === "Category" && i === breadcrumbs.length - 1) continue;
         newBcNavigation.push({
           name: breadcrumbs[i].name,
-          route: bcRoute,
+          route: bcRoute || "",
         });
       }
       return newBcNavigation;
