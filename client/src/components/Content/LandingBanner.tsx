@@ -140,7 +140,7 @@ const LandingBanner: React.FC = () => {
             <p>
               <span className="font-bold">Hello! My name is Bulent Gercek.</span> You can find my past and current
               notable works on this personal website. I wish to meet you one day. Happy surfing 🤗
-              <span className="text-gray-400">{Math.round(window?.innerWidth ?? 0)}</span>
+              <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span>
             </p>
           </div>
           {(navData && navData.length >= 2 && (

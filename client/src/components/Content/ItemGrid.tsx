@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { Route } from "react-router-dom";
 import { createStateCollection, createStateData } from ".";
 import { Item } from "../../api/interfaces";
 import AppContext from "../../AppContext";
@@ -9,7 +10,7 @@ import ItemDisplay from "./ItemDisplay";
 const contentSizeVariables = {
   "--content-lg": 1015,
   "--content-md": 708,
-  "--content-sm": 414,
+  "--content-sm": 460,
 };
 
 const stateData = createStateData({
@@ -65,46 +66,37 @@ const ItemGrid: React.FC<ItemGridProps> = ({ filterFunction }) => {
     const filteredItems = dbItems.filter(filterFunction);
 
     // Get the total count of the itemDisplay
-    const getItemDisplayValues = (filteredItems: Item[]) => {
+    const getItemDisplayCount = (filteredItems: Item[]) => {
       const itemCount = filteredItems.length;
       const columnCount = parseInt(activeStates.gridCol.split("-")[2]);
       const rowCount = Math.ceil(itemCount / columnCount);
       const emptyCount = columnCount * rowCount - itemCount;
       const totalCount = itemCount + emptyCount;
-      return { itemCount, columnCount, rowCount, emptyCount, totalCount };
+      return totalCount;
     };
 
-    const itemDisplayValues = getItemDisplayValues(filteredItems);
+    const itemDisplayCount = getItemDisplayCount(filteredItems);
 
     // Create and assign a new item[] and add null for the rest
-    const createItemsList = <T extends typeof itemDisplayValues>(
-      itemDisplayValues: T,
-      filteredItems: Item[],
-    ): (Item | null)[] => {
+    const createItemsList = (itemDisplayCount: number, filteredItems: Item[]) => {
       if (!filteredItems) return [];
       const itemList: (Item | null)[] = [];
-      let loopCount = 0;
 
-      while (loopCount < itemDisplayValues.totalCount) {
-        if (filteredItems[loopCount] !== undefined) {
-          itemList.push(filteredItems[loopCount]);
-        } else {
-          itemList.push(null);
-        }
-        loopCount++;
+      for (let i = 0; i < itemDisplayCount; i++) {
+        itemList.push(filteredItems[i] ?? null);
       }
       return itemList;
     };
 
-    const itemList = createItemsList(itemDisplayValues, filteredItems);
+    const itemList = createItemsList(itemDisplayCount, filteredItems);
 
     setItemList(itemList);
-  }, [activeStates, dbItems]);
+  }, [activeStates, dbItems, filterFunction]);
 
   return (
     <div className={`grid w-full ${activeStates.gridCol} gap-5`}>
       {itemList.map((item) => (
-        <ItemDisplay key={(item && `${item.id}`) ?? createKey()} item={item} />
+        <ItemDisplay key={(item?.id ?? createKey()).toString()} item={item} />
       ))}
     </div>
   );
