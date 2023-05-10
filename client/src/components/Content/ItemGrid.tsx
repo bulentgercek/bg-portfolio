@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { Route } from "react-router-dom";
 import { createStateCollection, createStateData } from ".";
 import { Item } from "../../api/interfaces";
 import AppContext from "../../AppContext";
 import { createKey } from "../../utils/appUtils";
+import { sortDbArray } from "../../utils/dbUtils";
 import ItemDisplay from "./ItemDisplay";
 
 // Content Sizes on CSS
@@ -37,11 +37,17 @@ const stateCollection = createStateCollection(stateData, {
   },
 });
 
-type ItemGridProps = {
-  filterFunction: (item: Item) => boolean | null;
+export type SortOrderOptions = {
+  orderBy?: "orderByName" | "orderByDate";
+  order?: "asc" | "desc";
 };
 
-const ItemGrid: React.FC<ItemGridProps> = ({ filterFunction }) => {
+type ItemGridProps = {
+  filterFunction: (item: Item) => boolean | null;
+  sortOrderOptions?: SortOrderOptions;
+};
+
+const ItemGrid: React.FC<ItemGridProps> = ({ filterFunction, sortOrderOptions }) => {
   const { dbItems, contentSizeData } = useContext(AppContext);
   const [activeStates, setActiveStates] = useState(stateCollection.maxSm);
   const [itemList, setItemList] = useState<(Item | null)[]>([]);
@@ -62,12 +68,22 @@ const ItemGrid: React.FC<ItemGridProps> = ({ filterFunction }) => {
   useEffect(() => {
     if (!dbItems) return;
 
+    let updatedItems: Item[];
+
     // Get filtrered items
-    const filteredItems = dbItems.filter(filterFunction);
+    updatedItems = dbItems.filter(filterFunction);
+
+    // Sort filtered items
+    const sortItems = (items: Item[], options: SortOrderOptions): Item[] => {
+      const finalOrderBy = options.orderBy === "orderByName" ? "name" : "date";
+      return sortDbArray(items, finalOrderBy, options.order);
+    };
+
+    if (sortOrderOptions) updatedItems = sortItems(updatedItems, sortOrderOptions);
 
     // Get the total count of the itemDisplay
-    const getItemDisplayCount = (filteredItems: Item[]) => {
-      const itemCount = filteredItems.length;
+    const getItemDisplayCount = (items: Item[]): number => {
+      const itemCount = items.length;
       const columnCount = parseInt(activeStates.gridCol.split("-")[2]);
       const rowCount = Math.ceil(itemCount / columnCount);
       const emptyCount = columnCount * rowCount - itemCount;
@@ -75,20 +91,20 @@ const ItemGrid: React.FC<ItemGridProps> = ({ filterFunction }) => {
       return totalCount;
     };
 
-    const itemDisplayCount = getItemDisplayCount(filteredItems);
+    const itemDisplayCount = getItemDisplayCount(updatedItems);
 
     // Create and assign a new item[] and add null for the rest
-    const createItemsList = (itemDisplayCount: number, filteredItems: Item[]) => {
-      if (!filteredItems) return [];
-      const itemList: (Item | null)[] = [];
+    const createItemsList = (itemDisplayCount: number, items: Item[]): (Item | null)[] => {
+      if (!items) return [];
+      let itemList: (Item | null)[] = [];
 
       for (let i = 0; i < itemDisplayCount; i++) {
-        itemList.push(filteredItems[i] ?? null);
+        itemList.push(items[i] ?? null);
       }
       return itemList;
     };
 
-    const itemList = createItemsList(itemDisplayCount, filteredItems);
+    const itemList = createItemsList(itemDisplayCount, updatedItems);
 
     setItemList(itemList);
   }, [activeStates, dbItems, filterFunction]);

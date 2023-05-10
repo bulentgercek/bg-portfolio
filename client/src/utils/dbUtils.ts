@@ -7,18 +7,33 @@
 type Sort = {
   name: string;
   id: number;
+  updatedDate: Date;
 };
 
-export const sortDbArray = <T extends Sort>(array: T[] | null, by: "name" | "id") => {
+export const sortDbArray = <T extends Sort>(
+  array: T[] | null,
+  by: "name" | "id" | "date",
+  order: "asc" | "desc" = "asc",
+) => {
   let result: T[] = [];
 
   if (array) {
+    const multiplier = order === "asc" ? 1 : -1;
+
     if (by === "name") {
-      result = array.sort((a, b) => a.name.localeCompare(b.name));
+      result = array.sort((a, b) => a.name.localeCompare(b.name) * multiplier);
     }
 
     if (by === "id") {
-      result = array.sort((a, b) => a.id - b.id);
+      result = array.sort((a, b) => (a.id - b.id) * multiplier);
+    }
+
+    if (by === "date") {
+      result = array.sort((a, b) => {
+        const dateA = new Date(a.updatedDate);
+        const dateB = new Date(b.updatedDate);
+        return (dateA.getTime() - dateB.getTime()) * multiplier;
+      });
     }
   }
   return result;

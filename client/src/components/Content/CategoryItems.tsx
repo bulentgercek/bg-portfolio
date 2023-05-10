@@ -1,11 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { Item } from "../../api/interfaces";
-import ItemGrid from "./ItemGrid";
+import ItemGrid, { SortOrderOptions } from "./ItemGrid";
 import AppContext from "../../AppContext";
 import { createCategoryItemList } from "../../utils/appUtils";
 
-const CategoryItems: React.FC = () => {
+type CategoryItemsProps = {
+  sortOrderOptions: SortOrderOptions;
+};
+
+const CategoryItems: React.FC<CategoryItemsProps> = ({ sortOrderOptions }) => {
   const { routeData, dbCategories } = useContext(AppContext);
   const [categoryItems, setCategoryItems] = useState<Item[]>([]);
 
@@ -13,7 +17,7 @@ const CategoryItems: React.FC = () => {
     if (!dbCategories || !routeData.cid) return;
     const categoryItemList = createCategoryItemList(dbCategories, routeData.cid);
     setCategoryItems(categoryItemList);
-  }, [dbCategories, routeData]);
+  }, [dbCategories, routeData, sortOrderOptions]);
 
   const filterCategoryItems = (item: Item) => {
     const index = categoryItems.findIndex((categoryItem) => categoryItem.id === item.id);
@@ -22,7 +26,7 @@ const CategoryItems: React.FC = () => {
 
   return (
     <div id="item_container" className="flex h-auto w-full">
-      <ItemGrid filterFunction={filterCategoryItems} />
+      <ItemGrid filterFunction={filterCategoryItems} sortOrderOptions={sortOrderOptions} />
     </div>
   );
 };
