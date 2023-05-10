@@ -34,4 +34,7 @@ export class Content {
   @ManyToMany(() => Asset, (asset) => asset.contents, { nullable: true })
   @JoinTable()
   assets: Asset[];
+
+  @Column({ default: 0 })
+  orderId: number;
 }
