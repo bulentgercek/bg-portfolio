@@ -8,7 +8,7 @@ const ItemContentLayout: React.FC = () => {
   const currentItem = dbItems?.find((bc) => bc.id === routeData.iid);
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl bg-blue-200 p-5">
+    <div className="flex flex-col gap-5 rounded-2xl bg-blue-200 p-5 pt-10">
       {/* Header */}
       <div className="flex w-full flex-row rounded-xl bg-blue-100 p-5">
         <div className="flex flex-col gap-2">
