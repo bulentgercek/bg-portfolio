@@ -23,8 +23,9 @@ const ItemContentLayout: React.FC = () => {
     return (
       <div id="item_contents">
         {sortedItemContents.map((itemContent) => {
-          if (itemContent.type === "imageGalleryMasonry") return <ImageGalleryMasonry content={itemContent} />;
-          if (itemContent.type === "textBlock") return <TextBlock content={itemContent} />;
+          if (itemContent.type === "imageGalleryMasonry")
+            return <ImageGalleryMasonry key={itemContent.id} content={itemContent} />;
+          if (itemContent.type === "textBlock") return <TextBlock key={itemContent.id} content={itemContent} />;
         })}
       </div>
     );
