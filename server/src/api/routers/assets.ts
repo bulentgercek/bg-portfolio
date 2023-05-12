@@ -97,7 +97,7 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
         const uploadedFileUrl = await ac.processUploadedFile(req.file);
         // Update the 'url' property of the Asset entity with the final image URL
         createdAsset.url = uploadedFileUrl;
-        createdAsset.name = req.file.originalname.replace(/\s+/g, "_");
+        createdAsset.name = createdAsset.name || req.file.originalname.replace(/\s+/g, "_");
         createdAsset.type = (await ac.getAssetTypeFromFile(uploadedFileUrl)) ?? createdAsset.type;
         validateResults.success.file = true;
       } catch (error) {
@@ -120,8 +120,8 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
       }
     }
 
-    const savedAsset = await ac.addCreated(Asset, createdAsset);
-    res.json(savedAsset);
+    // const savedAsset = await ac.addCreated(Asset, createdAsset);
+    // res.json(savedAsset);
   } catch (error) {
     consoleRouteError(error, req);
     next(error);
