@@ -65,7 +65,7 @@ export namespace ApiController {
       // Update the success, result, and error objects based on the validation results
       success.params = validated.success;
       result.params = validated.success && validated.data;
-      error.params = !validated.success && validated.error;
+      if (!validated.success) error.params = validated.error;
     }
 
     // If a body is provided in the zInput object, validate it
@@ -77,15 +77,16 @@ export namespace ApiController {
       // Update the success, result, and error objects based on the validation results
       success.body = validated.success;
       result.body = validated.success && validated.data;
-      error.body = !validated.success && validated.error;
+      if (!validated.success) error.body = validated.error;
     }
 
     // Create the final validated object with success, result, and error properties
     const validatedFinal: ValidateResults<TParams, TBody> = {
       success: success,
       result: result as Result,
-      error: error,
     };
+
+    if (Object.keys(error).length > 0) validatedFinal.error = error;
 
     // If there is any error in params or body, throw a ValidationError with the error details
     if (error.params || error.body) {
@@ -196,7 +197,7 @@ export namespace ApiController {
       const dbResult = await dsm.save(entityClass, newItem, options);
       return dbResult;
     } catch (error) {
-      const errorMessage = `Error in addWithCreate for: ${validateResults.result.body}`;
+      const errorMessage = `Error in addWithCreate for: ${validateResults.result.body.id}`;
       throw new DatabaseError(errorMessage);
     }
   };
@@ -217,7 +218,7 @@ export namespace ApiController {
       const dbResult = await dsm.remove(targetOrEntity, validateResults.result.params, options);
       return dbResult;
     } catch (error) {
-      const errorMessage = `Error in remove with: ${validateResults.result.params}`;
+      const errorMessage = `Error removing asset with id: ${validateResults.result.params.id}. Probably it's in use.`;
       throw new DatabaseError(errorMessage);
     }
   };
@@ -241,7 +242,7 @@ export namespace ApiController {
       const dbResult = await dsm.save(entityClass, targetEntity, options);
       return dbResult;
     } catch (error) {
-      const errorMessage = `Error in update on: ${targetEntity}`;
+      const errorMessage = `Error updating id: ${validateResults.result.params}`;
       throw new DatabaseError(errorMessage);
     }
   };

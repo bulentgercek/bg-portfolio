@@ -30,7 +30,7 @@ export class Item {
   @Column({ default: false })
   featured: boolean;
 
-  @OneToOne(() => Asset, { nullable: true })
+  @OneToOne(() => Asset, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn()
   featuredImageAsset: Asset | null;
 

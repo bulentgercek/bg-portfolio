@@ -226,8 +226,8 @@ router.delete("/:id", async (req, res, next) => {
 
     if (!dbAsset) throw new DatabaseError(`Asset not found: ${validateResults.result.params?.id}`);
 
-    await ac.deleteFile(dbAsset.url);
     const removedAsset = await ac.remove(Asset, validateResults);
+    await ac.deleteFile(dbAsset.url);
     res.json(removedAsset);
   } catch (error) {
     consoleRouteError(error, req);
