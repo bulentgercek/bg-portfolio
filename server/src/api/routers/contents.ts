@@ -75,6 +75,7 @@ router.post("/", async (req, res, next) => {
           columns: z.number().optional(),
           item: z.number().optional(),
           assets: z.array(z.number()).optional(),
+          orderId: z.number().optional(),
         }),
       },
       reqData: { body: req.body },
@@ -127,6 +128,7 @@ router.put("/:id", async (req, res, next) => {
           columns: z.number().optional(),
           item: z.number().optional(),
           assets: z.array(z.number()).optional(),
+          orderId: z.number().optional(),
         }),
       },
       reqData: {
