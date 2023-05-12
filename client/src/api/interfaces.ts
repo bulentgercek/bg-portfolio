@@ -54,6 +54,7 @@ export type Content = {
   columns: number;
   item: Item;
   assets: Asset[] | null;
+  orderId: number;
 };
 
 /**

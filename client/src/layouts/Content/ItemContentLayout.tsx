@@ -4,12 +4,31 @@ import go_category from "../../assets/go_category.png";
 import AppContext from "../../AppContext";
 import Breadcrumbs from "../../components/Content/Breadcrumbs";
 import { Link } from "react-router-dom";
-import Masonry from "react-masonry-css";
+import { sortDbArray } from "../../utils/dbUtils";
+import { Content } from "../../api/interfaces";
+import ImageGalleryMasonry from "../../components/Content/ImageGalleryMasonry";
+import TextBlock from "../../components/Content/TextBlock";
 
 const ItemContentLayout: React.FC = () => {
   const { breadcrumbs, routeData, dbItems } = useContext(AppContext);
   const currentCategory = breadcrumbs.find((bc) => bc.id === routeData.cid);
   const currentItem = dbItems?.find((bc) => bc.id === routeData.iid);
+
+  const itemContents = (): JSX.Element => {
+    const currentItemContents = currentItem?.contents;
+    if (!currentItemContents || currentItemContents?.length === 0) return <></>;
+
+    const sortedItemContents: Content[] = sortDbArray(currentItemContents, "orderId");
+
+    return (
+      <div id="item_contents">
+        {sortedItemContents.map((itemContent) => {
+          if (itemContent.type === "imageGalleryMasonry") return <ImageGalleryMasonry content={itemContent} />;
+          if (itemContent.type === "textBlock") return <TextBlock content={itemContent} />;
+        })}
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-5 rounded-2xl bg-blue-200 p-5 pt-10">
@@ -34,53 +53,10 @@ const ItemContentLayout: React.FC = () => {
         </div>
       </div>
 
-      {/* Item Content */}
-      <ImageGalleryMasonry />
+      {/* Item Contents */}
+      {itemContents()}
     </div>
   );
-};
-
-/**
- *
- * @returns
- */
-
-const ImageGalleryMasonry: React.FC = () => {
-  // Add your image URLs here
-  const imageUrls = [
-    "http://localhost:3000/uploads/1683287625747-anadolu_insurance_1.png",
-    "http://localhost:3000/uploads/1683375632915-garanti_bank_basket.jpg",
-    "http://localhost:3000/uploads/anadolu_sigorta_koltuk_making_of.jpg",
-    "http://localhost:3000/uploads/anadolu_sigorta_koltuk_making_of.jpg",
-    "http://localhost:3000/uploads/1683375632915-garanti_bank_basket.jpg",
-    "http://localhost:3000/uploads/anadolu_sigorta_koltuk_making_of.jpg",
-  ];
-
-  const masonryBreakpoints = {
-    default: 3,
-    1100: 2,
-    700: 1,
-  };
-
-  return (
-    <div>
-      <Masonry breakpointCols={masonryBreakpoints} className="masonry-grid" columnClassName="masonry-grid_column">
-        {imageUrls.map((url, index) => (
-          <div key={index} className="masonry-item">
-            <img src={url} alt={`Gallery item ${index + 1}`} crossOrigin="anonymous" loading="lazy" />
-          </div>
-        ))}
-      </Masonry>
-    </div>
-  );
-};
-
-/**
- *
- * @returns
- */
-const TextBlock: React.FC = () => {
-  return <div>TextBlock</div>;
 };
 
 export default ItemContentLayout;

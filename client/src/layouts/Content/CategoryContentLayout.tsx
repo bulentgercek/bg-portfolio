@@ -140,7 +140,7 @@ const CategoryContentLayout: React.FC = () => {
               <Transition as={Fragment} leave="trans-d200" leaveFrom="opacity-100" leaveTo="opacity-0">
                 <Listbox.Options className="absolute z-30 mt-1 w-[calc(100%)] rounded-2xl border-2 border-dashed border-indigo-400 bg-indigo-200 p-2 align-baseline">
                   {currentCategory.childCategories?.map((category, index) => (
-                    <Link to={`/category/${category.id}`}>
+                    <Link key={category.id} to={`/category/${category.id}`}>
                       <Listbox.Option
                         key={category.id}
                         value={category.id}
