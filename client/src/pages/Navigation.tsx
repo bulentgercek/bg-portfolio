@@ -52,6 +52,7 @@ const Navigation: React.FC = () => {
     </div>
   );
 };
+
 /**
  * Navigation Element Function Component
  */

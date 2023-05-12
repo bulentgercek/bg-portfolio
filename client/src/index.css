@@ -32,3 +32,24 @@
     @apply transition-all duration-700 ease-out;
   }
 }
+
+.masonry-grid {
+  display: flex;
+  margin-left: -1rem;
+  width: auto;
+}
+
+.masonry-grid_column {
+  padding-left: 1rem;
+  background-clip: padding-box;
+}
+
+.masonry-item {
+  @apply mb-4;
+}
+
+.masonry-item img {
+  @apply h-auto w-full;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
