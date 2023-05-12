@@ -8,11 +8,12 @@ type Sort = {
   name: string;
   id: number;
   updatedDate: Date;
+  orderId: number;
 };
 
 export const sortDbArray = <T extends Sort>(
   array: T[] | null,
-  by: "name" | "id" | "date",
+  by: "name" | "id" | "date" | "orderId",
   order: "asc" | "desc" = "asc",
 ) => {
   let result: T[] = [];
@@ -34,6 +35,12 @@ export const sortDbArray = <T extends Sort>(
         const dateB = new Date(b.updatedDate);
         return (dateA.getTime() - dateB.getTime()) * multiplier;
       });
+    }
+
+    if (by === "orderId") {
+      result = array.sort((a, b) => (
+        a.OrderId - b.OrderId) * multiplier);
+      )
     }
   }
   return result;
