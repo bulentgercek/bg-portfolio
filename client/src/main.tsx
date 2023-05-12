@@ -6,7 +6,9 @@ import "./index.css";
 const isProduction = import.meta.env.PROD;
 
 const RootComponent = () => {
-  if (isProduction) {
+  const user = window.localStorage.getItem("user");
+
+  if (!user || user !== "bulentgercek") {
     return (
       <div className={`p-12 font-medium`}>
         <h1>🚧 Under Construction 🚧</h1>
