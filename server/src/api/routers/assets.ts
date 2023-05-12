@@ -120,8 +120,8 @@ router.post("/", multerUpload.single("url"), async (req, res, next) => {
       }
     }
 
-    // const savedAsset = await ac.addCreated(Asset, createdAsset);
-    // res.json(savedAsset);
+    const savedAsset = await ac.addCreated(Asset, createdAsset);
+    res.json(savedAsset);
   } catch (error) {
     consoleRouteError(error, req);
     next(error);
