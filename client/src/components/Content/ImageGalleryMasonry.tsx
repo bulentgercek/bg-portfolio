@@ -22,8 +22,9 @@ const ImageGalleryMasonry: React.FC<ImageGalleryMasonryProps> = ({ content }) =>
     <div>
       <Masonry breakpointCols={masonryBreakpoints} className="masonry-grid" columnClassName="masonry-grid_column">
         {assets.map((asset, index) => (
-          <div key={`${asset.id}_${asset.name}`} className="masonry-item">
+          <div key={`${asset.id}_${asset.name}`} className="mb-5 flex flex-col gap-2">
             <img src={asset.url ?? ""} alt={`Gallery item ${index + 1}`} crossOrigin="anonymous" loading="lazy" />
+            <p>{asset.name}</p>
           </div>
         ))}
       </Masonry>

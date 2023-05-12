@@ -44,10 +44,6 @@
   background-clip: padding-box;
 }
 
-.masonry-item {
-  @apply mb-4;
-}
-
 .masonry-item img {
   @apply h-auto w-full;
   image-rendering: -webkit-optimize-contrast;
