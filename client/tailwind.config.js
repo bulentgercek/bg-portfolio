@@ -36,9 +36,6 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    // Or with a custom prefix:
-    require("@headlessui/tailwindcss")({ prefix: "ui" }),
-  ],
+  plugins: [require("@headlessui/tailwindcss")({ prefix: "ui" })],
   darkMode: "class",
 };
