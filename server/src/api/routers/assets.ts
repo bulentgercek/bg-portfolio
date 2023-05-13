@@ -167,7 +167,7 @@ router.put("/:id", multerUpload.single("url"), async (req, res, next) => {
       ...filteredBody,
     };
 
-    if (updatedAsset.url) {
+    if (filteredBody.url) {
       // Delete the current image file if it's in server
       // Because foreign file url defined
       await ac.deleteFile(dbAsset.url);
