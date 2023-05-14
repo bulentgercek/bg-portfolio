@@ -344,6 +344,7 @@ export namespace ApiController {
 
       switch (ext) {
         case ".jpg":
+        case ".jpeg":
         case ".png":
           return AssetType.Image;
         case ".txt":
