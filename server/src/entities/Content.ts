@@ -5,6 +5,7 @@ import { Item } from "./Item";
 export enum ContentType {
   TextBlock = "textBlock",
   ImageGalleryMasonry = "imageGalleryMasonry",
+  VideoGallery = "videoGallery",
 }
 
 @Entity({ name: "contents" })
