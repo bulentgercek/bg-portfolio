@@ -16,8 +16,15 @@ const VideoGallery: React.FC<VideoGalleryProps> = ({ content }) => {
   return (
     <div>
       {assets.map((asset, index) => (
-        <div key={asset.id}>
-          <ReactPlayer url={asset.url ?? ""} width="100%" height="auto" controls={true} playing={false} />
+        <div key={asset.id} className="relative" style={{ paddingTop: "56.25%" }}>
+          <ReactPlayer
+            url={asset.url ?? ""}
+            className="absolute left-0 top-0"
+            width="100%"
+            height="100%"
+            controls={true}
+            playing={false}
+          />
         </div>
       ))}
     </div>
