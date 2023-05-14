@@ -8,6 +8,7 @@ import { sortDbArray } from "../../utils/dbUtils";
 import { Content } from "../../api/interfaces";
 import ImageGalleryMasonry from "../../components/Content/ImageGalleryMasonry";
 import TextBlock from "../../components/Content/TextBlock";
+import VideoGallery from "../../components/Content/VideoGallery";
 
 const ItemContentLayout: React.FC = () => {
   const { breadcrumbs, routeData, dbItems } = useContext(AppContext);
@@ -26,6 +27,7 @@ const ItemContentLayout: React.FC = () => {
           if (itemContent.type === "imageGalleryMasonry")
             return <ImageGalleryMasonry key={itemContent.id} content={itemContent} />;
           if (itemContent.type === "textBlock") return <TextBlock key={itemContent.id} content={itemContent} />;
+          if (itemContent.type === "videoGallery") return <VideoGallery key={itemContent.id} content={itemContent} />;
         })}
       </div>
     );
