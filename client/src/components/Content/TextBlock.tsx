@@ -1,8 +1,8 @@
 import { Asset, Content } from "../../api/interfaces";
 
 /**
- *
- * @returns
+ * Text Block FC
+ * @returns JSX.ELement
  */
 type TextBlockProps = {
   content: Content;

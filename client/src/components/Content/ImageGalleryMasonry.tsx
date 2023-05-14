@@ -2,7 +2,7 @@ import Masonry from "react-masonry-css";
 import { Asset, Content } from "../../api/interfaces";
 
 /**
- * Image Gallery with Masonry
+ * Image Gallery with Masonry FC
  * @returns JSX.ELement
  */
 type ImageGalleryMasonryProps = {
