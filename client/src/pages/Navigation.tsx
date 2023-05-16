@@ -72,11 +72,11 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
           ${
             isCategory(navElement.element) &&
             (isThisCategoryInBreadcrumbs(navElement.element, breadcrumbs, "number") as number) % 2 === 0
-              ? `trans-d500 rounded-2xl bg-blue-100 p-4 text-indigo-700 hover:pl-6`
+              ? `trans-d500 rounded-2xl bg-blue-100 p-4 text-indigo-700 hover:pl-5`
               : isCategory(navElement.element) &&
                 (isThisCategoryInBreadcrumbs(navElement.element, breadcrumbs, "number") as number) % 2 === 1
-              ? `trans-d500 rounded-2xl bg-blue-200 p-4 text-indigo-900 hover:pl-6`
-              : `trans-d500 hover:pl-2`
+              ? `trans-d500 rounded-2xl bg-blue-200 p-4 text-indigo-900 hover:pl-5`
+              : `trans-d500 hover:pl-1`
           } 
           ${
             isSelectedNavElementACategory(navElement, routeData)
@@ -84,13 +84,11 @@ const NavigationElement: React.FC<NavigationElementProps> = ({ navElement, route
               : ``
           } ${
             isSelectedNavElementAnItem(navElement, routeData) && !isCategory(navElement.element)
-              ? `trans-d500 rounded-2xl bg-gradient-to-r from-blue-200/30 p-2.5 pl-4 text-blue-600 hover:pl-6`
+              ? `trans-d500 rounded-2xl bg-gradient-to-r from-blue-200/30 p-2.5 text-blue-600 hover:pl-[15px]`
               : ``
           }
           ${
-            isItem(navElement.element) &&
-            !isItemSelected(navElement.element, routeData) &&
-            `trans-d500 text-indigo-900 hover:pl-2`
+            isItem(navElement.element) && !isItemSelected(navElement.element, routeData) && `trans-d500 text-indigo-900`
           }`}
         >
           {navElement.element.name}

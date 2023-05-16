@@ -3,13 +3,16 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    @apply text-base;
+  }
   :root {
     /* General Paddings */
     --padding-md: 40px;
     --padding-sm: 30px;
     /* Navigation Variables */
     --sidebar-open-width: calc(var(--nav-width) + 7px);
-    --nav-width: 325px;
+    --nav-width: 400px;
     --logo-area-open-width: calc(var(--sidebar-open-width) - 42px);
     --logo-area-close-width: 124px;
     --logo-area-left-md: 60px;
