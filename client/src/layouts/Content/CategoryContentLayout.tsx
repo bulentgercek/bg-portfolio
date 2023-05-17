@@ -95,7 +95,8 @@ const CategoryContentLayout: React.FC = () => {
    * @returns JSX.Element | undefined
    */
   const childCategoriesNavigation = (): JSX.Element | undefined => {
-    const contentSizeForBoxChange = 830;
+    const contentSizeForBoxChange = 860;
+    const contentSizeForSubCategoriesName = 270;
 
     if (!currentCategory || currentCategory.childCategories?.length === 0) return;
 
@@ -107,6 +108,10 @@ const CategoryContentLayout: React.FC = () => {
         : index === childCategoryCount - 1
         ? "hover:pl-3 pr-5 rounded-r-2xl rounded-l-md"
         : "hover:px-3 rounded-md";
+    };
+
+    const subCategoriesNameHandler = () => {
+      return contentSize > contentSizeForSubCategoriesName ? "Subcategories" : "SubC...";
     };
 
     return (
@@ -136,7 +141,7 @@ const CategoryContentLayout: React.FC = () => {
           <div className="relative w-fit">
             <Listbox value={""}>
               <Listbox.Button className="trans-d200 flex flex-row items-center rounded-2xl border-2 border-dashed border-indigo-400 p-2 pl-5 text-base font-bold text-indigo-900 hover:bg-blue-100 hover:text-blue-600">
-                <p>Filter By Subcategories</p>
+                <p>{subCategoriesNameHandler()}</p>
                 <ChevronDownIcon className="h-6 w-6 text-slate-500 group-hover:text-slate-50" />
               </Listbox.Button>
               <Transition as={Fragment} leave="trans-d200" leaveFrom="opacity-100" leaveTo="opacity-0">
@@ -188,7 +193,7 @@ const CategoryContentLayout: React.FC = () => {
                 <Listbox.Option
                   key={option.id}
                   value={option}
-                  className="ui-active:bg-blue-600 ui-active:text-white ui-not-active:bg-white/0 ui-not-active:text-indigo-900 flex cursor-pointer flex-row rounded-xl bg-white p-2 font-bold"
+                  className="ui-active:bg-blue-600 ui-active:text-white ui-not-active:bg-white/0 ui-not-active:text-indigo-900  flex cursor-pointer flex-row rounded-xl bg-white p-2 font-bold"
                 >
                   <ChevronRightIcon className="ui-selected:block hidden w-6" />
                   <span>{option.name}</span>
