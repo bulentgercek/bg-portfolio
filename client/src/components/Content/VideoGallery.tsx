@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Masonry from "react-masonry-css";
-import ReactPlayer from "react-player/vimeo";
+import React, { useEffect, useRef } from "react";
+import Player from "@vimeo/player";
 import { Asset, Content } from "../../api/interfaces";
 
 /**
@@ -13,44 +12,41 @@ type VideoGalleryProps = {
 
 const VideoGallery: React.FC<VideoGalleryProps> = ({ content }) => {
   const assets: Asset[] = content?.assets ?? [];
-  const [masonryBreakpoints, setMasonryBreakPoints] = useState({});
-
-  const sizes = [900, 1200];
+  const playerRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
-    let newBreakPoints = { default: content.columns };
+    assets.forEach((asset, index) => {
+      if (playerRefs.current[index] !== null) {
+        const player = new Player(playerRefs.current[index] as HTMLElement, {
+          url: asset.url ?? undefined,
+          controls: true,
+          responsive: true,
+        });
 
-    for (let i = 0; i < content.columns; i++) {
-      if (i > 0) newBreakPoints = { ...newBreakPoints, [sizes[i - 1]]: i };
-    }
+        // Example of an event listener
+        player.on("play", () => {
+          console.log(`Video ${index} is playing`);
+        });
+      }
+    });
 
-    setMasonryBreakPoints(newBreakPoints);
-  }, []);
-
-  const setSituationalMaxHeight = () => {
-    return content.columns === 1 ? "max-h-[500px]" : "";
-  };
-
-  const setSituationalTextAlignment = () => {
-    return content.columns === 1 ? "text-center" : "text-start";
-  };
+    return () => {
+      // Clean up players on unmount
+      playerRefs.current.forEach((playerElement, index) => {
+        if (playerElement !== null) {
+          const player = new Player(playerElement);
+          player.unload();
+          playerRefs.current[index] = null;
+        }
+      });
+    };
+  }, [assets]);
 
   return (
     <div>
-      <Masonry breakpointCols={masonryBreakpoints} className="masonry-grid" columnClassName="masonry-grid_column">
-        {assets.map((asset, index) => (
-          <div key={asset.id} className="relative" style={{ paddingTop: "56.25%" }}>
-            <ReactPlayer
-              url={asset.url ?? ""}
-              className="absolute left-0 top-0"
-              width="100%"
-              height="100%"
-              controls={true}
-              playing={false}
-            />
-          </div>
-        ))}
-      </Masonry>
+      {assets.map((asset, index) => (
+        <div key={asset.id} ref={(el) => (playerRefs.current[index] = el)} className="video-player" />
+      ))}
     </div>
   );
 };
