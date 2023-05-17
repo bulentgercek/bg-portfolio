@@ -81,7 +81,7 @@ const AppLayout: React.FC = () => {
   // Media query function and hook for controlling window resize
   const mediaQueryChangeHandler = (currentMql: MediaQueryList) => {
     if (currentMql.matches) {
-      // setNavToggleOpen(false);
+      setNavToggleOpen(false);
       setBackgroundFillActive(true);
       return;
     }

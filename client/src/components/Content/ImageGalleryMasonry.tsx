@@ -14,12 +14,6 @@ const ImageGalleryMasonry: React.FC<ImageGalleryMasonryProps> = ({ content }) =>
   const assets: Asset[] = content?.assets ?? [];
   const [masonryBreakpoints, setMasonryBreakPoints] = useState({});
 
-  // const masonryBreakpoints = {
-  //   default: 3,
-  //   1200: 2,
-  //   600: 1,
-  // };
-
   const sizes = [600, 1200];
 
   useEffect(() => {
