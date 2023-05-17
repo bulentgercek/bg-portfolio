@@ -22,7 +22,7 @@ const ItemContentLayout: React.FC = () => {
     const sortedItemContents: Content[] = sortDbArray(currentItemContents, "orderId");
 
     return (
-      <div id="item_contents">
+      <div id="item_contents" className="flex flex-col gap-5">
         {sortedItemContents.map((itemContent) => {
           if (itemContent.type === "imageGalleryMasonry")
             return <ImageGalleryMasonry key={itemContent.id} content={itemContent} />;
