@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Masonry from "react-masonry-css";
 import { Asset, Content } from "../../api/interfaces";
 
@@ -11,11 +12,36 @@ type ImageGalleryMasonryProps = {
 
 const ImageGalleryMasonry: React.FC<ImageGalleryMasonryProps> = ({ content }) => {
   const assets: Asset[] = content?.assets ?? [];
+  const [masonryBreakpoints, setMasonryBreakPoints] = useState({});
 
-  const masonryBreakpoints = {
-    default: 3,
-    1200: 2,
-    600: 1,
+  // const masonryBreakpoints = {
+  //   default: 3,
+  //   1200: 2,
+  //   600: 1,
+  // };
+
+  const sizes = [600, 1200];
+
+  useEffect(() => {
+    let newBreakPoints = { default: content.columns };
+
+    for (let i = 0; i < content.columns; i++) {
+      if (i > 0) newBreakPoints = { ...newBreakPoints, [sizes[i - 1]]: i };
+    }
+
+    setMasonryBreakPoints(newBreakPoints);
+  }, []);
+
+  useEffect(() => {
+    console.log(masonryBreakpoints);
+  }, [masonryBreakpoints]);
+
+  const setSituationalMaxHeight = () => {
+    return content.columns === 1 ? "max-h-[500px]" : "";
+  };
+
+  const setSituationalTextAlignment = () => {
+    return content.columns === 1 ? "text-center" : "text-start";
   };
 
   return (
@@ -23,8 +49,14 @@ const ImageGalleryMasonry: React.FC<ImageGalleryMasonryProps> = ({ content }) =>
       <Masonry breakpointCols={masonryBreakpoints} className="masonry-grid" columnClassName="masonry-grid_column">
         {assets.map((asset, index) => (
           <div key={`${asset.id}_${asset.name}`} className="mb-5 flex flex-col gap-2">
-            <img src={asset.url ?? ""} alt={`Gallery item ${index + 1}`} crossOrigin="anonymous" loading="lazy" />
-            <p>{asset.name}</p>
+            <img
+              className={`w-full object-contain ${setSituationalMaxHeight()}`}
+              src={asset.url ?? ""}
+              alt={asset.name}
+              crossOrigin="anonymous"
+              loading="lazy"
+            />
+            <p className={`text-sm italic text-indigo-700 ${setSituationalTextAlignment()}`}>{asset.name}</p>
           </div>
         ))}
       </Masonry>
