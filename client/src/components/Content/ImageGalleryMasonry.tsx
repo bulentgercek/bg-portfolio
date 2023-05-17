@@ -32,10 +32,6 @@ const ImageGalleryMasonry: React.FC<ImageGalleryMasonryProps> = ({ content }) =>
     setMasonryBreakPoints(newBreakPoints);
   }, []);
 
-  useEffect(() => {
-    console.log(masonryBreakpoints);
-  }, [masonryBreakpoints]);
-
   const setSituationalMaxHeight = () => {
     return content.columns === 1 ? "max-h-[500px]" : "";
   };
