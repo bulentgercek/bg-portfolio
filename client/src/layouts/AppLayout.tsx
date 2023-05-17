@@ -62,7 +62,7 @@ const closeStates: States = {
  */
 const AppLayout: React.FC = () => {
   const [states, setStates] = useState<States>(closeStates);
-  const [navToggleOpen, setNavToggleOpen] = useState<boolean>(true);
+  const [navToggleOpen, setNavToggleOpen] = useState<boolean>(false);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
   const [contentRef, contentSizeData] = useResizeObserver<HTMLDivElement>();
 
@@ -81,11 +81,11 @@ const AppLayout: React.FC = () => {
   // Media query function and hook for controlling window resize
   const mediaQueryChangeHandler = (currentMql: MediaQueryList) => {
     if (currentMql.matches) {
-      setNavToggleOpen(false);
+      // setNavToggleOpen(false);
       setBackgroundFillActive(true);
       return;
     }
-    setNavToggleOpen(true);
+    // setNavToggleOpen(true);
     setBackgroundFillActive(false);
   };
 
@@ -93,7 +93,7 @@ const AppLayout: React.FC = () => {
   useEffect(() => {
     const mql: MediaQueryList = window.matchMedia("(width < 1024px)");
     mql.addEventListener("change", () => mediaQueryChangeHandler(mql));
-    mediaQueryChangeHandler(mql); // check the current size when the page loads
+    // mediaQueryChangeHandler(mql); // check the current size when the page loads
     return () => mql.removeEventListener("change", () => mediaQueryChangeHandler(mql));
   }, []);
 
