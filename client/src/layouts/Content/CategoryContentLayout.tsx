@@ -7,7 +7,7 @@ import Breadcrumbs from "../../components/Content/Breadcrumbs";
 import CategoryItems from "../../components/Content/CategoryItems";
 import { Listbox, Transition } from "@headlessui/react";
 import {
-  ArrowsUpDownIcon,
+  ArrowUpIcon,
   BriefcaseIcon,
   ChevronDownIcon,
   ChevronRightIcon,
@@ -23,8 +23,8 @@ type SortOrderByListOptions = {
 };
 
 export const sortOrderByListBoxOptions: SortOrderByListOptions[] = [
-  { id: "orderByName", name: "Order By Name" },
-  { id: "orderByDate", name: "Order By Update" },
+  { id: "orderByName", name: "By Name" },
+  { id: "orderByDate", name: "Update" },
 ];
 
 const CategoryContentLayout: React.FC = () => {
@@ -95,6 +95,8 @@ const CategoryContentLayout: React.FC = () => {
    * @returns JSX.Element | undefined
    */
   const childCategoriesNavigation = (): JSX.Element | undefined => {
+    const contentSizeForBoxChange = 830;
+
     if (!currentCategory || currentCategory.childCategories?.length === 0) return;
 
     const childCategoryCount = currentCategory.childCategories?.length ?? 1;
@@ -109,7 +111,7 @@ const CategoryContentLayout: React.FC = () => {
 
     return (
       <>
-        {contentSize > 980 && (
+        {contentSize > contentSizeForBoxChange && (
           <div
             id="navigation"
             className="flex flex-row items-center rounded-2xl border-2 border-dashed border-indigo-400"
@@ -130,7 +132,7 @@ const CategoryContentLayout: React.FC = () => {
             ))}
           </div>
         )}
-        {contentSize <= 980 && (
+        {contentSize <= contentSizeForBoxChange && (
           <div className="relative w-fit">
             <Listbox value={""}>
               <Listbox.Button className="trans-d200 flex flex-row items-center rounded-2xl border-2 border-dashed border-indigo-400 p-2 pl-5 text-base font-bold text-indigo-900 hover:bg-blue-100 hover:text-blue-600">
@@ -159,6 +161,14 @@ const CategoryContentLayout: React.FC = () => {
       </>
     );
   };
+
+  /**
+   * Order Items List Box Defaults
+   */
+  useEffect(() => {
+    if (sortOrderByListSelected.id === "orderByName") setSortOrderSelected("asc");
+    if (sortOrderByListSelected.id === "orderByDate") setSortOrderSelected("desc");
+  }, [sortOrderByListSelected]);
 
   /**
    * Order Items List Box
@@ -191,25 +201,6 @@ const CategoryContentLayout: React.FC = () => {
     );
   };
 
-  /**
-   * Order Button For Item Grid
-   * @returns JSX.Element
-   */
-  const sortOrderButton = (): JSX.Element => {
-    const sortOrderHandler = () => {
-      setSortOrderSelected(sortOrderSelected === "asc" ? "desc" : "asc");
-    };
-
-    return (
-      <button
-        className="trans-d200 group flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-300 p-2 hover:bg-indigo-500"
-        onClick={sortOrderHandler}
-      >
-        <ArrowsUpDownIcon className="trans-d200 h-6 w-6 group-hover:text-slate-50"></ArrowsUpDownIcon>
-      </button>
-    );
-  };
-
   const flexWrapHandler = () => {
     if (contentSize >= 650) {
       return "flex-nowrap";
@@ -238,10 +229,7 @@ const CategoryContentLayout: React.FC = () => {
           {goUpperCategory()}
           {childCategoriesNavigation()}
         </div>
-        <div className="flex flex-row items-center gap-4">
-          {sortOrderByListBox()}
-          {sortOrderButton()}
-        </div>
+        <div className="flex flex-row items-center gap-4">{sortOrderByListBox()}</div>
       </div>
 
       {/* Category Items Component */}
