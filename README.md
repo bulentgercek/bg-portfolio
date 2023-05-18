@@ -1,4 +1,4 @@
-# BG Portfolio Full Stack Web Site<a name="0"></a>
+# BG Portfolio Full Stack Web App<a name="0"></a>
 
 ## Index
 
@@ -8,7 +8,7 @@
 
 ## 1. Overview<a name="1"></a>
 
-This is my personal website Node.js development repository. The purpose of this website was not basically to have a
+This is full stack Node.js web app for my personal website. The purpose of this application was not basically to have a
 portfolio site. The aim was to develop my programming culture by trying many techniques while learning and to create a
 full study by bringing together the methods that you find closest to my vision. In this sense, it is a very educational
 and developmental study.

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Player from "@vimeo/player";
 import { Asset, Content } from "../../api/interfaces";
 
@@ -12,19 +12,7 @@ type VideoGalleryProps = {
 
 const VideoGallery: React.FC<VideoGalleryProps> = ({ content }) => {
   const assets: Asset[] = content?.assets ?? [];
-  const [masonryBreakpoints, setMasonryBreakPoints] = useState({});
   const playerRefs = useRef<(HTMLElement | null)[]>([]);
-  const sizes = [600, 1200];
-
-  useEffect(() => {
-    let newBreakPoints = { default: content.columns };
-
-    for (let i = 0; i < content.columns; i++) {
-      if (i > 0) newBreakPoints = { ...newBreakPoints, [sizes[i - 1]]: i };
-    }
-
-    setMasonryBreakPoints(newBreakPoints);
-  }, []);
 
   useEffect(() => {
     assets.forEach((asset, index) => {
@@ -55,12 +43,12 @@ const VideoGallery: React.FC<VideoGalleryProps> = ({ content }) => {
   }, [assets]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5">
+    <div className="flex flex-row flex-wrap items-center justify-center gap-5">
       {assets.map((asset, index) => (
         <div
           key={asset.id}
           ref={(el) => (playerRefs.current[index] = el)}
-          className="m-auto h-auto w-full max-w-[800px]"
+          className="m-auto h-auto w-full max-w-[600px]"
         />
       ))}
     </div>
