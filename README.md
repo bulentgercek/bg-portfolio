@@ -10,10 +10,8 @@
 
 This is full stack Node.js web app for my personal website. The purpose of this application was not basically to have a
 portfolio site. The aim was to develop my programming culture by trying many techniques while learning and to create a
-full study by bringing together the methods that you find closest to my vision. In this sense, it is a very educational
-and developmental study.
-
-> :pushpin: This project currently on **Work In Progress** :memo:.
+full study by bringing together the methods that you find closest to my vision. In this sense, it was a very educational
+and developmental study. Now, its done and you can visit safely :)
 
 **Website URL** : [https://bulentgercek.com](https://bulentgercek.com)
 
@@ -40,7 +38,7 @@ basically left the same both in terms of performance and for learning purposes. 
 follows.
 
 - Typescript
-- Express / Cors / Helmet / Dotenv
+- Express / Cors / Helmet / Dotenv / Multer
 - Postgres
 - TypeORM
 - Zod
@@ -54,7 +52,7 @@ follows.
 - Vite
 - React
 - Axios
-- ...
+- Tailwindcss
 
 [⬆Top](#0)
 
