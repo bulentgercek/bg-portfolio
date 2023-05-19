@@ -5,14 +5,14 @@ import AppContext from "../AppContext";
 import bg_logo from "../assets/bg_logo.svg";
 import nav_list_switch_close from "../assets/nav_list_switch_close.svg";
 import nav_list_switch_open from "../assets/nav_list_switch_open.svg";
+import { createStateCollection, createStateData } from "../components/Content";
 import { useResizeObserver } from "../hooks/useResizeObserver";
-import { StatesData, States } from "../pages";
 import Content from "../pages/Content";
 import Footer from "../pages/Footer";
 import Navigation from "../pages/Navigation";
 
 // Page Element States Data
-const statesData: StatesData = {
+const stateData = createStateData({
   sidebarWidth: {
     w0: "w-0",
     wSidebar: "w-sidebar-open",
@@ -37,44 +37,45 @@ const statesData: StatesData = {
     wPercentMinusSidebar: `w-[calc(100%-var(--sidebar-open-width))]`,
     wFull: "w-full",
   },
-};
+});
 
-// Assign Page Element Default States from States Data
-// Page Elements Open States
-const openStates: States = {
-  sidebarWidth: statesData.sidebarWidth.wSidebar,
-  logoAreaWidth: statesData.logoAreaWidth.open,
-  navListSwitch: statesData.navListSwitch.close,
-  sidebarGap: statesData.sidebarGap.gap20px,
-  contentAreaWidth: statesData.contentAreaWidth.wPercentMinusSidebar,
-};
-// Page Elements Close States
-const closeStates: States = {
-  sidebarWidth: statesData.sidebarWidth.w0,
-  logoAreaWidth: statesData.logoAreaWidth.close,
-  navListSwitch: statesData.navListSwitch.open,
-  sidebarGap: statesData.sidebarGap.gap0px,
-  contentAreaWidth: statesData.contentAreaWidth.wFull,
-};
+const stateCollection = createStateCollection(stateData, {
+  openStates: {
+    sidebarWidth: stateData.sidebarWidth.wSidebar,
+    logoAreaWidth: stateData.logoAreaWidth.open,
+    navListSwitch: stateData.navListSwitch.close,
+    sidebarGap: stateData.sidebarGap.gap20px,
+    contentAreaWidth: stateData.contentAreaWidth.wPercentMinusSidebar,
+    backgroundFill: "",
+  },
+  closeStates: {
+    sidebarWidth: stateData.sidebarWidth.w0,
+    logoAreaWidth: stateData.logoAreaWidth.close,
+    navListSwitch: stateData.navListSwitch.open,
+    sidebarGap: stateData.sidebarGap.gap0px,
+    contentAreaWidth: stateData.contentAreaWidth.wFull,
+    backgroundFill: "",
+  },
+});
 
 /**
  * Base Layout Function Component
  */
 const AppLayout: React.FC = () => {
-  const [states, setStates] = useState<States>(closeStates);
+  const [activeStates, setActiveStates] = useState(stateCollection.closeStates);
   const [navToggleOpen, setNavToggleOpen] = useState<boolean>(false);
   const [backgroundFillActive, setBackgroundFillActive] = useState<boolean>(false);
   const [contentRef, contentSizeData] = useResizeObserver<HTMLDivElement>();
 
   // On Change: navToggleOpen
   useEffect(() => {
-    navToggleOpen ? setStates(openStates) : setStates(closeStates);
-    setStates((prev) => ({
+    navToggleOpen ? setActiveStates(stateCollection.openStates) : setActiveStates(stateCollection.closeStates);
+    setActiveStates((prev) => ({
       ...prev,
       backgroundFill:
         navToggleOpen && backgroundFillActive
-          ? statesData.backgroundFill.bgColorOpacity25
-          : statesData.backgroundFill.bgColorOpacity0,
+          ? stateData.backgroundFill.bgColorOpacity25
+          : stateData.backgroundFill.bgColorOpacity0,
     }));
   }, [navToggleOpen]);
 
@@ -104,7 +105,7 @@ const AppLayout: React.FC = () => {
     <AppContext.Provider value={{ ...context, contentSizeData }}>
       <div
         id="background_fill"
-        className={`fixed top-0 z-10 flex h-screen w-full ${states.backgroundFill} trans-d500 md:bg-indigo-500/0`}
+        className={`fixed top-0 z-10 flex h-screen w-full ${activeStates.backgroundFill} trans-d500 md:bg-indigo-500/0`}
       ></div>
       <div
         id="layout"
@@ -112,7 +113,7 @@ const AppLayout: React.FC = () => {
       >
         <div
           id="logo"
-          className={`left-logo-left-sm md:left-logo-left-md top-logo-top-sm md:top-logo-top-md h-logo absolute flex flex-row items-center justify-between ${states.logoAreaWidth} trans-d500 z-30`}
+          className={`left-logo-left-sm md:left-logo-left-md top-logo-top-sm md:top-logo-top-md h-logo absolute flex flex-row items-center justify-between ${activeStates.logoAreaWidth} trans-d500 z-30`}
         >
           <Link to="/">
             <img id="bg_logo" className="trans-d200 cursor-pointer hover:scale-105" src={bg_logo} alt="bg_logo"></img>
@@ -120,7 +121,7 @@ const AppLayout: React.FC = () => {
           <img
             id="nav_list_switch"
             className="trans-d700 cursor-pointer hover:scale-110"
-            src={states.navListSwitch}
+            src={activeStates.navListSwitch}
             onClick={() => {
               setNavToggleOpen(!navToggleOpen);
             }}
@@ -129,10 +130,10 @@ const AppLayout: React.FC = () => {
         </div>
 
         {/* Main Area: Sidebar, Navigation Component, Content Component */}
-        <div id="main" className={`relative flex flex-row ${states.sidebarGap} pt-10`}>
+        <div id="main" className={`relative flex flex-row ${activeStates.sidebarGap} pt-10`}>
           <div
             id="sidebar"
-            className={`absolute flex ${states.sidebarWidth} trans-d700 z-20 flex-col overflow-x-hidden md:relative`}
+            className={`absolute flex ${activeStates.sidebarWidth} trans-d700 z-20 flex-col overflow-x-hidden md:relative`}
           >
             {/* Navigation Component */}
             <div id="nav" className="w-nav trans-d500 flex flex-col rounded-2xl bg-indigo-50 p-5 pt-10">
@@ -144,7 +145,7 @@ const AppLayout: React.FC = () => {
           <div
             id="content"
             className={`flex-col gap-5 ${
-              backgroundFillActive ? statesData.contentAreaWidth.wFull : states.contentAreaWidth
+              backgroundFillActive ? stateData.contentAreaWidth.wFull : activeStates.contentAreaWidth
             } trans-d500`}
             ref={contentRef}
           >
