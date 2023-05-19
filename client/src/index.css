@@ -6,6 +6,15 @@
   body {
     @apply text-base;
   }
+
+  h2 {
+    @apply text-lg font-bold;
+  }
+
+  h3 {
+    @apply text-sm font-bold;
+  }
+
   :root {
     /* General Paddings */
     --padding-md: 40px;
