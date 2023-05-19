@@ -12,7 +12,7 @@ const TextBlock: React.FC<TextBlockProps> = ({ content }) => {
   const assets: Asset[] = content?.assets ?? [];
 
   return (
-    <div className="list-disc p-5 text-indigo-900">
+    <div className="p-5 text-indigo-900">
       {assets.map((asset) => (
         <div dangerouslySetInnerHTML={{ __html: asset.text ?? "" }} />
       ))}
