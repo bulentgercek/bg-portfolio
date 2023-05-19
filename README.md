@@ -25,7 +25,7 @@ First of all, I started with creating the diagram of the whole application. Crea
 only for designing the project, but also for having a bird's eye view of the project afterwards. ExcaliDraw is really
 practical for this kind of work. You can find the backend and frontend diagram of the project in the link below.
 
-[ExcaliDraw Diagram](https://excalidraw.com/#json=3YvuOeEc6Gk5Fc9wLnsey,sIX72SjLDa1vwJivWzJDaA)
+[ExcaliDraw Diagram](https://excalidraw.com/#json=w7U5dB3xC5tHorF0vzTdJ,vdoMiVrPfkJi9uorDpVObw)
 
 ### 2.2 UX/UI Design<a name="2.2"></a>
 

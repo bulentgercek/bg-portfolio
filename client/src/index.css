@@ -12,7 +12,7 @@
   }
 
   h3 {
-    @apply text-lg font-bold text-indigo-700;
+    @apply pt-4 text-lg font-bold text-indigo-700;
   }
 
   :root {
