@@ -14,7 +14,7 @@ const TextBlock: React.FC<TextBlockProps> = ({ content }) => {
   return (
     <div>
       {assets.map((asset) => (
-        <p>{asset.text}</p>
+        <div dangerouslySetInnerHTML={{ __html: asset.text ?? "" }} />
       ))}
     </div>
   );
