@@ -4,7 +4,6 @@
 
 1. [Overview](#1)
 2. [Infrastructure](#2)
-3. [Api Documentation](#3)
 
 ## 1. Overview<a name="1"></a>
 
