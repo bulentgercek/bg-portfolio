@@ -15,6 +15,10 @@
     @apply pt-4 text-lg font-bold text-indigo-700;
   }
 
+  ul {
+    @apply list-disc;
+  }
+
   :root {
     /* General Paddings */
     --padding-md: 40px;
