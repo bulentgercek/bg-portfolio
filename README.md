@@ -29,20 +29,9 @@ practical for this kind of work. You can find the backend and frontend diagram o
 
 ### 2.2 UX/UI Design<a name="2.2"></a>
 
-<div style="display: flex; margin-bottom: 20px">
-  <figure style="width: 33%; margin: 0 2%;">
-    <img src="https://bulentgercek.com/uploads/1684493437928-bg_portfolio_01.png"/>
-    <figcaption>Home Design</figcaption>
-  </figure>
-  <figure style="width: 33%; margin: 0 2%;">
-    <img src="https://bulentgercek.com/uploads/1684493533478-bg_portfolio_02.png"/> 
-    <figcaption>Category Design</figcaption>
-  </figure>
-  <figure style="width: 33%; margin: 0 2%;">
-    <img src="https://bulentgercek.com/uploads/1684493553554-bg_portfolio_03.png"/>
-    <figcaption>Item Design</figcaption>
-  </figure>
-</div>
+![UX/UI Design](https://bulentgercek.com/uploads/1684526817711-bg_portfolio_05_uxui.png)
+
+> Home, Category and Item page designs
 
 The most important feature of this web application was that it should have a responsive interface. Even on that tiny
 screen of the Galaxy Fold, the website should still be usable. That's why this topic was the most important part of my
@@ -50,6 +39,10 @@ UX design philosophy. In addition to this, I wanted the application to have a na
 opened at any time and that can be accessed at any time no matter which subpage you are on. However, the site should be
 able to be navigated easily even when this navigation system is completely closed. Thus, the user interface has become
 large and spacious.
+
+![Responsive Design](https://bulentgercek.com/uploads/1684526351434-bg_portfolio_04_responsive.png)
+
+> Responsive Layout Changes
 
 Figma is my first choice as a great tool for UX/UI design. In addition to being able to work freely, thanks to its
 auto-layout and css inspect features, then transferring the design to JSX becomes incredibly fast and efficient. Since I
