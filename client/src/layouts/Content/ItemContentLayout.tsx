@@ -49,7 +49,7 @@ const ItemContentLayout: React.FC = () => {
               alt="go_category"
             ></img>
           </Link>
-          <div className="text-lg font-bold text-indigo-900">{currentItem?.name}</div>
+          <div className="text-xl font-bold text-indigo-900">{currentItem?.name}</div>
         </div>
         <div id="description" className="text-base text-indigo-900">
           {currentItem?.description}

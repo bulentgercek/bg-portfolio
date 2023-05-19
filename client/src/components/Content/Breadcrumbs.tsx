@@ -37,7 +37,7 @@ const Breadcrumbs: React.FC<BcPageProps> = ({ pageType }) => {
   }, [navData]);
 
   return (
-    <div className="flex flex-row flex-wrap gap-2.5 font-bold text-indigo-500">
+    <div className="flex flex-row flex-wrap gap-2.5 text-lg font-bold text-indigo-500">
       {bcNavigation.map((bcNavElement, index) => (
         <React.Fragment key={bcNavElement.name + index}>
           <Link key={createKey()} to={bcNavElement.route}>

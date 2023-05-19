@@ -221,7 +221,7 @@ const CategoryContentLayout: React.FC = () => {
         <div className="flex flex-col gap-2">
           <Breadcrumbs pageType="Category" />
           <div>
-            <div className="text-lg font-bold text-indigo-900">{currentCategory?.name}</div>
+            <div className="text-xl font-bold text-indigo-900">{currentCategory?.name}</div>
             <div className="">{currentCategory?.description}</div>
           </div>
         </div>
