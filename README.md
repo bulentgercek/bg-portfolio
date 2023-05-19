@@ -29,6 +29,21 @@ practical for this kind of work. You can find the backend and frontend diagram o
 
 ### 2.2 UX/UI Design<a name="2.2"></a>
 
+<div style="display: flex; margin-bottom: 20px">
+  <figure style="width: 33%; margin: 0 2%;">
+    <img src="https://bulentgercek.com/uploads/1684493437928-bg_portfolio_01.png" style="width: 100%;"/>
+    <figcaption>Home Design</figcaption>
+  </figure>
+  <figure style="width: 33%; margin: 0 2%;">
+    <img src="https://bulentgercek.com/uploads/1684493533478-bg_portfolio_02.png" style="width: 100%;"/> 
+    <figcaption>Category Design</figcaption>
+  </figure>
+  <figure style="width: 33%; margin: 0 2%;">
+    <img src="https://bulentgercek.com/uploads/1684493553554-bg_portfolio_03.png" style="width: 100%;"/>
+    <figcaption>Item Design</figcaption>
+  </figure>
+</div>
+
 The most important feature of this web application was that it should have a responsive interface. Even on that tiny
 screen of the Galaxy Fold, the website should still be usable. That's why this topic was the most important part of my
 UX design philosophy. In addition to this, I wanted the application to have a navigation system that can be closed and
