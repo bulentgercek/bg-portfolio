@@ -40,7 +40,7 @@ opened at any time and that can be accessed at any time no matter which subpage 
 able to be navigated easily even when this navigation system is completely closed. Thus, the user interface has become
 large and spacious.
 
-![Responsive Design](https://bulentgercek.com/uploads/1684526351434-bg_portfolio_04_responsive.png)
+![Responsive Design](https://bulentgercek.com/uploads/1684527634587-bg_portfolio_04_responsive.png)
 
 > Responsive Layout Changes
 
