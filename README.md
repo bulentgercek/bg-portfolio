@@ -31,15 +31,15 @@ practical for this kind of work. You can find the backend and frontend diagram o
 
 <div style="display: flex; margin-bottom: 20px">
   <figure style="width: 33%; margin: 0 2%;">
-    <img src="https://bulentgercek.com/uploads/1684493437928-bg_portfolio_01.png" style="width: 100%;"/>
+    <img src="https://bulentgercek.com/uploads/1684493437928-bg_portfolio_01.png"/>
     <figcaption>Home Design</figcaption>
   </figure>
   <figure style="width: 33%; margin: 0 2%;">
-    <img src="https://bulentgercek.com/uploads/1684493533478-bg_portfolio_02.png" style="width: 100%;"/> 
+    <img src="https://bulentgercek.com/uploads/1684493533478-bg_portfolio_02.png"/> 
     <figcaption>Category Design</figcaption>
   </figure>
   <figure style="width: 33%; margin: 0 2%;">
-    <img src="https://bulentgercek.com/uploads/1684493553554-bg_portfolio_03.png" style="width: 100%;"/>
+    <img src="https://bulentgercek.com/uploads/1684493553554-bg_portfolio_03.png"/>
     <figcaption>Item Design</figcaption>
   </figure>
 </div>
