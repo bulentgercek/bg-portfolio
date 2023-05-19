@@ -15,7 +15,7 @@
     @apply pt-4 text-lg font-bold text-indigo-700;
   }
 
-  ul {
+  #textBlock ul {
     @apply list-disc p-5;
   }
 
