@@ -16,7 +16,7 @@
   }
 
   ul {
-    @apply list-disc;
+    @apply list-disc p-5;
   }
 
   :root {
