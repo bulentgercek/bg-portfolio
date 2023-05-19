@@ -94,7 +94,7 @@ const AppLayout: React.FC = () => {
   useEffect(() => {
     const mql: MediaQueryList = window.matchMedia("(width < 1024px)");
     mql.addEventListener("change", () => mediaQueryChangeHandler(mql));
-    // mediaQueryChangeHandler(mql); // check the current size when the page loads
+    mediaQueryChangeHandler(mql); // check the current size when the page loads
     return () => mql.removeEventListener("change", () => mediaQueryChangeHandler(mql));
   }, []);
 
