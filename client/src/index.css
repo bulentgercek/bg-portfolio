@@ -27,6 +27,10 @@
     @apply font-bold underline;
   }
 
+  #description ul {
+    @apply list-disc p-5;
+  }
+
   :root {
     /* General Paddings */
     --padding-md: 40px;
