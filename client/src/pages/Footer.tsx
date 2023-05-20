@@ -104,7 +104,11 @@ const Footer: React.FC = () => {
             </Link>
           ))}
       </div> */}
-      <div id="go_top" className="flex items-center">
+      <div
+        id="go_top"
+        className="trans-d500 flex min-h-[45px] min-w-[45px] cursor-pointer hover:-translate-y-1 hover:brightness-110"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
         <img src={go_top} alt="go_top" className="h-[50px] w-[50px]"></img>
       </div>
     </div>
