@@ -42,10 +42,11 @@ const ItemDisplay: React.FC<ItemProps> = ({ item }) => {
                 {item.name}
               </div>
               <div id="description_n_button" className="flex h-full flex-col justify-between">
-                <div className="line-clamp-4" id="description">
-                  {item.description}
-                </div>
-
+                <div
+                  className="line-clamp-4"
+                  id="description"
+                  dangerouslySetInnerHTML={{ __html: item.description ?? "" }}
+                />
                 {/* <button
                   className={`trans-d500 flex h-[40px] items-center rounded-2xl bg-blue-600 px-5 py-3 text-base font-bold text-indigo-50 hover:px-6`}
                 >
