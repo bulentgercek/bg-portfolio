@@ -54,6 +54,13 @@ const ItemContentLayout: React.FC = () => {
         <div id="description" className="text-base text-indigo-900">
           {currentItem?.description}
         </div>
+        {currentItem?.link && (
+          <div id="link" className="text-base font-bold text-indigo-900 underline">
+            <a href={currentItem?.link} target="_blank">
+              {currentItem?.link}
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Item Contents */}
