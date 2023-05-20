@@ -19,6 +19,14 @@
     @apply list-disc p-5;
   }
 
+  #github-label {
+    @apply pt-2 font-bold text-blue-800;
+  }
+
+  #github-link {
+    @apply font-bold underline;
+  }
+
   :root {
     /* General Paddings */
     --padding-md: 40px;
