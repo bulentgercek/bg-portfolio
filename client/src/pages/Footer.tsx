@@ -96,14 +96,14 @@ const Footer: React.FC = () => {
           </a>
         </div>
       </div>
-      <div id="root_links" className={`flex flex-row items-center gap-5 font-bold ${activeStates.rootLinks}`}>
+      {/* <div id="root_links" className={`flex flex-row items-center gap-5 font-bold ${activeStates.rootLinks}`}>
         {navData &&
           navData.map((element) => (
             <Link key={createNavElementKey(element)} to={element.route}>
               <div className="font-bold text-blue-600">{element.element.name}</div>
             </Link>
           ))}
-      </div>
+      </div> */}
       <div id="go_top" className="flex items-center">
         <img src={go_top} alt="go_top" className="h-[50px] w-[50px]"></img>
       </div>
