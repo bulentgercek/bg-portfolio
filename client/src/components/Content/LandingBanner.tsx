@@ -138,10 +138,9 @@ const LandingBanner: React.FC = () => {
         >
           <div id="text">
             <p>
-              <span className="font-bold">Hello! My name is Bulent Gercek.</span> I am currently on my way as a{" "}
-              <span className="font-semibold">Full Stack Web Application Developer</span>. In this personal website, you
-              can find my notable works that I have produced in different professional fields throughout my business
-              life. I wish to meet you one day. Happy surfing 🤗
+              <span className="font-bold">Hello! My name is Bulent Gercek.</span> I am a lifelong developer, artist and
+              team manager. In this personal website, you can find my notable works that I have produced in different
+              professional fields throughout my business life. I wish to meet you one day. Happy surfing 🤗
               {/* <span className="text-gray-400">{Math.round(contentSizeData?.width ?? 0)}</span> */}
             </p>
           </div>
